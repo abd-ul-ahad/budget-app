@@ -9,7 +9,7 @@ import {
 import { Text, View } from "../components/Themed";
 import Colors from "../constants/Colors";
 import { Entypo, FontAwesome5 } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useRouter } from "expo-router";
 import {
   ValEmail,
@@ -19,6 +19,10 @@ import {
 } from "../constants/Validations";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+
+// Firebase
+import auth from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 
 interface Payload {
   name?: string;
@@ -44,12 +48,14 @@ const initialPayload: Payload = {
   error: false,
 };
 
-export default function SignUp({ flatListRef }: { flatListRef: any }) {
+export default function SignUp({
+  flatListRef,
+  navigation,
+}: {
+  navigation: any;
+  flatListRef: any;
+}) {
   const colorScheme = useColorScheme();
-  // const router = useRouter();
-
-  //Signing UP
-  // const { signup } = useSignUp();
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState<Payload>(initialPayload);
@@ -58,25 +64,29 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const { isName, isEmail, isPass, isPassMatched } = payload;
+    const { isName, isEmail, isPass, isPassMatched, email, password } = payload;
 
     if (isName && isEmail && isPass && isPassMatched) {
-      // let error = await signup(
-      //   payload.email!,
-      //   payload.password!,
-      //   payload.name!
-      // );
+      try {
+        const resp = await auth().createUserWithEmailAndPassword(
+          email!,
+          password!
+        );
+        console.log(resp);
 
-      // if (error) {
-      //   console.log(error);
-      //   if (error === "auth/email-already-in-use") {
-      //     setErrorMessage("Email already in use.");
-      //   }
-      //   setPayload({ ...payload, error: true });
-      //   setIsLoading(false);
-      //   return;
-      // }
-      // router.push("/(tabs)/");
+        setPayload(initialPayload);
+        setIsLoading(false);
+        
+      } catch (error) {
+        console.log(error);
+        if (error === "auth/email-already-in-use") {
+          setErrorMessage("Email already in use.");
+        }
+        setPayload({ ...payload, error: true });
+        setIsLoading(false);
+        return;
+      }
+
       setPayload(initialPayload);
       setIsLoading(false);
       return;

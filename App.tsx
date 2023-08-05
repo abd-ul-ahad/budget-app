@@ -26,7 +26,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const colorScheme = useColorScheme();
 
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   return (
     <Provider store={store}>
@@ -35,11 +35,11 @@ export default function App() {
           <Stack.Navigator>
             {!isLoggedIn ? (
               <Stack.Group>
-                <Stack.Screen
+                {/* <Stack.Screen
                   name="Home"
                   options={{ headerShown: false }}
                   component={WelcomeScreen}
-                />
+                /> */}
                 <Stack.Screen
                   name="Login"
                   options={{ headerShown: false }}
