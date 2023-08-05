@@ -1,0 +1,41 @@
+import { useEffect, useState } from "react";
+
+//firebase imports
+import { Auth } from "./init";
+import { login } from "../store/slices/userSlice";
+
+export const useSignUp = () => {
+  const [isStopped, setIsStopped] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  //creating Signup function to import it in other component
+  const signup = async (
+    email: string,
+    password: string,
+    displayName: string
+  ) => {
+    try {
+      const { user } = await Auth.signInWithEmailAndPassword(email, password);
+
+      // dispatch
+      login({
+        name: user.displayName!,
+        email: user.email!,
+        uid: user.uid!,
+      });
+
+      setError(null);
+    } catch (e: any) {
+      setError(e.code);
+    }
+
+    return error;
+    //add display name for the user
+    //   await updateProfile(user, { displayName });
+  };
+  useEffect(() => {
+    return () => setIsStopped(true);
+  }, []);
+
+  return { signup };
+};

@@ -19,10 +19,7 @@ import {
 } from "../constants/Validations";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-
-// Firebase
-import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
+import { useSignUp } from "../firebase/useSignUp";
 
 interface Payload {
   name?: string;
@@ -62,31 +59,30 @@ export default function SignUp({
   const [errorMessage, setErrorMessage] = useState<string>("Invalid email");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { signup } = useSignUp();
+
   const handleSubmit = async () => {
     setIsLoading(true);
     const { isName, isEmail, isPass, isPassMatched, email, password } = payload;
 
     if (isName && isEmail && isPass && isPassMatched) {
-      try {
-        const resp = await auth().createUserWithEmailAndPassword(
-          email!,
-          password!
-        );
-        console.log(resp);
+      let error = await signup(payload.email!, payload.password!, "k");
+      console.log({ error });
 
-        setPayload(initialPayload);
-        setIsLoading(false);
-        
-      } catch (error) {
+      if (error) {
         console.log(error);
-        if (error === "auth/email-already-in-use") {
-          setErrorMessage("Email already in use.");
-        }
+        error === "auth/user-not-found"
+          ? setErrorMessage("Email not registered.")
+          : error === "auth/wrong-password"
+          ? setErrorMessage("Wrong password or password.")
+          : null;
+
         setPayload({ ...payload, error: true });
         setIsLoading(false);
         return;
       }
 
+      // router.push("/(tabs)/");
       setPayload(initialPayload);
       setIsLoading(false);
       return;

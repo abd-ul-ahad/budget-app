@@ -15,6 +15,7 @@ import { ValEmail, ValPassword } from "../constants/Validations";
 // import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { useLogin } from "../firebase/useLogin";
 
 interface Payload {
   email?: string;
@@ -42,25 +43,26 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // logging in
-  // const { login } = useLogin();
+  const { login } = useLogin();
 
   const handleSubmit = async () => {
     setIsLoading(true);
     if (payload.isEmail && payload.isPass) {
-      // let error = await login(payload.email!, payload.password!);
+      let error = await login(payload.email!, payload.password!);
+      console.log({ error });
 
-      // if (error) {
-      //   console.log(error);
-      //   error === "auth/user-not-found"
-      //     ? setErrorMessage("Email not registered.")
-      //     : error === "auth/wrong-password"
-      //     ? setErrorMessage("Wrong password or password.")
-      //     : null;
+      if (error) {
+        console.log(error);
+        error === "auth/user-not-found"
+          ? setErrorMessage("Email not registered.")
+          : error === "auth/wrong-password"
+          ? setErrorMessage("Wrong password or password.")
+          : null;
 
-      //   setPayload({ ...payload, error: true });
-      //   setIsLoading(false);
-      //   return;
-      // }
+        setPayload({ ...payload, error: true });
+        setIsLoading(false);
+        return;
+      }
 
       // router.push("/(tabs)/");
       setPayload(initialPayload);
