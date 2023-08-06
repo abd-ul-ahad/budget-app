@@ -45,7 +45,6 @@ export default function CheckAuth() {
       dispatch(LoginState({ name: u.name!, email: u.email!, uid: u.uid }));
       setIsLogin(true);
     } else {
-      console.log("user not found");
       setIsLogin(false);
     }
 

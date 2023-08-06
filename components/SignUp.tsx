@@ -67,10 +67,8 @@ export default function SignUp({
 
     if (isName && isEmail && isPass && isPassMatched) {
       let error = await signup(payload.email!, payload.password!, "k");
-      console.log({ error });
 
       if (error) {
-        console.log(error);
         error === "auth/user-not-found"
           ? setErrorMessage("Email not registered.")
           : error === "auth/wrong-password"

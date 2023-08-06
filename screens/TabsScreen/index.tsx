@@ -21,9 +21,6 @@ export default function MainTabs() {
   theme.colors.secondaryContainer = "transperent";
 
   const colorScheme = useColorScheme();
-
-  console.log(colorScheme);
-
   return (
     <Tab.Navigator
       initialRouteName="Home"

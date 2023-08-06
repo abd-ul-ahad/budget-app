@@ -1,7 +1,8 @@
-import { Auth, db } from "./init";
+import { Auth, db, timeStamp } from "./init";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import GenDate from "../utils/GenDate";
+import firestore from "@react-native-firebase/firestore";
 
 export const useFirestore = (collectionNew: string, id: string) => {
   const user = useSelector((state: RootState) => state.user);
@@ -10,18 +11,16 @@ export const useFirestore = (collectionNew: string, id: string) => {
   const ref = db.collection(collectionNew);
 
   // Add a document
-  const addDocument = async (doc: { code: string; description: string }) => {
+  const addDocument = async (doc: any) => {
     try {
-      const createdAt = GenDate();
+      const createdAt = timeStamp;
       await ref
         .add({
-          code: doc.code,
-          description: doc.description,
+          ...doc,
           createdAt,
           user: user.uid,
         })
         .then(() => {
-          console.log("user");
         });
     } catch (err: any) {
       return err.code;
@@ -36,7 +35,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
 
       return resp;
     } catch (err: any) {
-      console.log(err);
+      // console.log(err);
     }
 
     return resp;
@@ -50,10 +49,10 @@ export const useFirestore = (collectionNew: string, id: string) => {
         .doc(id)
         .update({ ...newdoc, updatedAt })
         .then(() => {
-          console.log("document updated");
+          // console.log("document updated");
         });
 
-      console.log(updatedDocument);
+      // console.log(updatedDocument);
     } catch (err: any) {
       return err.code;
     }
@@ -64,7 +63,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
     try {
       //signle doc ref
       const docRef = ref.doc(id).delete();
-      console.log(docRef);
+      // console.log(docRef);
     } catch (err: any) {
       return err.code;
     }

@@ -8,4 +8,6 @@ const db = firestore();
 //init firebase auth
 const Auth = auth();
 
-export { db, Auth };
+const timeStamp = firestore.FieldValue.serverTimestamp();
+
+export { db, Auth, timeStamp };

@@ -49,10 +49,8 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
     setIsLoading(true);
     if (payload.isEmail && payload.isPass) {
       let error = await login(payload.email!, payload.password!);
-      console.log({ error });
 
       if (error) {
-        console.log(error);
         error === "auth/user-not-found"
           ? setErrorMessage("Email not registered.")
           : error === "auth/wrong-password"

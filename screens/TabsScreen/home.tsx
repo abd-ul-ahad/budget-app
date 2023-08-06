@@ -37,17 +37,6 @@ export default function Home(props: any) {
           <Hero />
 
           {/* Income and Outcome components */}
-          {/* <FlatList
-            className="my-6 px-3"
-            data={[
-              { id: 1, e: <Income navigation={props.navigation} /> },
-              { id: 2, e: <Outcome navigation={props.navigation} /> },
-            ]}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => <View key={item.id}>{item.e}</View>}
-            keyExtractor={(item) => `${item.id}`}
-          /> */}
 
           <View className="flex flex-row items-center justify-between px-4 py-4">
             <Income navigation={props.navigation} />

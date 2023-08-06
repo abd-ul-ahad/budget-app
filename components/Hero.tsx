@@ -14,6 +14,8 @@ import { ToWords } from "to-words";
 import { FadeInView } from "./animations";
 import { useState } from "react";
 import Colors from "../constants/Colors";
+import { useFirestore } from "../firebase/useFirestore";
+import { Auth } from "../firebase/init";
 
 const image = require("../assets/images/banner.png");
 
@@ -95,8 +97,27 @@ const AddIncome = ({
 }) => {
   const colorScheme = useColorScheme();
 
-  const [source, onChangeSource] = useState<string>("");
-  const [amount, onChangeAmount] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [amount, setAmount] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+
+  const { addDocument } = useFirestore("transactions", Auth.currentUser?.uid!);
+
+  const Submit = async () => {
+    if (amount.length >= 1 && description.length >= 1) {
+      setLoading(true);
+      const d = addDocument({
+        amount: +amount,
+        description: description,
+        category: "#income",
+        plan: "Deposit",
+      }).then(() => {
+        "transaction added";
+      });
+      setLoading(false);
+      setIncomeOrSpend(null);
+    }
+  };
 
   return (
     <FadeInView _duration={100}>
@@ -119,9 +140,9 @@ const AddIncome = ({
             Income Source
           </Text>
           <TextInput
-            onChangeText={onChangeSource}
+            onChangeText={(text) => setDescription(text)}
             className="py-2 px-3 dark:text-white rounded-lg"
-            value={source}
+            value={description}
             style={{ borderColor: "grey", borderWidth: 2 }}
             placeholderTextColor="grey"
             placeholder="e.g Salary"
@@ -131,7 +152,7 @@ const AddIncome = ({
         <View className="space-y-1">
           <Text className="dark:text-white text-lg font-semibold">Amount</Text>
           <TextInput
-            onChangeText={onChangeAmount}
+            onChangeText={(text) => setAmount(text)}
             className="py-2 px-3 dark:text-white rounded-lg"
             value={amount}
             style={{ borderColor: "grey", borderWidth: 2 }}
@@ -141,6 +162,8 @@ const AddIncome = ({
           />
         </View>
         <TouchableOpacity
+          disabled={loading}
+          onPress={() => Submit()}
           className="flex justify-center items-center rounded-lg"
           style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
         >

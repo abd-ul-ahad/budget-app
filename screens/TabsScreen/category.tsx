@@ -36,7 +36,6 @@ export default function Category() {
     });
 
     setResp(r);
-    console.log(resp);
     setRefreshing(false);
   };
 
@@ -68,6 +67,7 @@ export default function Category() {
             }
             style={{
               backgroundColor: Colors[colorScheme ?? "light"].background,
+              height: "100%",
             }}
           >
             {/* Categories header */}
@@ -94,6 +94,13 @@ export default function Category() {
 
               {/* Container for existing categories */}
               <View className="py-3">
+                {resp.length === 0 && (
+                  <View className="h-screen">
+                    <Text className="w-full text-center pb-2 mt-2">
+                      No Category
+                    </Text>
+                  </View>
+                )}
                 {/* Render existing categories */}
                 {resp?.map((e, i, a) => (
                   <View key={i}>

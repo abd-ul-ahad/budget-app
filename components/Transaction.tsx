@@ -1,15 +1,36 @@
 import Colors from "../constants/Colors";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
 // import { useRouter } from "expo-router";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  useColorScheme,
-  FlatList,
-} from "react-native";
+import { Text, View, TouchableOpacity, useColorScheme } from "react-native";
+import { useFirestore } from "../firebase/useFirestore";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const Transaction = (props: any) => {
+  const user = useSelector((state: RootState) => state.user);
+  const { getDocument } = useFirestore("transactions", user.uid!);
+
+  const [resp, setResp] = useState<string[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = async () => {
+    setRefreshing(true);
+    const d = await getDocument();
+    let r: any = [];
+    d?.forEach((e: any) => {
+      r.push(e._data);
+      console.log(e._data);
+    });
+
+    setResp(r);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
   return (
     <View className="px-3 pt-1 pb-9 space-y-2">
       <Text className="text-lg font-bold dark:text-white">Transactions</Text>

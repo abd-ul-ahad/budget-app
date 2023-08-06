@@ -32,7 +32,6 @@ export default function AddEdit({
       const d = addDocument({ code: category, description: category }).then(
         () => setToggle(false)
       );
-      console.log(d);
       setLoading(false);
     }
   };
