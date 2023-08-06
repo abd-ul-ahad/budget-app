@@ -16,12 +16,26 @@ import { useState } from "react";
 import Colors from "../constants/Colors";
 import { useFirestore } from "../firebase/useFirestore";
 import { Auth } from "../firebase/init";
+import { CalculateBalance } from "../utils/CalculateBalance";
 
 const image = require("../assets/images/banner.png");
 
 const Hero = () => {
   const toWords = new ToWords();
   const [incomeOrSpend, setIncomeOrSpend] = useState<number | null>(null);
+  const [balances, setBalances] = useState<{
+    incomeBalance: number;
+    outcomeBalance: number;
+    currentBalance: number;
+  }>();
+
+  const load = async () => {
+    const { incomeBalance, outcomeBalance, currentBalance } =
+      await CalculateBalance();
+      setBalances({incomeBalance, outcomeBalance, currentBalance})
+  };
+
+  load();
 
   return (
     <>
@@ -40,16 +54,16 @@ const Hero = () => {
             <View className="flex justify-start items-start w-full space-y-2">
               <Text className="text-white text-xl">My Balance</Text>
               <FlatList
-                data={["100200.2"]}
+                data={[balances?.incomeBalance]}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
+                renderItem={(item ) => (
                   <View>
                     <Text className="text-white text-3xl font-bold">
-                      £ {item}
+                      £ {item.item}
                     </Text>
                     <Text className="text-white text-sm">
-                      {toWords.convert(+item)} Pounds
+                      {toWords.convert(item.item!)} Pounds
                     </Text>
                   </View>
                 )}

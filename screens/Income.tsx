@@ -92,6 +92,7 @@ export default function Income(props: any) {
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((e, i, a) => {
                   return (
                     <Single
+                      category="Category"
                       title="Salary"
                       date="24 April"
                       amount="100000"

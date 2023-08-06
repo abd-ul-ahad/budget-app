@@ -6,60 +6,35 @@ import { Text, View, TouchableOpacity, useColorScheme } from "react-native";
 import { useFirestore } from "../firebase/useFirestore";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import formattedDate from "../utils/FormatDate";
 
 const Transaction = (props: any) => {
   const user = useSelector((state: RootState) => state.user);
-  const { getDocument } = useFirestore("transactions", user.uid!);
-
-  const [resp, setResp] = useState<string[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
-
-  const load = async () => {
-    setRefreshing(true);
-    const d = await getDocument();
-    let r: any = [];
-    d?.forEach((e: any) => {
-      r.push(e._data);
-      console.log(e._data);
-    });
-
-    setResp(r);
-    setRefreshing(false);
-  };
-
-  useEffect(() => {
-    load();
-  }, []);
 
   return (
     <View className="px-3 pt-1 pb-9 space-y-2">
       <Text className="text-lg font-bold dark:text-white">Transactions</Text>
 
       <View>
-        <Single
-          title="Salary"
-          date="24 April"
-          amount="100000"
-          isIncome={true}
-          isLast={false}
-          navigation={props.navigation}
-        />
-        <Single
-          title="Salary"
-          date="24 April"
-          amount="100000"
-          isIncome={true}
-          isLast={false}
-          navigation={props.navigation}
-        />
-        <Single
-          title="Salary"
-          date="24 April"
-          amount="100000"
-          isIncome={false}
-          isLast={true}
-          navigation={props.navigation}
-        />
+        {props.resp.length === 0 && (
+          <View className="h-screen">
+            <Text className="w-full text-center pb-2 mt-2">
+              No Transactions
+            </Text>
+          </View>
+        )}
+        {props.resp?.map((e: any, i: number, a: any) => (
+          <Single
+            key={i}
+            title={e.description}
+            date={formattedDate(e.createdAt)}
+            amount={e.amount}
+            isIncome={e.category === "#income"}
+            isLast={a.length - 1 === i}
+            navigation={props.navigation}
+            category={e.category}
+          />
+        ))}
       </View>
     </View>
   );
@@ -72,7 +47,9 @@ export const Single = ({
   isLast,
   isIncome,
   navigation,
+  category,
 }: {
+  category: string;
   title: string;
   date: string;
   amount: string;
@@ -98,11 +75,18 @@ export const Single = ({
         />
         <View className="flex-1 flex-col justify-center items-start">
           <Text
+            className="text-xs"
+            style={{ color: Colors[colorScheme ?? "light"].tint }}
+          >
+            {category}
+          </Text>
+          <Text
             className="text-lg font-semibold tracking-wider"
             style={{ color: Colors[colorScheme ?? "light"].text }}
           >
             {title}
           </Text>
+
           <Text className="text-xs" style={{ color: "gray" }}>
             {date}
           </Text>

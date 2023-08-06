@@ -1,7 +1,6 @@
 import { Auth, db, timeStamp } from "./init";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import GenDate from "../utils/GenDate";
 import firestore from "@react-native-firebase/firestore";
 
 export const useFirestore = (collectionNew: string, id: string) => {
@@ -44,7 +43,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
   // Update a document
   const updateDocument = async (newdoc: any, id: string) => {
     try {
-      const updatedAt = GenDate();
+      const updatedAt = timeStamp;
       const updatedDocument = ref
         .doc(id)
         .update({ ...newdoc, updatedAt })

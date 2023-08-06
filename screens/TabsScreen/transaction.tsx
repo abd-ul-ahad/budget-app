@@ -4,10 +4,14 @@ import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
 import { Text, View } from "../../components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Single } from "../../components/Transaction";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Colors from "../../constants/Colors";
 import { PieGraph } from "../../components/PieGraph";
 import { LineGraph } from "../../components/LineGraph";
+import { useFirestore } from "../../firebase/useFirestore";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import formattedDate from "../../utils/FormatDate";
 
 // Function component named "Transaction"
 export default function Transaction(props: any) {
@@ -16,6 +20,29 @@ export default function Transaction(props: any) {
 
   // Using the useState hook to manage a state variable "labelI" with an initial value of 0
   const [labelI, setLabelI] = useState<number>(0);
+  // Getting the user data from the Redux store
+  const user = useSelector((state: RootState) => state.user);
+
+  const { getDocument } = useFirestore("transactions", user.uid!);
+
+  const [resp, setResp] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = async () => {
+    setRefreshing(true);
+    const d = await getDocument();
+    let r: any = [];
+    d?.forEach((e: any) => {
+      r.push(e._data);
+    });
+
+    setResp(r);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   // JSX code starts here
   return (
@@ -108,22 +135,18 @@ export default function Transaction(props: any) {
           <View>
             <View className="px-2 pt-2 pb-7">
               {/* Rendering multiple instances of the "Single" component with sample data */}
-              <Single
-                title="Salary"
-                date="24 April"
-                amount="100000"
-                isIncome={false}
-                isLast={false}
-                navigation={props.navigation}
-              />
-              <Single
-                title="Salary"
-                date="24 April"
-                amount="100000"
-                isIncome={true}
-                isLast={false}
-                navigation={props.navigation}
-              />
+              {resp?.map((e: any, i: number, a: any) => (
+                <Single
+                  key={i}
+                  title={e.description}
+                  date={formattedDate(e.createdAt)}
+                  amount={e.amount}
+                  isIncome={e.category === "#income"}
+                  isLast={a.length - 1 === i}
+                  navigation={props.navigation}
+                  category={e.category}
+                />
+              ))}
               {/* Other instances of the "Single" component are also rendered here */}
               {/* ... */}
             </View>

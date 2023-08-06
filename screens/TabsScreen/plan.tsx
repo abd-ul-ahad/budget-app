@@ -1,12 +1,20 @@
 // Import required modules and components
-import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import { Text, View } from "../../components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Colors from "../../constants/Colors";
 import { FadeInView } from "../../components/animations";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Plan, initialState } from "../../components/plan/type";
 import Single from "../../components/plan/Single";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { useFirestore } from "../../firebase/useFirestore";
 // import { useRouter } from "expo-router";
 
 // Define the PlanScreen component
@@ -15,6 +23,29 @@ export default function PlanScreen(props: any) {
 
   // Define state for the plan with initial state as provided by initialState
   const [plan, setPlan] = useState<Plan>(initialState);
+
+  const user = useSelector((state: RootState) => state.user);
+
+  const { getDocument } = useFirestore("plans", user.uid!);
+
+  const [resp, setResp] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = async () => {
+    setRefreshing(true);
+    const d = await getDocument();
+    let r: any = [];
+    d?.forEach((e: any) => {
+      r.push(e._data);
+    });
+
+    setResp(r);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   // Render the PlanScreen UI
   return (
@@ -25,6 +56,9 @@ export default function PlanScreen(props: any) {
         <FadeInView _duration={300}>
           {/* ScrollView provides a scrollable container */}
           <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={load} />
+            }
             className="min-h-screen"
             style={{
               backgroundColor: Colors[colorScheme ?? "light"].background,
@@ -57,36 +91,45 @@ export default function PlanScreen(props: any) {
               <View className="pt-3 pb-28">
                 {/* Placeholder for No Plan */}
                 {/* Commented out for now will be visible when there is no plan*/}
-                {/* <Text className="text-lg font-semibold tracking-wider pl-2">
-                  No Plan
-                </Text> */}
+                {resp?.length === 0 && (
+                  <Text className="text-lg font-semibold tracking-wider pl-2">
+                    No Plan
+                  </Text>
+                )}
 
                 {/* Render multiple plans */}
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((e, i, a) => (
-                  <View key={i}>
-                    {/* Plan Item */}
-                    <TouchableOpacity
-                      className="py-3"
-                      onPress={() => {
-                        props.navigation.navigate("EditPlan", {
-                          title: "Title",
-                          category: "Category",
-                          amount: "99",
-                        });
-                      }}
-                    >
-                      {/* Render the Single component with progress */}
-                      <Single progress={e / 10} />
-                    </TouchableOpacity>
-                    {/* Divider between plan items */}
-                    {a.length - 1 !== i && (
-                      <View
-                        style={{ height: 1, backgroundColor: "gray" }}
-                        className="w-full"
-                      />
-                    )}
-                  </View>
-                ))}
+                {resp?.map((e, i, a) => {
+                  return (
+                    <View key={i}>
+                      {/* Plan Item */}
+                      <TouchableOpacity
+                        className="py-3"
+                        onPress={() => {
+                          props.navigation.navigate("EditPlan", {
+                            title: e.title,
+                            category: e.category,
+                            amount: e.budgetAmount,
+                          });
+                        }}
+                      >
+                        {/* Render the Single component with progress */}
+                        <Single
+                          title={e.title}
+                          category={e.category}
+                          amount={e.budgetAmount}
+                          currentAmount={e.currentAmount}
+                        />
+                      </TouchableOpacity>
+                      {/* Divider between plan items */}
+                      {a.length - 1 !== i && (
+                        <View
+                          style={{ height: 1, backgroundColor: "gray" }}
+                          className="w-full"
+                        />
+                      )}
+                    </View>
+                  );
+                })}
               </View>
             </View>
           </ScrollView>

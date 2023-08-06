@@ -5,6 +5,7 @@ import {
   View,
   FlatList,
   Dimensions,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
@@ -16,6 +17,8 @@ import { Entypo, SimpleLineIcons } from "@expo/vector-icons";
 import { Text } from "../../components/Themed";
 import { FadeInView } from "../../components/animations";
 import Single from "../../components/plan/Single";
+import { useEffect, useState } from "react";
+import { useFirestore } from "../../firebase/useFirestore";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -26,11 +29,45 @@ export default function Home(props: any) {
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
 
+  const { getDocument } = useFirestore("transactions", user.uid!);
+  const { getDocument: getPlanDocument } = useFirestore("plans", user.uid!);
+
+  const [resp, setResp] = useState<any[]>([]);
+  const [plans, setPlans] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = async () => {
+    setRefreshing(true);
+    const d = await getDocument();
+    const plans = await getPlanDocument();
+
+    let t: any = [];
+    let p: any = [];
+    d?.forEach((e: any) => {
+      t.push(e._data);
+    });
+
+    plans?.forEach((e: any) => {
+      p.push(e._data);
+    });
+
+    setPlans(p);
+    setResp(t);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
   return (
     <SafeAreaView>
       <FadeInView _duration={400}>
         {/* ScrollView to enable scrolling */}
         <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={load} />
+          }
           style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
         >
           {/* Hero component */}
@@ -62,34 +99,41 @@ export default function Home(props: any) {
             {/* FlatList to display plan cards */}
             <FlatList
               className="mt-6 px-1"
-              data={[{ id: 1 }]}
+              data={plans}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={() => (
-                <TouchableOpacity
-                  className="px-2 rounded-xl mr-10 py-4"
-                  onPress={() => {
-                    props.navigation.navigate("EditPlan", {
-                      title: "Title",
-                      category: "Category",
-                      amount: "99",
-                    });
-                  }}
-                  style={{
-                    width: width / 2,
-                    backgroundColor:
-                      Colors[colorScheme ?? "light"].secondaryBackground,
-                  }}
-                >
-                  <Single />
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => `${item.id}`}
+              renderItem={(e: any) => {
+                return (
+                  <TouchableOpacity
+                    className="px-2 rounded-xl mr-10 py-4"
+                    onPress={() => {
+                      props.navigation.navigate("EditPlan", {
+                        title: e.item.title,
+                        category: e.item.category,
+                        amount: e.item.budgetAmount,
+                      });
+                    }}
+                    style={{
+                      width: width / 2,
+                      backgroundColor:
+                        Colors[colorScheme ?? "light"].secondaryBackground,
+                    }}
+                  >
+                    <Single
+                      title={e.item.title}
+                      category={e.item.category}
+                      amount={e.item.budgetAmount}
+                      currentAmount={e.item.currentAmount}
+                    />
+                  </TouchableOpacity>
+                );
+              }}
+              keyExtractor={(item) => item.index}
             />
           </View>
 
           {/* Transaction component */}
-          <Transaction navigation={props.navigation} />
+          <Transaction resp={resp} navigation={props.navigation} />
         </ScrollView>
       </FadeInView>
     </SafeAreaView>

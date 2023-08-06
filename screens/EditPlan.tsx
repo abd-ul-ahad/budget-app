@@ -118,7 +118,7 @@ export default function EditPlan(props: any) {
               style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
             >
               <Text className="text-white py-3">
-                {+title !== 0 ? "Edit" : "Add"}
+                {+title !== 0 ? "Edit Plan" : "Add Plan"}
               </Text>
             </TouchableOpacity>
           </View>
