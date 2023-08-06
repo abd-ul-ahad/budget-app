@@ -3,17 +3,38 @@ import { FadeInView } from "../animations";
 import { Text, View } from "../Themed";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
+import { useFirestore } from "../../firebase/useFirestore";
+import { Auth } from "../../firebase/init";
+import { useState } from "react";
+import { RootState } from "../../store";
+import { useSelector } from "react-redux";
 
 export default function AddEdit({
   setToggle,
   category,
   setCategory,
+  isNew,
 }: {
-  category?: string;
-  setCategory?: React.Dispatch<React.SetStateAction<string>>;
+  isNew: boolean;
+  category: string;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
   setToggle: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const colorScheme = useColorScheme();
+  const user = useSelector((state: RootState) => state.user);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { addDocument } = useFirestore("categories", user.uid!);
+
+  const Submit = async () => {
+    setLoading(true);
+    const d = addDocument({ code: category, description: category }).then(() =>
+      setToggle(false)
+    );
+    console.log(d);
+    setLoading(false);
+  };
+
   return (
     <FadeInView _duration={150}>
       <View
@@ -31,7 +52,7 @@ export default function AddEdit({
             className="flex flex-row justify-between items-center"
           >
             <Text className="dark:text-white text-lg font-semibold">
-              {category ? (
+              {!isNew ? (
                 <Octicons
                   name="pencil"
                   size={24}
@@ -42,7 +63,9 @@ export default function AddEdit({
               )}
             </Text>
             <TouchableOpacity
-              onPress={() => setToggle(false)}
+              onPress={() => {
+                setToggle(false);
+              }}
               className="px-1 py-1"
             >
               <Ionicons
@@ -63,14 +86,17 @@ export default function AddEdit({
               placeholderTextColor="grey"
               value={category}
               keyboardType="default"
+              onChangeText={(text) => setCategory(text)}
             />
           </View>
           <TouchableOpacity
+            disabled={loading}
+            onPress={() => Submit()}
             className="flex justify-center items-center rounded-lg"
             style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
           >
             <Text className="text-white py-3">
-              {category ? "Edit" : "Add Category"}
+              {isNew ? "Add Category" : "Edit Category"}
             </Text>
           </TouchableOpacity>
         </View>

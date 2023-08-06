@@ -1,4 +1,3 @@
-// Importing necessary modules and components
 import {
   ScrollView,
   TouchableOpacity,

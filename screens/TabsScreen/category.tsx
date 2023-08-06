@@ -1,32 +1,52 @@
 // Import required components and modules
-import {
-  ScrollView,
-  TouchableOpacity,
-  useColorScheme,
-} from "react-native";
+import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
 import { Text, View } from "../../components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Colors from "../../constants/Colors";
 import { FadeInView } from "../../components/animations";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Single from "../../components/category/Single";
 import AddEdit from "../../components/category/AddEdit";
+import { useFirestore } from "../../firebase/useFirestore";
+import { RootState } from "../../store";
+import { useSelector } from "react-redux";
 
 // Define the Spending component
 export default function Category() {
   // Get the current color scheme
   const colorScheme = useColorScheme();
+  const user = useSelector((state: RootState) => state.user);
+  const { getDocument } = useFirestore("categories", user.uid!);
 
   // State variables
   const [toggle, setToggle] = useState<boolean>(false);
+  const [isNew, setIsNew] = useState<boolean>(true);
   const [category, setCategory] = useState<string>("");
+  const [resp, setResp] = useState<string[]>([]);
 
-  // Render the component
+  // useEffect(() => {
+  //   const load = async () => {
+  //     const d = await getDocument();
+  //     d?.forEach((e: any) => {
+  //       // console.log(e._data.description);
+  //       setResp([e._data.description])
+  //     })
+      
+  //     console.log(resp);
+  //   };
+  //   load();
+    
+    
+  //  }, []);
+
+
+  // Render the componen
   return (
     <>
       {/* Render AddEdit component if 'toggle' is true */}
       {toggle && (
         <AddEdit
+          isNew={isNew}
           setToggle={setToggle}
           category={category}
           setCategory={setCategory}
@@ -57,6 +77,7 @@ export default function Category() {
                 onPress={() => {
                   setCategory("");
                   setToggle(true);
+                  setIsNew(true);
                 }}
                 className="flex justify-center items-center rounded-lg"
                 style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
@@ -75,6 +96,7 @@ export default function Category() {
                       onPress={() => {
                         setCategory("Shopping");
                         setToggle(true);
+                        setIsNew(false);
                       }}
                     >
                       {/* Render Single component */}
