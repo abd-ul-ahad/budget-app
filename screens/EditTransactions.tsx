@@ -211,6 +211,7 @@ export default function EditTransactions(props: any) {
         </View>
       </ScrollView>
       <Snackbar
+        style={{ marginBottom: "10%" }}
         visible={toggleSnackbar}
         onDismiss={() => setToggleSnackbar(false)}
         action={{

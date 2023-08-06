@@ -1,21 +1,40 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
-
+import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "../../components/Themed";
-import { Auth } from "../../firebase/init";
+import { useLogout } from "../../firebase/useLogout";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Snackbar } from "react-native-paper";
+import { useState } from "react";
 
 export default function Profile() {
+  const { logout, error } = useLogout();
+  const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
-      <TouchableOpacity
-        className="px-3 py-2 bg-slate-500"
-        onPress={async () => {
-          await Auth.signOut();
+    <SafeAreaView>
+      <ScrollView>
+        <View className="flex-1 justify-center items-center h-screen">
+          <TouchableOpacity
+            className="px-3 py-2 bg-slate-500"
+            onPress={() => setToggleSnackbar(true)}
+          >
+            <Text>Logout</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+      <Snackbar
+        style={{ marginBottom: "5%" }}
+        visible={toggleSnackbar}
+        onDismiss={() => setToggleSnackbar(false)}
+        action={{
+          label: "Yes",
+          onPress: async () => {
+            await logout();
+          },
         }}
       >
-        <Text>Logout</Text>
-      </TouchableOpacity>
-    </View>
+        Are you sure?
+      </Snackbar>
+    </SafeAreaView>
   );
 }
 

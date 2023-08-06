@@ -25,7 +25,7 @@ export default function Home(props: any) {
   // Getting the user data from the Redux store
   const user = useSelector((state: RootState) => state.user);
   // Getting the color scheme of the device (light or dark)
-  const colorScheme = useColorScheme(); 
+  const colorScheme = useColorScheme();
 
   return (
     <SafeAreaView>
@@ -37,8 +37,8 @@ export default function Home(props: any) {
           {/* Hero component */}
           <Hero />
 
-          {/* FlatList to display Income and Outcome components */}
-          <FlatList
+          {/* Income and Outcome components */}
+          {/* <FlatList
             className="my-6 px-3"
             data={[
               { id: 1, e: <Income navigation={props.navigation} /> },
@@ -48,7 +48,12 @@ export default function Home(props: any) {
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => <View key={item.id}>{item.e}</View>}
             keyExtractor={(item) => `${item.id}`}
-          />
+          /> */}
+
+          <View className="flex flex-row items-center justify-between px-4 py-4">
+            <Income navigation={props.navigation} />
+            <Outcome navigation={props.navigation} />
+          </View>
 
           {/* Plans section */}
           <View className="px-3 pt-1 pb-9 space-y-2">
@@ -114,7 +119,7 @@ const Income = ({ navigation }: { navigation: any }) => {
       style={{
         backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
       }}
-      className="flex-col space-y-2 flex justify-center py-7 px-10 rounded-2xl items-start mr-10"
+      className="flex-col space-y-2 flex justify-center py-7 px-3 rounded-2xl items-start"
     >
       <View className="flex flex-row justify-center space-x-4 items-center">
         <SimpleLineIcons
@@ -142,7 +147,7 @@ const Outcome = ({ navigation }: { navigation: any }) => {
       style={{
         backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
       }}
-      className="flex-col space-y-2 flex justify-center py-7 px-10 rounded-2xl items-start mr-10"
+      className="flex-col space-y-2 flex justify-center py-7 px-3 rounded-2xl items-start"
     >
       <View className="flex flex-row justify-center space-x-4 items-center">
         <SimpleLineIcons
