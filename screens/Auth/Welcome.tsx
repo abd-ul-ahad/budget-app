@@ -35,7 +35,7 @@ export default function WelcomeScreen(props: any) {
     <SafeAreaView>
       {/* Outer container with a flex layout */}
       <View
-        className="flex justify-start h-screen"
+        className="flex justify-start items-start h-screen"
         style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
       >
         {/* FlatList to display slides */}

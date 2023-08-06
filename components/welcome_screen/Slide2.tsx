@@ -2,7 +2,7 @@ import { Text, View } from "../Themed";
 import Colors from "../../constants/Colors";
 import { Dimensions, Image, useColorScheme } from "react-native";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 export default function Slide2() {
   const colorScheme = useColorScheme();
@@ -10,10 +10,10 @@ export default function Slide2() {
     <>
       <View className="flex justify-start items-center">
         <Image
-          style={{ width, height: 491, resizeMode: "contain" }}
+          style={{ width, height: height / 1.7, resizeMode: "stretch" }}
           source={require("../../assets/images/fff.webp")}
         />
-        <View className="space-y-2 mt-4">
+        <View className="space-y-2 mt-4 px-3">
           <Text
             className="text-xl text-center font-semibold"
             style={{ color: Colors[colorScheme ?? "light"].text }}

@@ -17,7 +17,10 @@ export const useSignUp = () => {
     displayName: string
   ) => {
     try {
-      const { user } = await Auth.signInWithEmailAndPassword(email, password);
+      const { user } = await Auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
 
       // dispatch
       dispatch(

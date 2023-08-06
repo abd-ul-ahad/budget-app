@@ -8,7 +8,7 @@ import {
   useColorScheme,
 } from "react-native";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 export default function Slide3({navigation}: any) {
   const colorScheme = useColorScheme();
@@ -16,10 +16,10 @@ export default function Slide3({navigation}: any) {
     <>
       <View className="flex justify-start items-center">
         <Image
-          style={{ width, height: 491, resizeMode: "contain" }}
+          style={{ width, height: height / 1.7, resizeMode: "stretch" }}
           source={require("../../assets/images/fff.webp")}
         />
-        <View className="mt-4 space-y-5">
+        <View className="mt-4 space-y-5 px-3">
           <Text
             className="text-xl text-center font-semibold"
             style={{ color: Colors[colorScheme ?? "light"].text }}
