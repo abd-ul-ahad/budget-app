@@ -27,12 +27,14 @@ export default function AddEdit({
   const { addDocument } = useFirestore("categories", user.uid!);
 
   const Submit = async () => {
-    setLoading(true);
-    const d = addDocument({ code: category, description: category }).then(() =>
-      setToggle(false)
-    );
-    console.log(d);
-    setLoading(false);
+    if (category.length >= 1) {
+      setLoading(true);
+      const d = addDocument({ code: category, description: category }).then(
+        () => setToggle(false)
+      );
+      console.log(d);
+      setLoading(false);
+    }
   };
 
   return (

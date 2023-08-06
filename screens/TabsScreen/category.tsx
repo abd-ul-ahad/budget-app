@@ -5,11 +5,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Colors from "../../constants/Colors";
 import { FadeInView } from "../../components/animations";
 import { useEffect, useState } from "react";
+
 import Single from "../../components/category/Single";
 import AddEdit from "../../components/category/AddEdit";
 import { useFirestore } from "../../firebase/useFirestore";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
+import { RefreshControl } from "react-native";
 
 // Define the Spending component
 export default function Category() {
@@ -23,8 +25,10 @@ export default function Category() {
   const [isNew, setIsNew] = useState<boolean>(true);
   const [category, setCategory] = useState<string>("");
   const [resp, setResp] = useState<string[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const load = async () => {
+    setRefreshing(true);
     const d = await getDocument();
     let r: any = [];
     d?.forEach((e: any) => {
@@ -33,6 +37,7 @@ export default function Category() {
 
     setResp(r);
     console.log(resp);
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -58,6 +63,9 @@ export default function Category() {
         <FadeInView _duration={300}>
           {/* ScrollView to provide scrollable content */}
           <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={load} />
+            }
             style={{
               backgroundColor: Colors[colorScheme ?? "light"].background,
             }}
