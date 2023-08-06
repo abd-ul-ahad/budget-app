@@ -2,7 +2,7 @@ import { useColorScheme } from "react-native";
 import { Text, View } from "../Themed";
 import Colors from "../../constants/Colors";
 
-export default function Single() {
+export default function Single({ title }: { title: string }) {
   const colorScheme = useColorScheme();
 
   return (
@@ -16,12 +16,12 @@ export default function Single() {
             borderColor: Colors[colorScheme ?? "light"].tint,
           }}
         >
-          #Shopping
+          #{title}
         </Text>
       </View>
       <View>
         <Text className="w-full text-center text-xl font-bold tracking-widest">
-          Shopping
+          {title}
         </Text>
       </View>
     </>

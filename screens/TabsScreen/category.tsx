@@ -24,21 +24,20 @@ export default function Category() {
   const [category, setCategory] = useState<string>("");
   const [resp, setResp] = useState<string[]>([]);
 
-  // useEffect(() => {
-  //   const load = async () => {
-  //     const d = await getDocument();
-  //     d?.forEach((e: any) => {
-  //       // console.log(e._data.description);
-  //       setResp([e._data.description])
-  //     })
-      
-  //     console.log(resp);
-  //   };
-  //   load();
-    
-    
-  //  }, []);
+  const load = async () => {
+    const d = await getDocument();
+    let r: any = [];
+    d?.forEach((e: any) => {
+      r.push(e._data.description);
+    });
 
+    setResp(r);
+    console.log(resp);
+  };
+
+  useEffect(() => {
+    load();
+  }, [toggle]);
 
   // Render the componen
   return (
@@ -88,19 +87,19 @@ export default function Category() {
               {/* Container for existing categories */}
               <View className="py-3">
                 {/* Render existing categories */}
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((e, i, a) => (
+                {resp?.map((e, i, a) => (
                   <View key={i}>
                     {/* TouchableOpacity for each category */}
                     <TouchableOpacity
                       className="py-3"
                       onPress={() => {
-                        setCategory("Shopping");
+                        setCategory(e);
                         setToggle(true);
                         setIsNew(false);
                       }}
                     >
                       {/* Render Single component */}
-                      <Single />
+                      <Single title={e} />
                     </TouchableOpacity>
 
                     {/* Divider between categories */}
