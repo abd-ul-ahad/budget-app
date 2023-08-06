@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 //firebase imports
 import { Auth } from "./init";
-import { login } from "../store/slices/userSlice";
+// react redux
+import { useDispatch } from "react-redux";
+import { login as LoginState } from "../store/slices/userSlice";
 
 export const useSignUp = () => {
-  const [isStopped, setIsStopped] = useState(false);
+  const dispatch = useDispatch();
   const [error, setError] = useState<string | null>(null);
 
   //creating Signup function to import it in other component
@@ -18,11 +20,13 @@ export const useSignUp = () => {
       const { user } = await Auth.signInWithEmailAndPassword(email, password);
 
       // dispatch
-      login({
-        name: user.displayName!,
-        email: user.email!,
-        uid: user.uid!,
-      });
+      dispatch(
+        LoginState({
+          name: user.displayName!,
+          email: user.email!,
+          uid: user.uid!,
+        })
+      );
 
       setError(null);
     } catch (e: any) {
@@ -33,9 +37,6 @@ export const useSignUp = () => {
     //add display name for the user
     //   await updateProfile(user, { displayName });
   };
-  useEffect(() => {
-    return () => setIsStopped(true);
-  }, []);
 
   return { signup };
 };

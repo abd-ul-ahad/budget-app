@@ -25,7 +25,7 @@ export default function Home(props: any) {
   // Getting the user data from the Redux store
   const user = useSelector((state: RootState) => state.user);
   // Getting the color scheme of the device (light or dark)
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme(); 
 
   return (
     <SafeAreaView>

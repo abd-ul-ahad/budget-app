@@ -8,7 +8,7 @@ export interface User {
 }
 
 const initialState: User = {
-  name: "User",
+  name: "",
   email: "",
   uid: null,
 };
@@ -21,7 +21,9 @@ export const userSlice = createSlice({
       state = initialState;
     },
     login: (state, action: PayloadAction<User>) => {
-      state = action.payload;
+      state.name = action.payload.name;
+      state.email = action.payload.email;
+      state.uid = action.payload.uid;
     },
   },
 });
