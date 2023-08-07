@@ -96,10 +96,15 @@ export default function WelcomeScreen(props: any) {
             disabled={cIndex === 2 ? true : false}
             style={{ opacity: cIndex === 2 ? 0 : 1 }}
             className="py-7 px-3"
-            onPress={() =>
-              // Scroll to the last slide when the "SKIP" button is pressed
-              flatListRef.current?.scrollToIndex({ animated: true, index: 2 })
-            }
+            onPress={() => {
+              try {
+                // Scroll to the last slide when the "SKIP" button is pressed
+                flatListRef.current?.scrollToIndex({
+                  animated: true,
+                  index: 2,
+                });
+              } catch {}
+            }}
           >
             <Text style={{ color: "#767676" }}>SKIP</Text>
           </TouchableOpacity>

@@ -16,13 +16,13 @@ import { ValEmail, ValPassword } from "../constants/Validations";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useLogin } from "../firebase/useLogin";
+import { Snackbar } from "react-native-paper";
 
 interface Payload {
   email?: string;
   password?: string;
   isEmail?: boolean | null;
   isPass?: boolean | null;
-  error?: boolean;
 }
 
 const initialPayload: Payload = {
@@ -30,7 +30,6 @@ const initialPayload: Payload = {
   password: "",
   isEmail: null,
   isPass: null,
-  error: false,
 };
 
 export default function Login({ flatListRef }: { flatListRef: any }) {
@@ -38,8 +37,7 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
   // const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState<Payload>(initialPayload);
-
-  const [errorMessage, setErrorMessage] = useState<string>("Invalid email");
+  const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // logging in
@@ -48,16 +46,10 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
   const handleSubmit = async () => {
     setIsLoading(true);
     if (payload.isEmail && payload.isPass) {
-      let error = await login(payload.email!, payload.password!);
-
-      if (error) {
-        error === "auth/user-not-found"
-          ? setErrorMessage("Email not registered.")
-          : error === "auth/wrong-password"
-          ? setErrorMessage("Wrong password or password.")
-          : null;
-
-        setPayload({ ...payload, error: true });
+      try {
+        await login(payload.email!, payload.password!);
+      } catch (error) {
+        setToggleSnackbar(true);
         setIsLoading(false);
         return;
       }
@@ -107,11 +99,10 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
             <Text
               className="text-right text-red-700 mr-2"
               style={{
-                opacity:
-                  payload.isEmail === false || payload.error === true ? 1 : 0,
+                opacity: payload.isEmail === false ? 1 : 0,
               }}
             >
-              {errorMessage}
+              Invalid Email
             </Text>
           </View>
           <Text className="dark:text-white text-lg font-semibold">
@@ -206,6 +197,17 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
           </TouchableOpacity>
         </View>
       </View>
+      <Snackbar
+        style={{ marginBottom: "10%" }}
+        visible={toggleSnackbar}
+        onDismiss={() => setToggleSnackbar(false)}
+        action={{
+          label: "Close",
+          onPress: () => setToggleSnackbar(false),
+        }}
+      >
+        Invalid credentials
+      </Snackbar>
     </SafeAreaView>
   );
 }

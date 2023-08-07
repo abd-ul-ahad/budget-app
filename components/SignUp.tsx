@@ -20,6 +20,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useSignUp } from "../firebase/useSignUp";
+import { Snackbar } from "react-native-paper";
 
 interface Payload {
   name?: string;
@@ -30,7 +31,6 @@ interface Payload {
   isEmail?: boolean | null;
   isPass?: boolean | null;
   isPassMatched?: boolean | null;
-  error?: boolean;
 }
 
 const initialPayload: Payload = {
@@ -42,7 +42,6 @@ const initialPayload: Payload = {
   isEmail: null,
   isPass: null,
   isPassMatched: null,
-  error: false,
 };
 
 export default function SignUp({ flatListRef }: { flatListRef: any }) {
@@ -50,26 +49,20 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState<Payload>(initialPayload);
-  const [errorMessage, setErrorMessage] = useState<string>("Invalid email");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
 
   const { signup } = useSignUp();
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const { isName, isEmail, isPass, isPassMatched, email, password } = payload;
+    const { isName, isEmail, isPass, isPassMatched } = payload;
 
     if (isName && isEmail && isPass && isPassMatched) {
-      let error = await signup(payload.email!, payload.password!, "k");
-
-      if (error) {
-        error === "auth/user-not-found"
-          ? setErrorMessage("Email not registered.")
-          : error === "auth/wrong-password"
-          ? setErrorMessage("Wrong password or password.")
-          : null;
-
-        setPayload({ ...payload, error: true });
+      try {
+        await signup(payload.email!, payload.password!, "K");
+      } catch (error) {
+        setToggleSnackbar(true);
         setIsLoading(false);
         return;
       }
@@ -80,7 +73,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
       return;
     }
 
-    setPayload(initialPayload);
+    setPayload({ isEmail: false, isPass: false });
     setIsLoading(false);
   };
 
@@ -142,11 +135,10 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
             <Text
               className="text-right text-red-700 mr-2"
               style={{
-                opacity:
-                  payload.isEmail === false || payload.error === true ? 1 : 0,
+                opacity: payload.isEmail === false ? 1 : 0,
               }}
             >
-              {errorMessage}
+              Invalid Email
             </Text>
           </View>
           <Text className="dark:text-white text-lg font-semibold mb-1">
@@ -270,6 +262,17 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
           </TouchableOpacity>
         </View>
       </View>
+      <Snackbar
+        style={{ marginBottom: "10%" }}
+        visible={toggleSnackbar}
+        onDismiss={() => setToggleSnackbar(false)}
+        action={{
+          label: "Close",
+          onPress: () => setToggleSnackbar(false),
+        }}
+      >
+        Invalid credentials
+      </Snackbar>
     </SafeAreaView>
   );
 }
