@@ -102,6 +102,7 @@ export default function Home(props: any) {
               data={plans}
               horizontal
               showsHorizontalScrollIndicator={false}
+              keyExtractor={(item) => `${item.createdAt.seconds}`}
               renderItem={(e: any) => {
                 return (
                   <TouchableOpacity
@@ -128,7 +129,6 @@ export default function Home(props: any) {
                   </TouchableOpacity>
                 );
               }}
-              keyExtractor={(item) => item.index}
             />
           </View>
 

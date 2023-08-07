@@ -32,7 +32,7 @@ const Hero = () => {
   const load = async () => {
     const { incomeBalance, outcomeBalance, currentBalance } =
       await CalculateBalance();
-      setBalances({incomeBalance, outcomeBalance, currentBalance})
+    setBalances({ incomeBalance, outcomeBalance, currentBalance });
   };
 
   load();
@@ -54,16 +54,16 @@ const Hero = () => {
             <View className="flex justify-start items-start w-full space-y-2">
               <Text className="text-white text-xl">My Balance</Text>
               <FlatList
-                data={[balances?.incomeBalance]}
+                data={[balances?.incomeBalance || 0]}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                renderItem={(item ) => (
+                renderItem={(item) => (
                   <View>
                     <Text className="text-white text-3xl font-bold">
                       £ {item.item}
                     </Text>
                     <Text className="text-white text-sm">
-                      {toWords.convert(item.item!)} Pounds
+                      {toWords.convert(item.item! || 0)} Pounds
                     </Text>
                   </View>
                 )}
@@ -263,6 +263,9 @@ const AddSpending = ({
             placeholder="choose..."
             keyboardType="default"
           />
+        </View>
+        <View>
+          <Text className="font-semibold text-base text-red-500">(OR)</Text>
         </View>
         <View className="space-y-1">
           <Text className="dark:text-white text-lg font-semibold">Plan</Text>

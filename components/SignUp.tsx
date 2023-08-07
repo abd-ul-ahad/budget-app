@@ -45,13 +45,7 @@ const initialPayload: Payload = {
   error: false,
 };
 
-export default function SignUp({
-  flatListRef,
-  navigation,
-}: {
-  navigation: any;
-  flatListRef: any;
-}) {
+export default function SignUp({ flatListRef }: { flatListRef: any }) {
   const colorScheme = useColorScheme();
 
   const [showPassword, setShowPassword] = useState<boolean>(false);

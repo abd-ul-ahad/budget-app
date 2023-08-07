@@ -15,14 +15,9 @@ import Single from "../../components/plan/Single";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useFirestore } from "../../firebase/useFirestore";
-// import { useRouter } from "expo-router";
-
 // Define the PlanScreen component
 export default function PlanScreen(props: any) {
   const colorScheme = useColorScheme();
-
-  // Define state for the plan with initial state as provided by initialState
-  const [plan, setPlan] = useState<Plan>(initialState);
 
   const user = useSelector((state: RootState) => state.user);
 

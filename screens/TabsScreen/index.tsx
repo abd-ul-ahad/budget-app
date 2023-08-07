@@ -67,7 +67,7 @@ export default function MainTabs() {
         name="Plan"
         component={PlanScreen}
         options={{
-          tabBarLabel: "Category",
+          tabBarLabel: "Plan",
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons
               name="file-document-edit"
