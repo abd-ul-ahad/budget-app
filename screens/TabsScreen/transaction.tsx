@@ -1,6 +1,11 @@
 // Importing necessary components and hooks from React Native and other custom modules
 // Note: The actual paths of the components might vary based on the project structure.
-import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import { Text, View } from "../../components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Single } from "../../components/Transaction";
@@ -33,7 +38,7 @@ export default function Transaction(props: any) {
     const d = await getDocument();
     let r: any = [];
     d?.forEach((e: any) => {
-      r.push(e._data);
+      r.push(e);
     });
 
     setResp(r);
@@ -47,7 +52,15 @@ export default function Transaction(props: any) {
   // JSX code starts here
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView
+        style={{
+          backgroundColor: Colors[colorScheme ?? "light"].background,
+          height: "100%",
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={load} />
+        }
+      >
         {/* Section for displaying the "Savings" data */}
         <View className="pt-2 flex justify-center items-center">
           <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">
@@ -135,20 +148,22 @@ export default function Transaction(props: any) {
           <View>
             <View className="px-2 pt-2 pb-7">
               {/* Rendering multiple instances of the "Single" component with sample data */}
-              {props.resp
+              {resp
                 ?.sort(
-                  (a: any, b: any) => b.createdAt.seconds - a.createdAt.seconds
+                  (a: any, b: any) =>
+                    b._data.createdAt.seconds - a._data.createdAt.seconds
                 )
                 .map((e: any, i: number, a: any) => (
                   <Single
                     key={i}
-                    title={e.description}
-                    date={formattedDate(e.createdAt)}
-                    amount={e.amount}
-                    isIncome={e.category === "#income"}
+                    id={e.id}
+                    title={e._data.description}
+                    date={formattedDate(e._data.createdAt)}
+                    amount={e._data.amount}
+                    isIncome={e._data.category === "#income"}
                     isLast={a.length - 1 === i}
                     navigation={props.navigation}
-                    category={e.category}
+                    category={e._data.category}
                   />
                 ))}
               {/* Other instances of the "Single" component are also rendered here */}

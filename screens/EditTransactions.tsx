@@ -19,6 +19,9 @@ import { ToWords } from "to-words";
 import Colors from "../constants/Colors";
 import { useEffect, useState } from "react";
 import { Snackbar } from "react-native-paper";
+import { useFirestore } from "../firebase/useFirestore";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const image = require("../assets/images/banner.png");
 
@@ -30,21 +33,25 @@ interface Payload {
   amount?: string;
   description?: string;
   category?: string;
+  id: string;
 }
 
 export default function EditTransactions(props: any) {
   // Initialize the router and colorScheme
-  //   const router = useRouter();
+  const user = useSelector((state: RootState) => state.user);
   const colorScheme = useColorScheme();
   const toWords = new ToWords();
 
   // Retrieve initial state from local search params
-  const { amount, date, title } = props.route.params;
+  const { amount, date, title, id } = props.route.params;
   const initialState: Payload = {
     title: `${title}`,
     date: `${date}`,
     amount: `${amount}`,
+    id,
   };
+
+  console.log(id);
 
   // State variables for edit mode and payload
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -55,6 +62,26 @@ export default function EditTransactions(props: any) {
     isEditMode ? setToggleSnackbar(true) : props.navigation.goBack();
     return true;
   });
+
+  const { updateDocument } = useFirestore("transactions", user.uid!);
+
+  async function onUpdate() {
+    // if (
+    //   payload?.amount!.length >= 1 &&
+    //   payload?.title!.length >= 1
+    // ) {
+    //   await updateDocument(
+    //     {
+    //       amount: +payload?.amount!,
+    //       description: payload?.title,
+    //     },
+    //     id
+    //   ).then(() => {
+    //     console.log("updated");
+    //     props.navigation.goBack();
+    //   });
+    // }
+  }
 
   return (
     // SafeAreaView provides padding to avoid notches or other elements overlapping content
@@ -186,6 +213,7 @@ export default function EditTransactions(props: any) {
           </View>
           {/* Change and Cancel buttons */}
           <TouchableOpacity
+            onPress={() => onUpdate()}
             disabled={!isEditMode}
             className="flex justify-center items-center rounded-lg"
             style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}

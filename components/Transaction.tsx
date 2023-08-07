@@ -27,6 +27,7 @@ const Transaction = (props: any) => {
           ?.sort((a: any, b: any) => b.createdAt.seconds - a.createdAt.seconds)
           .map((e: any, i: number, a: any) => (
             <Single
+              id=""
               key={i}
               title={e.description}
               date={formattedDate(e.createdAt)}
@@ -50,7 +51,9 @@ export const Single = ({
   isIncome,
   navigation,
   category,
+  id,
 }: {
+  id: string;
   category: string;
   title: string;
   date: string;
@@ -66,7 +69,7 @@ export const Single = ({
     <View>
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("EditTransaction", { title, date, amount })
+          navigation.navigate("EditTransaction", { title, date, amount, id })
         }
         className="space-x-3 py-2 flex justify-between items-center flex-row"
       >

@@ -273,7 +273,7 @@ const AddSpending = ({
         amount: +payload?.amount!,
         description: payload?.description,
         category:
-          payload?.category !== undefined ? `#${payload?.category}` : "",
+          payload?.category !== undefined ? `${payload?.category}` : "",
         plan: payload?.plan !== undefined ? `${payload?.plan}` : "",
       }).then(() => {
         "transaction added";

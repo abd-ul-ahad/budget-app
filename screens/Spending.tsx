@@ -1,13 +1,22 @@
 // Importing necessary modules and components
-import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import { Text, View } from "../components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Single } from "../components/Transaction";
 import { LineGraph } from "../components/LineGraph";
 import { PieGraph } from "../components/PieGraph";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Colors from "../constants/Colors";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { useFirestore } from "../firebase/useFirestore";
+import formattedDate from "../utils/FormatDate";
 
 // Defining the Spending component
 export default function Spending(props: any) {
@@ -15,10 +24,42 @@ export default function Spending(props: any) {
   const colorScheme = useColorScheme();
   const [labelI, setLabelI] = useState<number>(0);
 
+  const user = useSelector((state: RootState) => state.user);
+
+  const { getDocument } = useFirestore("transactions", user.uid!);
+
+  const [resp, setResp] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = async () => {
+    setRefreshing(true);
+    const d = await getDocument();
+    let r: any = [];
+    d?.forEach((e: any) => {
+      console.log(e);
+      if (e._data.category !== "#income") r.push(e);
+    });
+
+    setResp(r);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
   return (
     // Wrapping the content inside SafeAreaView and ScrollView for safe handling of views
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView
+      style={{
+        backgroundColor: Colors[colorScheme ?? "light"].background,
+        height: "100%",
+      }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={load} />
+        }
+      >
         {/* Header */}
         <View className="pt-2 flex justify-center items-start">
           <View className="pt-2 flex justify-between flex-row items-center w-full">
@@ -123,20 +164,24 @@ export default function Spending(props: any) {
           <View>
             <View className="px-2 pt-2 pb-7">
               {/* Mapping transactions */}
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((e, i, a) => {
-                return (
+              {resp
+                ?.sort(
+                  (a: any, b: any) =>
+                    b._data.createdAt.seconds - a._data.createdAt.seconds
+                )
+                .map((e: any, i: number, a: any) => (
                   <Single
-                    category="Category"
-                    title="Salary"
-                    date="24 April"
-                    amount="100000"
-                    navigation={props.navigation}
-                    isIncome={false}
                     key={i}
+                    id={e.id}
+                    title={e._data.description}
+                    date={formattedDate(e._data.createdAt)}
+                    amount={e._data.amount}
+                    isIncome={e._data.category === "#income"}
                     isLast={a.length - 1 === i}
+                    navigation={props.navigation}
+                    category={e._data.category}
                   />
-                );
-              })}
+                ))}
             </View>
           </View>
         </View>

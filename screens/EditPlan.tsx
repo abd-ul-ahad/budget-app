@@ -25,6 +25,7 @@ interface Payload {
   amount: string;
   category: string;
   code: string;
+  id: string;
 }
 
 // Define the EditPlan component
@@ -35,17 +36,20 @@ export default function EditPlan(props: any) {
 
   const user = useSelector((state: RootState) => state.user);
   const { getDocument } = useFirestore("categories", user.uid!);
-  const { addDocument } = useFirestore("plans", user.uid!);
+  const { addDocument, updateDocument } = useFirestore("plans", user.uid!);
 
   // Extract the title, amount, and category from local search parameters
-  const { title, amount, category } = props.route.params;
+  const { title, amount, category, id } = props.route.params;
 
   const [payload, setPayload] = useState<Payload>({
     title: `${title === 0 ? "" : title}`,
     amount,
     category,
     code: "",
+    id: "",
   });
+
+  console.log(payload.amount);
 
   const [toggle, setToggle] = useState<boolean>(false);
   const [categories, setCategories] =
@@ -79,12 +83,32 @@ export default function EditPlan(props: any) {
         category: payload?.code,
         budgetAmount: payload?.amount,
         title: payload?.title,
-        currentAmount: 0
+        currentAmount: 0,
       }).then(() => setToggle(false));
       props.navigation.goBack();
       setLoading(false);
     }
   };
+
+  async function onEditSubmit() {
+    if (
+      payload.category.length >= 1 &&
+      payload.amount.length >= 1 &&
+      payload.title.length >= 1
+    ) {
+      await updateDocument(
+        {
+          budgetAmount: +payload?.amount!,
+          title: payload?.title,
+          category: payload.category,
+        },
+        id
+      ).then(() => {
+        console.log("updated");
+        props.navigation.goBack();
+      });
+    }
+  }
 
   return (
     // Wrap the content in a SafeAreaView to avoid overlapping with the device's safe area
@@ -219,6 +243,7 @@ export default function EditPlan(props: any) {
               {/* Button to submit the form (Add or Edit) */}
               {+title !== 0 ? (
                 <TouchableOpacity
+                  onPress={() => onEditSubmit()}
                   disabled={loading}
                   className="flex justify-center items-center rounded-lg"
                   style={{

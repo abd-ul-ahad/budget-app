@@ -1,4 +1,9 @@
-import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import { Text, View } from "../components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Single } from "../components/Transaction";
@@ -6,11 +11,39 @@ import { LineGraph } from "../components/LineGraph";
 import { FadeInView } from "../components/animations";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useFirestore } from "../firebase/useFirestore";
+import formattedDate from "../utils/FormatDate";
 
 // The main functional component "Income"
 export default function Income(props: any) {
   // Initialize the router and colorScheme using the provided hooks
   const colorScheme = useColorScheme();
+  const user = useSelector((state: RootState) => state.user);
+
+  const { getDocument } = useFirestore("transactions", user.uid!);
+
+  const [resp, setResp] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const load = async () => {
+    setRefreshing(true);
+    const d = await getDocument();
+    let r: any = [];
+    d?.forEach((e: any) => {
+      console.log(e);
+      if (e._data.category === "#income") r.push(e);
+    });
+
+    setResp(r);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   return (
     // Render the SafeAreaView to ensure content is properly displayed within device safe areas
@@ -18,7 +51,15 @@ export default function Income(props: any) {
       {/* Apply the FadeInView animation to create a fade-in effect */}
       <FadeInView _duration={700}>
         {/* Create a scrollable area using ScrollView */}
-        <ScrollView>
+        <ScrollView
+          style={{
+            backgroundColor: Colors[colorScheme ?? "light"].background,
+            height: "100%",
+          }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={load} />
+          }
+        >
           {/* A container View with some flex styles */}
           <View className="pt-2 flex justify-center items-start">
             {/* Container with flex styles to position elements */}
@@ -89,20 +130,24 @@ export default function Income(props: any) {
             <View>
               <View className="px-2 pt-2 pb-7">
                 {/* Loop through an array and render the "Single" component with transaction details */}
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((e, i, a) => {
-                  return (
+                {resp
+                  ?.sort(
+                    (a: any, b: any) =>
+                      b._data.createdAt.seconds - a._data.createdAt.seconds
+                  )
+                  .map((e: any, i: number, a: any) => (
                     <Single
-                      category="Category"
-                      title="Salary"
-                      date="24 April"
-                      amount="100000"
-                      isIncome={true}
-                      navigation={props.navigation}
                       key={i}
+                      id={e.id}
+                      title={e._data.description}
+                      date={formattedDate(e._data.createdAt)}
+                      amount={e._data.amount}
+                      isIncome={e._data.category === "#income"}
                       isLast={a.length - 1 === i}
+                      navigation={props.navigation}
+                      category={e._data.category}
                     />
-                  );
-                })}
+                  ))}
               </View>
             </View>
           </View>

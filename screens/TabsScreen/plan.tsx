@@ -10,7 +10,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Colors from "../../constants/Colors";
 import { FadeInView } from "../../components/animations";
 import React, { useEffect, useState } from "react";
-import { Plan, initialState } from "../../components/plan/type";
 import Single from "../../components/plan/Single";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -23,7 +22,15 @@ export default function PlanScreen(props: any) {
 
   const { getDocument } = useFirestore("plans", user.uid!);
 
-  const [resp, setResp] = useState<any[]>([]);
+  const [resp, setResp] = useState<
+    Array<{
+      id: string;
+      title: string;
+      category: string;
+      budgetAmount: number;
+      currentAmount: number;
+    }>
+  >([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const load = async () => {
@@ -31,7 +38,13 @@ export default function PlanScreen(props: any) {
     const d = await getDocument();
     let r: any = [];
     d?.forEach((e: any) => {
-      r.push(e._data);
+      r.push({
+        title: e._data.title,
+        id: e.id,
+        category: e._data.category,
+        budgetAmount: e._data.budgetAmount,
+        currentAmount: e._data.currentAmount,
+      });
     });
 
     setResp(r);
@@ -104,6 +117,7 @@ export default function PlanScreen(props: any) {
                             title: e.title,
                             category: e.category,
                             amount: e.budgetAmount,
+                            id: e.id,
                           });
                         }}
                       >

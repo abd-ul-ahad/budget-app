@@ -11,9 +11,9 @@ export default function Single({
   title,
   currentAmount,
 }: {
-  currentAmount: string;
+  currentAmount: number;
   category: string;
-  amount: string;
+  amount: number;
   title: string;
   progress?: number;
 }) {
@@ -41,7 +41,9 @@ export default function Single({
         {title}
       </Text>
       <View className="pb-2 flex flex-row justify-between items-center">
-        <Text className="text-base font-semibold tracking-widest">£ 0</Text>
+        <Text className="text-base font-semibold tracking-widest">
+          £ {currentAmount}
+        </Text>
         <Text className="text-base font-semibold tracking-widest">
           £ {amount}
         </Text>
