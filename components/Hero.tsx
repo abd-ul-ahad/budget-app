@@ -17,8 +17,9 @@ import Colors from "../constants/Colors";
 import { useFirestore } from "../firebase/useFirestore";
 import { Auth } from "../firebase/init";
 import { RootState } from "../store";
-import { useSelector } from "react-redux";
-import firestore from "@react-native-firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { set } from "../store/slices/snackSlice";
+import { reload } from "../store/slices/reloadSlice";
 
 const image = require("../assets/images/banner.png");
 
@@ -99,10 +100,12 @@ const AddIncome = ({
   setIncomeOrSpend: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const colorScheme = useColorScheme();
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
 
   const { addDocument } = useFirestore("transactions", Auth.currentUser?.uid!);
 
@@ -119,12 +122,16 @@ const AddIncome = ({
       });
       setLoading(false);
       setIncomeOrSpend(null);
+      dispatch(set({ toggle: true, msg: "Transaction successful" }));
+      dispatch(reload());
+      return;
     }
+    setIsEmpty(true);
   };
 
   return (
     <FadeInView _duration={100}>
-      <View className="px-3 space-y-5 py-4">
+      <View className="px-3 space-y-3 py-4">
         <View className="flex justify-between flex-row items-center">
           <Text className="dark:text-white text-xl font-bold">Add Income</Text>
           <TouchableOpacity
@@ -164,6 +171,12 @@ const AddIncome = ({
             keyboardType="numeric"
           />
         </View>
+        <Text
+          className="text-base text-red-500 font-bold"
+          style={{ opacity: isEmpty ? 1 : 0 }}
+        >
+          Fields are empty
+        </Text>
         <TouchableOpacity
           disabled={loading}
           onPress={() => Submit()}
@@ -189,13 +202,14 @@ const AddSpending = ({
   setIncomeOrSpend: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const colorScheme = useColorScheme();
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
 
   const refC = useRef<TextInput>(null); // ref for categories
   const refP = useRef<TextInput>(null); // ref for categories
 
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
   const [whichOne, setWhichOne] = useState<number>(0); // 1 for category and 2 for plan
 
   const [payload, setPayload] = useState<{
@@ -245,7 +259,6 @@ const AddSpending = ({
         id: e.id,
         currentAmount: e._data.currentAmount,
       });
-      console.log(e.id);
     });
 
     c?.forEach((e: any) => {
@@ -272,8 +285,7 @@ const AddSpending = ({
       const d = addDocument({
         amount: +payload?.amount!,
         description: payload?.description,
-        category:
-          payload?.category !== undefined ? `${payload?.category}` : "",
+        category: payload?.category !== undefined ? `${payload?.category}` : "",
         plan: payload?.plan !== undefined ? `${payload?.plan}` : "",
       }).then(() => {
         "transaction added";
@@ -282,17 +294,20 @@ const AddSpending = ({
         { currentAmount: +payload?.currentAmount! + +payload?.amount! },
         payload?.id!
       ).then(() => {
-        console.log("updated");
+        setIncomeOrSpend(null);
       });
+
       setLoading(false);
-      setIncomeOrSpend(null);
-      setIncomeOrSpend(null);
+      dispatch(set({ toggle: true, msg: "Transaction successful" }));
+      dispatch(reload());
+      return;
     }
+    setIsEmpty(true);
   };
 
   return (
     <FadeInView _duration={100}>
-      <View className="px-3 space-y-5 py-4">
+      <View className="px-3 space-y-3 py-4">
         <View className="flex justify-between flex-row items-center">
           <Text className="dark:text-white text-xl font-bold">
             Add Spending
@@ -359,7 +374,7 @@ const AddSpending = ({
           />
           {/* Selection */}
           <View
-            className="py-2"
+            className="py-2 space-y-1"
             style={{ display: whichOne === 1 ? "flex" : "none" }}
           >
             {categories?.map((e, i) => (
@@ -375,7 +390,8 @@ const AddSpending = ({
                   });
                 }}
                 key={i}
-                className="px-2 py-1 flex flex-row justify-start items-center"
+                style={{ borderWidth: 1, borderColor: "gray" }}
+                className="rounded-lg px-2 py-2 flex flex-row justify-start items-center"
               >
                 <Text className="text-base font-semibold tracking-wider">
                   {e.description}
@@ -406,7 +422,7 @@ const AddSpending = ({
           />
           {/* Selection */}
           <View
-            className="py-2"
+            className="py-2 space-y-1"
             style={{ display: whichOne === 2 ? "flex" : "none" }}
           >
             {plans?.map((e, i) => (
@@ -424,7 +440,8 @@ const AddSpending = ({
                   });
                 }}
                 key={i}
-                className="px-2 py-1 flex flex-row justify-start items-center"
+                style={{ borderWidth: 1, borderColor: "gray" }}
+                className="rounded-lg px-2 py-2 flex flex-row justify-start items-center"
               >
                 <Text className="text-base font-semibold tracking-wider">
                   {e.title}
@@ -433,12 +450,21 @@ const AddSpending = ({
             ))}
           </View>
         </View>
+        <Text
+          className="text-base text-red-500 font-bold"
+          style={{ opacity: isEmpty ? 1 : 0 }}
+        >
+          Fields are empty
+        </Text>
         <TouchableOpacity
+          disabled={loading}
           onPress={() => Submit()}
           className="flex justify-center items-center rounded-lg"
           style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
         >
-          <Text className="text-white py-3">Credit</Text>
+          <Text className="text-white py-3">
+            {loading ? "Loading..." : "Credit"}
+          </Text>
         </TouchableOpacity>
         {/* divider */}
         <View

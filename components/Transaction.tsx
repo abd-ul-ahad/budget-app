@@ -1,16 +1,12 @@
 import Colors from "../constants/Colors";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
-// import { useRouter } from "expo-router";
 import { Text, View, TouchableOpacity, useColorScheme } from "react-native";
-import { useFirestore } from "../firebase/useFirestore";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import formattedDate from "../utils/FormatDate";
 
 const Transaction = (props: any) => {
   const user = useSelector((state: RootState) => state.user);
-
   return (
     <View className="px-3 pt-1 pb-9 space-y-2">
       <Text className="text-lg font-bold dark:text-white">Transactions</Text>
@@ -24,18 +20,21 @@ const Transaction = (props: any) => {
           </View>
         )}
         {props.resp
-          ?.sort((a: any, b: any) => b.createdAt.seconds - a.createdAt.seconds)
+          ?.sort(
+            (a: any, b: any) =>
+              b._data.createdAt.seconds - a._data.createdAt.seconds
+          )
           .map((e: any, i: number, a: any) => (
             <Single
-              id=""
+              id={e.id}
               key={i}
-              title={e.description}
-              date={formattedDate(e.createdAt)}
-              amount={e.amount}
-              isIncome={e.category === "#income"}
+              title={e._data.description}
+              date={formattedDate(e._data.createdAt)}
+              amount={e._data.amount}
+              isIncome={e._data.category === "#income"}
               isLast={a.length - 1 === i}
               navigation={props.navigation}
-              category={e.category}
+              category={e._data.category}
             />
           ))}
       </View>

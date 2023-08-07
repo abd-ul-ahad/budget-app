@@ -103,7 +103,7 @@ export default function WelcomeScreen(props: any) {
                   animated: true,
                   index: 2,
                 });
-              } catch {}
+              } catch (e) {}
             }}
           >
             <Text style={{ color: "#767676" }}>SKIP</Text>

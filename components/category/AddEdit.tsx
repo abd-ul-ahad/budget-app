@@ -4,35 +4,60 @@ import { Text, View } from "../Themed";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { useFirestore } from "../../firebase/useFirestore";
-import { Auth } from "../../firebase/init";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { RootState } from "../../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { set } from "../../store/slices/snackSlice";
+import { reload } from "../../store/slices/reloadSlice";
 
 export default function AddEdit({
   setToggle,
-  category,
-  setCategory,
+  payload,
+  setPayload,
   isNew,
 }: {
   isNew: boolean;
-  category: string;
-  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  payload: { id: string; category: string };
+  setPayload: React.Dispatch<SetStateAction<{ id: string; category: string }>>;
   setToggle: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { addDocument } = useFirestore("categories", user.uid!);
+  const { addDocument, updateDocument } = useFirestore("categories", user.uid!);
 
   const Submit = async () => {
-    if (category.length >= 1) {
+    if (payload?.category!.length >= 1) {
       setLoading(true);
-      const d = addDocument({ code: category, description: category }).then(
-        () => setToggle(false)
-      );
+      const d = addDocument({
+        code: payload.category,
+        description: payload.category,
+      }).then(() => setToggle(false));
       setLoading(false);
+      dispatch(set({ toggle: true, msg: "Category added" }));
+      dispatch(reload());
+    } else {
+      dispatch(set({ toggle: true, msg: "Field is empty" }));
+    }
+  };
+
+  const Update = async () => {
+    if (payload.category.length >= 1) {
+      setLoading(true);
+      const d = updateDocument(
+        {
+          code: payload.category,
+          description: payload.category,
+        },
+        payload.id
+      ).then(() => setToggle(false));
+      setLoading(false);
+      dispatch(set({ toggle: true, msg: "Category Updated" }));
+      dispatch(reload());
+    } else {
+      dispatch(set({ toggle: true, msg: "Field is empty" }));
     }
   };
 
@@ -85,21 +110,30 @@ export default function AddEdit({
               style={{ borderColor: "grey", borderWidth: 2 }}
               placeholder="e.g shopping"
               placeholderTextColor="grey"
-              value={category}
+              value={payload.category}
               keyboardType="default"
-              onChangeText={(text) => setCategory(text)}
+              onChangeText={(category) => setPayload({ ...payload, category })}
             />
           </View>
-          <TouchableOpacity
-            disabled={loading}
-            onPress={() => Submit()}
-            className="flex justify-center items-center rounded-lg"
-            style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
-          >
-            <Text className="text-white py-3">
-              {isNew ? "Add Category" : "Edit Category"}
-            </Text>
-          </TouchableOpacity>
+          {isNew ? (
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() => Submit()}
+              className="flex justify-center items-center rounded-lg"
+              style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+            >
+              <Text className="text-white py-3">Add Category</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() => Update()}
+              className="flex justify-center items-center rounded-lg"
+              style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+            >
+              <Text className="text-white py-3">Edit Category</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </FadeInView>

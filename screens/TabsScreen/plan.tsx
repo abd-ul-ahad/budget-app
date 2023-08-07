@@ -17,6 +17,7 @@ import { useFirestore } from "../../firebase/useFirestore";
 // Define the PlanScreen component
 export default function PlanScreen(props: any) {
   const colorScheme = useColorScheme();
+  const reloadState = useSelector((state: RootState) => state.reload);
 
   const user = useSelector((state: RootState) => state.user);
 
@@ -53,7 +54,7 @@ export default function PlanScreen(props: any) {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [reloadState]);
 
   // Render the PlanScreen UI
   return (
@@ -116,7 +117,7 @@ export default function PlanScreen(props: any) {
                           props.navigation.navigate("EditPlan", {
                             title: e.title,
                             category: e.category,
-                            amount: e.budgetAmount,
+                            amount: `${e.budgetAmount}`,
                             id: e.id,
                           });
                         }}

@@ -20,8 +20,10 @@ import Colors from "../constants/Colors";
 import { useEffect, useState } from "react";
 import { Snackbar } from "react-native-paper";
 import { useFirestore } from "../firebase/useFirestore";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
+import { set } from "../store/slices/snackSlice";
+import { reload } from "../store/slices/reloadSlice";
 
 const image = require("../assets/images/banner.png");
 
@@ -39,6 +41,7 @@ interface Payload {
 export default function EditTransactions(props: any) {
   // Initialize the router and colorScheme
   const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const toWords = new ToWords();
 
@@ -66,21 +69,22 @@ export default function EditTransactions(props: any) {
   const { updateDocument } = useFirestore("transactions", user.uid!);
 
   async function onUpdate() {
-    // if (
-    //   payload?.amount!.length >= 1 &&
-    //   payload?.title!.length >= 1
-    // ) {
-    //   await updateDocument(
-    //     {
-    //       amount: +payload?.amount!,
-    //       description: payload?.title,
-    //     },
-    //     id
-    //   ).then(() => {
-    //     console.log("updated");
-    //     props.navigation.goBack();
-    //   });
-    // }
+    console.log(id);
+
+    if (payload?.amount!.length >= 1 && payload?.title!.length >= 1) {
+      await updateDocument(
+        {
+          amount: +payload?.amount!,
+          description: payload?.title,
+        },
+        id
+      ).then(() => {
+        console.log("updated");
+        props.navigation.goBack();
+        dispatch(set({ toggle: true, msg: "Transaction updated" }));
+        dispatch(reload());
+      });
+    }
   }
 
   return (

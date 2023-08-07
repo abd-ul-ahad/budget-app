@@ -17,6 +17,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useLogin } from "../firebase/useLogin";
 import { Snackbar } from "react-native-paper";
+import { set } from "../store/slices/snackSlice";
+import { useDispatch } from "react-redux";
 
 interface Payload {
   email?: string;
@@ -33,11 +35,14 @@ const initialPayload: Payload = {
 };
 
 export default function Login({ flatListRef }: { flatListRef: any }) {
+  const dispatch = useDispatch();
   const colorScheme = useColorScheme();
-  // const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState<Payload>(initialPayload);
-  const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
+  const [toggleSnackbar, setToggleSnackbar] = useState<{
+    open: boolean;
+    msg: string;
+  }>({ open: false, msg: "Invalid credentials" });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // logging in
@@ -48,13 +53,22 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
     if (payload.isEmail && payload.isPass) {
       try {
         await login(payload.email!, payload.password!);
-      } catch (error) {
-        setToggleSnackbar(true);
+        dispatch(set({ toggle: true, msg: "Login Successful" }));
+        123456;
+      } catch (error: any) {
+        setToggleSnackbar({
+          open: true,
+          msg:
+            error.code === "auth/wrong-password"
+              ? "Wrong Password"
+              : error.code === "auth/user-not-found"
+              ? "Email not registered"
+              : "Invalid credentials",
+        });
         setIsLoading(false);
         return;
       }
 
-      // router.push("/(tabs)/");
       setPayload(initialPayload);
       setIsLoading(false);
       return;
@@ -198,15 +212,15 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
         </View>
       </View>
       <Snackbar
-        style={{ marginBottom: "10%" }}
-        visible={toggleSnackbar}
-        onDismiss={() => setToggleSnackbar(false)}
+        style={{ marginBottom: "1%" }}
+        visible={toggleSnackbar.open}
+        onDismiss={() => setToggleSnackbar({ ...toggleSnackbar!, open: false })}
         action={{
           label: "Close",
-          onPress: () => setToggleSnackbar(false),
+          onPress: () => setToggleSnackbar({ ...toggleSnackbar!, open: false }),
         }}
       >
-        Invalid credentials
+        {toggleSnackbar?.msg}
       </Snackbar>
     </SafeAreaView>
   );

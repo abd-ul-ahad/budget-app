@@ -16,7 +16,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useRef, useState } from "react";
 import { useFirestore } from "../firebase/useFirestore";
 import { RootState } from "../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { set } from "../store/slices/snackSlice";
+import { Snackbar } from "react-native-paper";
+import { reload } from "../store/slices/reloadSlice";
 
 const height = Dimensions.get("window").height;
 
@@ -33,6 +36,7 @@ export default function EditPlan(props: any) {
   const ref = useRef<TextInput>(null);
   // Get the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
+  const dispatch = useDispatch();
 
   const user = useSelector((state: RootState) => state.user);
   const { getDocument } = useFirestore("categories", user.uid!);
@@ -49,9 +53,8 @@ export default function EditPlan(props: any) {
     id: "",
   });
 
-  console.log(payload.amount);
-
   const [toggle, setToggle] = useState<boolean>(false);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [categories, setCategories] =
     useState<Array<{ description: string; code: string }>>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -84,10 +87,17 @@ export default function EditPlan(props: any) {
         budgetAmount: payload?.amount,
         title: payload?.title,
         currentAmount: 0,
-      }).then(() => setToggle(false));
-      props.navigation.goBack();
-      setLoading(false);
+      }).then(() => {
+        setToggle(false);
+        props.navigation.goBack();
+        setLoading(false);
+        dispatch(set({ toggle: true, msg: "Plan added" }));
+        dispatch(reload());
+      });
+
+      return;
     }
+    setOpenSnackbar(true);
   };
 
   async function onEditSubmit() {
@@ -104,10 +114,13 @@ export default function EditPlan(props: any) {
         },
         id
       ).then(() => {
-        console.log("updated");
         props.navigation.goBack();
+        dispatch(set({ toggle: true, msg: "Plan updated" }));
+        dispatch(reload());
       });
+      return;
     }
+    setOpenSnackbar(true);
   }
 
   return (
@@ -215,7 +228,7 @@ export default function EditPlan(props: any) {
                   }}
                 />
                 <View
-                  className="py-2"
+                  className="pt-2 space-y-1"
                   style={{ display: toggle ? "flex" : "none", height: 100 }}
                 >
                   {categories?.map((e, i) => (
@@ -230,7 +243,8 @@ export default function EditPlan(props: any) {
                         });
                       }}
                       key={i}
-                      className="px-2 py-1 flex flex-row justify-start items-center"
+                      style={{ borderWidth: 1, borderColor: "gray" }}
+                      className="rounded-lg px-2 py-2 flex flex-row justify-start items-center"
                     >
                       <Text className="text-base font-semibold tracking-wider">
                         {e.description}
@@ -261,13 +275,26 @@ export default function EditPlan(props: any) {
                     backgroundColor: Colors[colorScheme ?? "light"].tint,
                   }}
                 >
-                  <Text className="text-white py-3">Add Plan</Text>
+                  <Text className="text-white py-3">
+                    {loading ? "Loading..." : "Add Plan"}
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
           </View>
         </ScrollView>
       </FadeInView>
+      <Snackbar
+        style={{ marginBottom: "1%" }}
+        visible={openSnackbar}
+        onDismiss={() => setOpenSnackbar(false)}
+        action={{
+          label: "Ok",
+          onPress: () => setOpenSnackbar(false),
+        }}
+      >
+        Fields are empty
+      </Snackbar>
     </SafeAreaView>
   );
 }

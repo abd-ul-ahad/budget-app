@@ -33,7 +33,6 @@ export default function Income(props: any) {
     const d = await getDocument();
     let r: any = [];
     d?.forEach((e: any) => {
-      console.log(e);
       if (e._data.category === "#income") r.push(e);
     });
 
@@ -128,6 +127,11 @@ export default function Income(props: any) {
             </Text>
             {/* View containing a list of transactions */}
             <View>
+              {resp?.length === 0 && (
+                <Text className="w-full text-center pb-2 mt-2">
+                  No Transactions
+                </Text>
+              )}
               <View className="px-2 pt-2 pb-7">
                 {/* Loop through an array and render the "Single" component with transaction details */}
                 {resp

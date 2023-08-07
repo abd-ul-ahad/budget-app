@@ -18,13 +18,18 @@ export default function Category() {
   // Get the current color scheme
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+  const reloadState = useSelector((state: RootState) => state.reload);
   const { getDocument } = useFirestore("categories", user.uid!);
 
   // State variables
   const [toggle, setToggle] = useState<boolean>(false);
   const [isNew, setIsNew] = useState<boolean>(true);
-  const [category, setCategory] = useState<string>("");
-  const [resp, setResp] = useState<string[]>([]);
+  const [payload, setPayload] = useState<{ id: string; category: string }>({
+    id: "",
+    category: "",
+  });
+  const [resp, setResp] =
+    useState<Array<{ id: string; description: string }>>();
   const [refreshing, setRefreshing] = useState(false);
 
   const load = async () => {
@@ -32,7 +37,7 @@ export default function Category() {
     const d = await getDocument();
     let r: any = [];
     d?.forEach((e: any) => {
-      r.push(e._data.description);
+      r.push({ description: e._data.description, id: e.id });
     });
 
     setResp(r);
@@ -41,7 +46,7 @@ export default function Category() {
 
   useEffect(() => {
     load();
-  }, [toggle]);
+  }, [reloadState]);
 
   // Render the componen
   return (
@@ -51,8 +56,8 @@ export default function Category() {
         <AddEdit
           isNew={isNew}
           setToggle={setToggle}
-          category={category}
-          setCategory={setCategory}
+          payload={payload}
+          setPayload={setPayload}
         />
       )}
 
@@ -82,7 +87,7 @@ export default function Category() {
               {/* Button to add a new category */}
               <TouchableOpacity
                 onPress={() => {
-                  setCategory("");
+                  setPayload({ id: "", category: "" });
                   setToggle(true);
                   setIsNew(true);
                 }}
@@ -94,7 +99,7 @@ export default function Category() {
 
               {/* Container for existing categories */}
               <View className="py-3">
-                {resp.length === 0 && (
+                {resp?.length === 0 && (
                   <View className="h-screen">
                     <Text className="w-full text-center pb-2 mt-2">
                       No Category
@@ -108,13 +113,13 @@ export default function Category() {
                     <TouchableOpacity
                       className="py-3"
                       onPress={() => {
-                        setCategory(e);
+                        setPayload({ id: e.id, category: e.description });
                         setToggle(true);
                         setIsNew(false);
                       }}
                     >
                       {/* Render Single component */}
-                      <Single title={e} />
+                      <Single title={e.description} />
                     </TouchableOpacity>
 
                     {/* Divider between categories */}

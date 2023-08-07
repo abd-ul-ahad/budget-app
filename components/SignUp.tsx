@@ -50,7 +50,10 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState<Payload>(initialPayload);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
+  const [toggleSnackbar, setToggleSnackbar] = useState<{
+    open: boolean;
+    msg: string;
+  }>({ open: false, msg: "" });
 
   const { signup } = useSignUp();
 
@@ -61,13 +64,18 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
     if (isName && isEmail && isPass && isPassMatched) {
       try {
         await signup(payload.email!, payload.password!, "K");
-      } catch (error) {
-        setToggleSnackbar(true);
+      } catch (error: any) {
+        setToggleSnackbar({
+          open: true,
+          msg:
+            error.code === "auth/email-already-in-use"
+              ? "Email already in use"
+              : "Invalid Credentials",
+        });
         setIsLoading(false);
         return;
       }
 
-      // router.push("/(tabs)/");
       setPayload(initialPayload);
       setIsLoading(false);
       return;
@@ -199,7 +207,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
             Minimum 6 characters
           </Text>
           <View className="space-y-1">
-            <Text className="dark:text-white text-base font-semibold">
+            <Text className="dark:text-white text-base foInvalid credentialsnt-semibold">
               Confirm Password
             </Text>
             <TextInput
@@ -263,15 +271,15 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
         </View>
       </View>
       <Snackbar
-        style={{ marginBottom: "10%" }}
-        visible={toggleSnackbar}
-        onDismiss={() => setToggleSnackbar(false)}
+        style={{ marginBottom: "1%" }}
+        visible={toggleSnackbar?.open}
+        onDismiss={() => setToggleSnackbar({ ...toggleSnackbar!, open: false })}
         action={{
           label: "Close",
-          onPress: () => setToggleSnackbar(false),
+          onPress: () => setToggleSnackbar({ ...toggleSnackbar!, open: false }),
         }}
       >
-        Invalid credentials
+        {toggleSnackbar?.msg}
       </Snackbar>
     </SafeAreaView>
   );

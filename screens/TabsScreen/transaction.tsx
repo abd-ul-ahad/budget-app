@@ -22,6 +22,7 @@ import formattedDate from "../../utils/FormatDate";
 export default function Transaction(props: any) {
   // Using the useColorScheme hook to detect the current color scheme (light/dark) of the device
   const colorScheme = useColorScheme();
+  const reloadState = useSelector((state: RootState) => state.reload);
 
   // Using the useState hook to manage a state variable "labelI" with an initial value of 0
   const [labelI, setLabelI] = useState<number>(0);
@@ -47,7 +48,7 @@ export default function Transaction(props: any) {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [reloadState]);
 
   // JSX code starts here
   return (
@@ -146,6 +147,11 @@ export default function Transaction(props: any) {
             Transactions
           </Text>
           <View>
+            {resp?.length === 0 && (
+              <Text className="w-full text-center pb-2 mt-2">
+                No Transactions
+              </Text>
+            )}
             <View className="px-2 pt-2 pb-7">
               {/* Rendering multiple instances of the "Single" component with sample data */}
               {resp

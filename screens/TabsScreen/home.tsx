@@ -27,6 +27,7 @@ const width = Dimensions.get("window").width;
 export default function Home(props: any) {
   // Getting the user data from the Redux store
   const user = useSelector((state: RootState) => state.user);
+  const reloadState = useSelector((state: RootState) => state.reload);
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
 
@@ -59,7 +60,7 @@ export default function Home(props: any) {
     let t: any = [];
     let p: any = [];
     d?.forEach((e: any) => {
-      t.push(e._data);
+      t.push(e);
     });
 
     plans?.forEach((e: any) => {
@@ -68,13 +69,13 @@ export default function Home(props: any) {
 
     setPlans(p);
     setResp(t);
-    
+
     setRefreshing(false);
   };
 
   useEffect(() => {
     load();
-  }, []);
+  }, [reloadState]);
 
   return (
     <SafeAreaView>
@@ -117,6 +118,11 @@ export default function Home(props: any) {
                 />
               </TouchableOpacity>
             </View>
+
+            {/* Placeholder */}
+            {plans.length === 0 && (
+              <Text className="w-full text-center pb-2 mt-2">No Plan</Text>
+            )}
 
             {/* FlatList to display plan cards */}
             <FlatList

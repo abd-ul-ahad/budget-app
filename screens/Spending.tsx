@@ -36,7 +36,6 @@ export default function Spending(props: any) {
     const d = await getDocument();
     let r: any = [];
     d?.forEach((e: any) => {
-      console.log(e);
       if (e._data.category !== "#income") r.push(e);
     });
 
@@ -52,10 +51,10 @@ export default function Spending(props: any) {
     // Wrapping the content inside SafeAreaView and ScrollView for safe handling of views
     <SafeAreaView>
       <ScrollView
-      style={{
-        backgroundColor: Colors[colorScheme ?? "light"].background,
-        height: "100%",
-      }}
+        style={{
+          backgroundColor: Colors[colorScheme ?? "light"].background,
+          height: "100%",
+        }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={load} />
         }
@@ -162,6 +161,11 @@ export default function Spending(props: any) {
             Transactions
           </Text>
           <View>
+            {resp?.length === 0 && (
+              <Text className="w-full text-center pb-2 mt-2">
+                No Transactions
+              </Text>
+            )}
             <View className="px-2 pt-2 pb-7">
               {/* Mapping transactions */}
               {resp

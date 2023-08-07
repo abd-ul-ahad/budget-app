@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./slices/userSlice";
+import snackSlice from "./slices/snackSlice";
+import reloadSlice from "./slices/reloadSlice";
 
 export const store = configureStore({
   reducer: {
     user: userSlice.reducer,
+    snackbar: snackSlice.reducer,
+    reload: reloadSlice.reducer,
   },
 });
 
