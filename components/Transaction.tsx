@@ -23,18 +23,20 @@ const Transaction = (props: any) => {
             </Text>
           </View>
         )}
-        {props.resp?.map((e: any, i: number, a: any) => (
-          <Single
-            key={i}
-            title={e.description}
-            date={formattedDate(e.createdAt)}
-            amount={e.amount}
-            isIncome={e.category === "#income"}
-            isLast={a.length - 1 === i}
-            navigation={props.navigation}
-            category={e.category}
-          />
-        ))}
+        {props.resp
+          ?.sort((a: any, b: any) => b.createdAt.seconds - a.createdAt.seconds)
+          .map((e: any, i: number, a: any) => (
+            <Single
+              key={i}
+              title={e.description}
+              date={formattedDate(e.createdAt)}
+              amount={e.amount}
+              isIncome={e.category === "#income"}
+              isLast={a.length - 1 === i}
+              navigation={props.navigation}
+              category={e.category}
+            />
+          ))}
       </View>
     </View>
   );

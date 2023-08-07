@@ -48,7 +48,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
         .doc(id)
         .update({ ...newdoc, updatedAt })
         .then(() => {
-          // console.log("document updated");
+          console.log("document updated");
         });
 
       // console.log(updatedDocument);

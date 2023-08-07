@@ -19,6 +19,7 @@ import { FadeInView } from "../../components/animations";
 import Single from "../../components/plan/Single";
 import { useEffect, useState } from "react";
 import { useFirestore } from "../../firebase/useFirestore";
+import { CalculateBalance } from "../../utils/CalculateBalance";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -35,6 +36,20 @@ export default function Home(props: any) {
   const [resp, setResp] = useState<any[]>([]);
   const [plans, setPlans] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [balances, setBalances] = useState<{
+    incomeBalance: number;
+    outcomeBalance: number;
+    currentBalance: number;
+  }>();
+
+  const loadBalances = async () => {
+    const { incomeBalance, outcomeBalance, currentBalance } =
+      await CalculateBalance();
+
+    setBalances({ incomeBalance, outcomeBalance, currentBalance });
+  };
+
+  loadBalances();
 
   const load = async () => {
     setRefreshing(true);
@@ -53,6 +68,7 @@ export default function Home(props: any) {
 
     setPlans(p);
     setResp(t);
+    
     setRefreshing(false);
   };
 
@@ -71,13 +87,19 @@ export default function Home(props: any) {
           style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
         >
           {/* Hero component */}
-          <Hero />
+          <Hero currentBalance={balances?.currentBalance} />
 
           {/* Income and Outcome components */}
 
           <View className="flex flex-row items-center justify-between px-4 py-4">
-            <Income navigation={props.navigation} />
-            <Outcome navigation={props.navigation} />
+            <Income
+              incomeBalance={balances?.incomeBalance || 0}
+              navigation={props.navigation}
+            />
+            <Outcome
+              outcomeBalance={balances?.outcomeBalance || 0}
+              navigation={props.navigation}
+            />
           </View>
 
           {/* Plans section */}
@@ -141,7 +163,13 @@ export default function Home(props: any) {
 }
 
 // The Income component
-const Income = ({ navigation }: { navigation: any }) => {
+const Income = ({
+  navigation,
+  incomeBalance,
+}: {
+  incomeBalance: number;
+  navigation: any;
+}) => {
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
 
@@ -151,28 +179,31 @@ const Income = ({ navigation }: { navigation: any }) => {
       style={{
         backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
       }}
-      className="flex-col space-y-2 flex justify-center py-7 px-3 rounded-2xl items-start"
+      className="flex-col space-y-2 flex justify-center py-7 px-5 rounded-2xl items-start"
     >
       <View className="flex flex-row justify-center space-x-4 items-center">
-        <SimpleLineIcons
-          name="graph"
-          size={28}
-          color={Colors[colorScheme ?? "light"].text}
-        />
+        <SimpleLineIcons name="graph" size={28} color="rgb(22 163 74)" />
         <Text className="text-2xl font-bold tracking-widest">Income</Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text className="">£ 100000</Text>
-        <Text className="font-bold tracking-widest text-green-600">+ 12%</Text>
+        <Text className="">£ {incomeBalance}</Text>
+        {/* <Text className="font-bold tracking-widest text-green-600">+ 12%</Text> */}
       </View>
     </TouchableOpacity>
   );
 };
 
 // The Outcome component
-const Outcome = ({ navigation }: { navigation: any }) => {
+const Outcome = ({
+  navigation,
+  outcomeBalance,
+}: {
+  outcomeBalance: number;
+  navigation: any;
+}) => {
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
+
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate("Spending")}
@@ -182,16 +213,12 @@ const Outcome = ({ navigation }: { navigation: any }) => {
       className="flex-col space-y-2 flex justify-center py-7 px-3 rounded-2xl items-start"
     >
       <View className="flex flex-row justify-center space-x-4 items-center">
-        <SimpleLineIcons
-          name="graph"
-          size={28}
-          color={Colors[colorScheme ?? "light"].text}
-        />
+        <SimpleLineIcons name="graph" size={28} color="rgb(185 28 28)" />
         <Text className="text-2xl font-bold tracking-widest">Spending</Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text className="">£ 100000</Text>
-        <Text className="text-red-700 font-bold tracking-widest">- 12%</Text>
+        <Text className="">£ {outcomeBalance}</Text>
+        {/* <Text className="text-red-700 font-bold tracking-widest">- 12%</Text> */}
       </View>
     </TouchableOpacity>
   );

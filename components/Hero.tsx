@@ -12,30 +12,19 @@ import {
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { ToWords } from "to-words";
 import { FadeInView } from "./animations";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Colors from "../constants/Colors";
 import { useFirestore } from "../firebase/useFirestore";
 import { Auth } from "../firebase/init";
-import { CalculateBalance } from "../utils/CalculateBalance";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
+import firestore from "@react-native-firebase/firestore";
 
 const image = require("../assets/images/banner.png");
 
-const Hero = () => {
+const Hero = ({ currentBalance }: any) => {
   const toWords = new ToWords();
   const [incomeOrSpend, setIncomeOrSpend] = useState<number | null>(null);
-  const [balances, setBalances] = useState<{
-    incomeBalance: number;
-    outcomeBalance: number;
-    currentBalance: number;
-  }>();
-
-  const load = async () => {
-    const { incomeBalance, outcomeBalance, currentBalance } =
-      await CalculateBalance();
-    setBalances({ incomeBalance, outcomeBalance, currentBalance });
-  };
-
-  load();
 
   return (
     <>
@@ -54,7 +43,7 @@ const Hero = () => {
             <View className="flex justify-start items-start w-full space-y-2">
               <Text className="text-white text-xl">My Balance</Text>
               <FlatList
-                data={[balances?.incomeBalance || 0]}
+                data={[currentBalance || 0]}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 renderItem={(item) => (
@@ -200,9 +189,106 @@ const AddSpending = ({
   setIncomeOrSpend: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const colorScheme = useColorScheme();
+  const user = useSelector((state: RootState) => state.user);
 
-  const [source, onChangeSource] = useState<string>("");
-  const [amount, onChangeAmount] = useState<string>("");
+  const refC = useRef<TextInput>(null); // ref for categories
+  const refP = useRef<TextInput>(null); // ref for categories
+
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const [whichOne, setWhichOne] = useState<number>(0); // 1 for category and 2 for plan
+
+  const [payload, setPayload] = useState<{
+    description: string;
+    amount: string;
+    category?: string;
+    plan?: string;
+    code?: string;
+    id?: string;
+    currentAmount?: string;
+  }>({
+    id: "",
+    description: "",
+    amount: "",
+    category: "",
+    plan: "",
+    code: "",
+    currentAmount: "",
+  });
+
+  const [categories, setCategories] =
+    useState<Array<{ description: string; code: string }>>();
+  const [plans, setPlans] =
+    useState<
+      Array<{ code: string; title: string; id: string; currentAmount: string }>
+    >();
+
+  const { getDocument: getCategories } = useFirestore("categories", user.uid!);
+  const { getDocument: getPlans, updateDocument } = useFirestore(
+    "plans",
+    user.uid!
+  );
+  const { addDocument } = useFirestore("transactions", Auth.currentUser?.uid!);
+
+  // loading categories and plans
+  const load = async () => {
+    const c = await getCategories();
+    const p = await getPlans();
+
+    let _p: any = [];
+    let _c: any = [];
+
+    p?.forEach((e: any) => {
+      _p.push({
+        code: e._data.category,
+        title: e._data.title,
+        id: e.id,
+        currentAmount: e._data.currentAmount,
+      });
+      console.log(e.id);
+    });
+
+    c?.forEach((e: any) => {
+      _c.push({ description: e._data.description, code: e._data.code });
+    });
+
+    setPlans(_p);
+    setCategories(_c);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  // on submit
+
+  const Submit = async () => {
+    if (
+      payload?.amount.length >= 1 &&
+      payload.description.length >= 1 &&
+      (payload.category?.length! >= 1 || payload?.plan?.length! >= 1)
+    ) {
+      setLoading(true);
+      const d = addDocument({
+        amount: +payload?.amount!,
+        description: payload?.description,
+        category:
+          payload?.category !== undefined ? `#${payload?.category}` : "",
+        plan: payload?.plan !== undefined ? `${payload?.plan}` : "",
+      }).then(() => {
+        "transaction added";
+      });
+      await updateDocument(
+        { currentAmount: +payload?.currentAmount! + +payload?.amount! },
+        payload?.id!
+      ).then(() => {
+        console.log("updated");
+      });
+      setLoading(false);
+      setIncomeOrSpend(null);
+      setIncomeOrSpend(null);
+    }
+  };
 
   return (
     <FadeInView _duration={100}>
@@ -227,9 +313,11 @@ const AddSpending = ({
             Description
           </Text>
           <TextInput
-            onChangeText={onChangeSource}
+            onChangeText={(description) =>
+              setPayload({ ...payload, description })
+            }
             className="border-2 py-2 px-3 dark:text-white rounded-lg"
-            value={source}
+            value={payload?.description}
             style={{ borderColor: "grey", borderWidth: 2 }}
             placeholderTextColor="grey"
             placeholder="e.g House Rent"
@@ -241,9 +329,9 @@ const AddSpending = ({
             Spend Amount <Text className="text-sm">(Limit: 10000)</Text>
           </Text>
           <TextInput
-            onChangeText={onChangeAmount}
+            onChangeText={(amount) => setPayload({ ...payload, amount })}
             className="py-2 px-3 dark:text-white rounded-lg"
-            value={amount}
+            value={payload?.amount}
             style={{ borderColor: "grey", borderWidth: 2 }}
             placeholder="0"
             placeholderTextColor="grey"
@@ -255,14 +343,46 @@ const AddSpending = ({
             Category
           </Text>
           <TextInput
-            onChangeText={onChangeSource}
-            className="border-2 py-2 px-3 dark:text-white rounded-lg"
-            value={source}
+            ref={refC}
+            onBlur={() => setWhichOne(0)}
+            onFocus={() => setWhichOne(1)}
+            className="py-2 px-3 dark:text-white rounded-lg"
             style={{ borderColor: "grey", borderWidth: 2 }}
+            placeholder="Choose..."
             placeholderTextColor="grey"
-            placeholder="choose..."
             keyboardType="default"
+            showSoftInputOnFocus={false}
+            value={payload?.category}
+            onChangeText={(category) => {
+              setPayload({ ...payload, category });
+            }}
           />
+          {/* Selection */}
+          <View
+            className="py-2"
+            style={{ display: whichOne === 1 ? "flex" : "none" }}
+          >
+            {categories?.map((e, i) => (
+              <TouchableOpacity
+                onPress={() => {
+                  refC.current?.blur();
+                  refP.current?.clear();
+                  setWhichOne(0);
+                  setPayload({
+                    ...payload,
+                    category: e.description,
+                    code: e.code,
+                  });
+                }}
+                key={i}
+                className="px-2 py-1 flex flex-row justify-start items-center"
+              >
+                <Text className="text-base font-semibold tracking-wider">
+                  {e.description}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
         <View>
           <Text className="font-semibold text-base text-red-500">(OR)</Text>
@@ -270,16 +390,51 @@ const AddSpending = ({
         <View className="space-y-1">
           <Text className="dark:text-white text-lg font-semibold">Plan</Text>
           <TextInput
-            onChangeText={onChangeSource}
-            className="border-2 py-2 px-3 dark:text-white rounded-lg"
-            value={source}
+            ref={refP}
+            onBlur={() => setWhichOne(0)}
+            onFocus={() => setWhichOne(2)}
+            className="py-2 px-3 dark:text-white rounded-lg"
             style={{ borderColor: "grey", borderWidth: 2 }}
+            placeholder="Choose..."
             placeholderTextColor="grey"
-            placeholder="choose..."
             keyboardType="default"
+            showSoftInputOnFocus={false}
+            value={payload?.plan}
+            onChangeText={(plan) => {
+              setPayload({ ...payload, plan });
+            }}
           />
+          {/* Selection */}
+          <View
+            className="py-2"
+            style={{ display: whichOne === 2 ? "flex" : "none" }}
+          >
+            {plans?.map((e, i) => (
+              <TouchableOpacity
+                onPress={() => {
+                  refP.current?.blur();
+                  refC.current?.clear();
+                  setWhichOne(0);
+                  setPayload({
+                    ...payload,
+                    plan: e.title,
+                    category: e.code,
+                    id: e.id,
+                    currentAmount: e.currentAmount,
+                  });
+                }}
+                key={i}
+                className="px-2 py-1 flex flex-row justify-start items-center"
+              >
+                <Text className="text-base font-semibold tracking-wider">
+                  {e.title}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
         <TouchableOpacity
+          onPress={() => Submit()}
           className="flex justify-center items-center rounded-lg"
           style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
         >

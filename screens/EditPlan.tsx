@@ -79,6 +79,7 @@ export default function EditPlan(props: any) {
         category: payload?.code,
         budgetAmount: payload?.amount,
         title: payload?.title,
+        currentAmount: 0
       }).then(() => setToggle(false));
       props.navigation.goBack();
       setLoading(false);

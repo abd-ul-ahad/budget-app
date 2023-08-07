@@ -20,8 +20,38 @@ export const CalculateBalance = async () => {
   d?.forEach((doc: any) => {
     if (doc._data.category === "#income") {
       incomeBalance += parseInt(doc._data.amount);
+    } else {
+      if (doc._data.plan === "no-plan") {
+        outcomeBalance += parseInt(doc._data.amount);
+      }
     }
+  });
+
+  currentBalance = incomeBalance - outcomeBalance;
+
+  plans?.forEach((plan: any) => {
+    currentBalance -= parseInt(plan._data.budgetAmount);
+    outcomeBalance += parseInt(plan._data.budgetAmount);
   });
 
   return { incomeBalance, outcomeBalance, currentBalance };
 };
+
+export function calculatePercentageIncrease(
+  initialIncome: number,
+  increaseAmount: number
+) {
+  const percentageIncrease = (increaseAmount / initialIncome) * 100;
+
+  return percentageIncrease;
+}
+
+export function calculatePercentageSpent(
+  totalIncome: number,
+  spentAmount: number
+) {
+  // Calculate the percentage spent
+  const percentageSpent = (spentAmount / totalIncome) * 100;
+
+  return percentageSpent;
+}

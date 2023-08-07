@@ -135,18 +135,22 @@ export default function Transaction(props: any) {
           <View>
             <View className="px-2 pt-2 pb-7">
               {/* Rendering multiple instances of the "Single" component with sample data */}
-              {resp?.map((e: any, i: number, a: any) => (
-                <Single
-                  key={i}
-                  title={e.description}
-                  date={formattedDate(e.createdAt)}
-                  amount={e.amount}
-                  isIncome={e.category === "#income"}
-                  isLast={a.length - 1 === i}
-                  navigation={props.navigation}
-                  category={e.category}
-                />
-              ))}
+              {props.resp
+                ?.sort(
+                  (a: any, b: any) => b.createdAt.seconds - a.createdAt.seconds
+                )
+                .map((e: any, i: number, a: any) => (
+                  <Single
+                    key={i}
+                    title={e.description}
+                    date={formattedDate(e.createdAt)}
+                    amount={e.amount}
+                    isIncome={e.category === "#income"}
+                    isLast={a.length - 1 === i}
+                    navigation={props.navigation}
+                    category={e.category}
+                  />
+                ))}
               {/* Other instances of the "Single" component are also rendered here */}
               {/* ... */}
             </View>
