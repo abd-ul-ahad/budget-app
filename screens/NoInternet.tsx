@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // Getting the device width
 const { width, height } = Dimensions.get("window");
 
-const img = require("../assets/images/no-internet.jpg");
+const img = require("../assets/images/no-internet.png");
 
 // MainScreen component
 export default function NoInternet(props: any) {

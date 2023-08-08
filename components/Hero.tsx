@@ -230,12 +230,8 @@ const AddSpending = ({
     currentAmount: "",
   });
 
-  const [categories, setCategories] =
-    useState<Array<{ description: string; code: string }>>();
-  const [plans, setPlans] =
-    useState<
-      Array<{ code: string; title: string; id: string; currentAmount: string }>
-    >();
+  const [categories, setCategories] = useState<Array<any>>();
+  const [plans, setPlans] = useState<Array<any>>();
 
   const { getDocument: getCategories } = useFirestore("categories", user.uid!);
   const { getDocument: getPlans, updateDocument } = useFirestore(
@@ -246,27 +242,12 @@ const AddSpending = ({
 
   // loading categories and plans
   const load = async () => {
-    const c = await getCategories();
-    const p = await getPlans();
-
-    let _p: any = [];
-    let _c: any = [];
-
-    p?.forEach((e: any) => {
-      _p.push({
-        code: e._data.category,
-        title: e._data.title,
-        id: e.id,
-        currentAmount: e._data.currentAmount,
-      });
-    });
-
-    c?.forEach((e: any) => {
-      _c.push({ description: e._data.description, code: e._data.code });
-    });
-
-    setPlans(_p);
-    setCategories(_c);
+    try {
+      setLoading(true);
+      getCategories().then((doc) => setCategories(doc?.docs));
+      getPlans().then((doc) => setPlans(doc?.docs));
+      setLoading(false);
+    } catch {}
   };
 
   useEffect(() => {
@@ -276,33 +257,36 @@ const AddSpending = ({
   // on submit
 
   const Submit = async () => {
-    if (
-      payload?.amount.length >= 1 &&
-      payload.description.length >= 1 &&
-      (payload.category?.length! >= 1 || payload?.plan?.length! >= 1)
-    ) {
-      setLoading(true);
-      const d = addDocument({
-        amount: +payload?.amount!,
-        description: payload?.description,
-        category: payload?.category !== undefined ? `${payload?.category}` : "",
-        plan: payload?.plan !== undefined ? `${payload?.plan}` : "",
-      }).then(() => {
-        "transaction added";
-      });
-      await updateDocument(
-        { currentAmount: +payload?.currentAmount! + +payload?.amount! },
-        payload?.id!
-      ).then(() => {
-        setIncomeOrSpend(null);
-      });
+    try {
+      if (
+        payload?.amount.length >= 1 &&
+        payload.description.length >= 1 &&
+        (payload.category?.length! >= 1 || payload?.plan?.length! >= 1)
+      ) {
+        setLoading(true);
+        addDocument({
+          amount: +payload?.amount!,
+          description: payload?.description,
+          category:
+            payload?.category !== undefined ? `${payload?.category}` : "",
+          plan: payload?.plan !== undefined ? `${payload?.plan}` : "",
+        }).then(async () => {
+          payload?.plan !== undefined &&
+            (await updateDocument(
+              { currentAmount: +payload?.currentAmount! + +payload?.amount! },
+              payload?.id!
+            ).then(() => {
+              setIncomeOrSpend(null);
+            }));
 
-      setLoading(false);
-      dispatch(set({ toggle: true, msg: "Transaction successful" }));
-      dispatch(reload());
-      return;
-    }
-    setIsEmpty(true);
+          setLoading(false);
+          dispatch(set({ toggle: true, msg: "Transaction successful" }));
+          dispatch(reload());
+        });
+        return;
+      }
+      setIsEmpty(true);
+    } catch {}
   };
 
   return (
@@ -385,8 +369,8 @@ const AddSpending = ({
                   setWhichOne(0);
                   setPayload({
                     ...payload,
-                    category: e.description,
-                    code: e.code,
+                    category: e._data.description,
+                    code: e._data.code,
                   });
                 }}
                 key={i}
@@ -394,7 +378,7 @@ const AddSpending = ({
                 className="rounded-lg px-2 py-2 flex flex-row justify-start items-center"
               >
                 <Text className="text-base font-semibold tracking-wider">
-                  {e.description}
+                  {e._data.description}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -433,10 +417,10 @@ const AddSpending = ({
                   setWhichOne(0);
                   setPayload({
                     ...payload,
-                    plan: e.title,
-                    category: e.code,
+                    plan: e._data.title,
+                    category: e._data.code,
                     id: e.id,
-                    currentAmount: e.currentAmount,
+                    currentAmount: e._data.currentAmount,
                   });
                 }}
                 key={i}
@@ -444,7 +428,7 @@ const AddSpending = ({
                 className="rounded-lg px-2 py-2 flex flex-row justify-start items-center"
               >
                 <Text className="text-base font-semibold tracking-wider">
-                  {e.title}
+                  {e.data.title}
                 </Text>
               </TouchableOpacity>
             ))}

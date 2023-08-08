@@ -19,6 +19,7 @@ import { useFirestore } from "../firebase/useFirestore";
 import formattedDate from "../utils/FormatDate";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
+import { spendingByMonth } from "../utils/GenChart";
 
 // Defining the Spending component
 export default function Spending(props: any) {
@@ -34,6 +35,7 @@ export default function Spending(props: any) {
   const [resp, setResp] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
+  const [chartData, setChartData] = useState<Array<number>>([0]);
 
   const load = async () => {
     setRefreshing(true);
@@ -43,7 +45,7 @@ export default function Spending(props: any) {
       d?.forEach((e: any) => {
         if (e._data.category !== "#income") r.push(e);
       });
-
+      setChartData(spendingByMonth(r));
       setResp(r);
     } catch {
       setToggleSnack(true);
@@ -109,28 +111,15 @@ export default function Spending(props: any) {
               "Oct",
               "Nov",
               "Dec",
-            ]}
-            _data={[
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-            ]}
+            ].slice(0, chartData.length)}
+            _data={chartData}
           />
           {/* Categories */}
           <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">
             Categories
           </Text>
           {/* Pie Graph */}
-          <PieGraph />
+          <PieGraph transactions={resp} />
           {/* Monthly/Yearly Button */}
           <View className="flex justify-center items-center flex-row space-x-2 pb-3 w-full">
             {["Monthly", "Yearly"].map((e, i) => {

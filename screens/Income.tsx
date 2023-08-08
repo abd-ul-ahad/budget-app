@@ -18,6 +18,7 @@ import { useFirestore } from "../firebase/useFirestore";
 import formattedDate from "../utils/FormatDate";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
+import { incomeByMonth } from "../utils/GenChart";
 
 // The main functional component "Income"
 export default function Income(props: any) {
@@ -31,6 +32,7 @@ export default function Income(props: any) {
   const [resp, setResp] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
+  const [chartData, setChartData] = useState<Array<number>>([0]);
 
   const load = async () => {
     setRefreshing(true);
@@ -41,6 +43,8 @@ export default function Income(props: any) {
       d?.forEach((e: any) => {
         if (e._data.category === "#income") r.push(e);
       });
+
+      setChartData(incomeByMonth(d?.docs));
 
       setResp(r);
     } catch {
@@ -111,21 +115,8 @@ export default function Income(props: any) {
                 "Oct",
                 "Nov",
                 "Dec",
-              ]}
-              _data={[
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-              ]}
+              ].slice(0, chartData.length)}
+              _data={chartData}
             />
           </View>
           {/* Container View with some padding */}

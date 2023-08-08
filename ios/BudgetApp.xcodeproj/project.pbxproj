@@ -14,8 +14,8 @@
 		96905EF65AED1B983A6B3ABC /* libPods-BudgetApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-BudgetApp.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		5BD37743C12F463D98889911 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2903BB87B0EF4CCA9196C18D /* GoogleService-Info.plist */; };
-		42A95AA7CF72441F85F62C0E /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = F29502D7A3574410A9B430DD /* noop-file.swift */; };
+		9EFD267428BD4D099ABE0B61 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B45F77342B14772BD94C5F1 /* GoogleService-Info.plist */; };
+		DD2FF1109CD2494A98D05648 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDC8AA3C2651499C8856F5B4 /* noop-file.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,9 +32,9 @@
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-BudgetApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		2903BB87B0EF4CCA9196C18D /* GoogleService-Info.plist */ = {isa = PBXFileReference; name = "GoogleService-Info.plist"; path = "BudgetApp/GoogleService-Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
-		F29502D7A3574410A9B430DD /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "BudgetApp/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
-		AA66699CBFB441B1A4E7278C /* BudgetApp-Bridging-Header.h */ = {isa = PBXFileReference; name = "BudgetApp-Bridging-Header.h"; path = "BudgetApp/BudgetApp-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		3B45F77342B14772BD94C5F1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; name = "GoogleService-Info.plist"; path = "BudgetApp/GoogleService-Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
+		CDC8AA3C2651499C8856F5B4 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "BudgetApp/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		5E5E4772300A4D5B97046AC3 /* BudgetApp-Bridging-Header.h */ = {isa = PBXFileReference; name = "BudgetApp-Bridging-Header.h"; path = "BudgetApp/BudgetApp-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,9 +59,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				2903BB87B0EF4CCA9196C18D /* GoogleService-Info.plist */,
-				F29502D7A3574410A9B430DD /* noop-file.swift */,
-				AA66699CBFB441B1A4E7278C /* BudgetApp-Bridging-Header.h */,
+				3B45F77342B14772BD94C5F1 /* GoogleService-Info.plist */,
+				CDC8AA3C2651499C8856F5B4 /* noop-file.swift */,
+				5E5E4772300A4D5B97046AC3 /* BudgetApp-Bridging-Header.h */,
 			);
 			name = BudgetApp;
 			sourceTree = "<group>";
@@ -202,8 +202,8 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				5BD37743C12F463D98889911 /* GoogleService-Info.plist in Resources */,
-				CD129AE1654D46AB8F3EE9DE /* BudgetApp-Bridging-Header.h in Resources */,
+				9EFD267428BD4D099ABE0B61 /* GoogleService-Info.plist in Resources */,
+				10209A0093CD4B3C919C22F5 /* BudgetApp-Bridging-Header.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,7 +297,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				42A95AA7CF72441F85F62C0E /* noop-file.swift in Sources */,
+				DD2FF1109CD2494A98D05648 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

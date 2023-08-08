@@ -16,6 +16,7 @@ import Colors from "../../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { reset, set } from "../../store/slices/snackSlice";
+import { StatusBar } from "expo-status-bar";
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -29,6 +30,7 @@ export default function MainTabs() {
   const colorScheme = useColorScheme();
   return (
     <>
+      <StatusBar style={colorScheme === "light" ? "dark" : "light"} />
       <Tab.Navigator
         initialRouteName="Home"
         activeColor={Colors[colorScheme ?? "light"].tint}

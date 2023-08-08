@@ -1,14 +1,64 @@
+import { useEffect, useState } from "react";
 import { Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 
-
 const { width, height } = Dimensions.get("window");
 
-export const PieGraph = () => {
+interface ExpenseSummaryItem {
+  color: string;
+  expense: number;
+  legendFontColor: string;
+  legendFontSize: number;
+  name: string;
+}
+
+const initialExpenseSummary: ExpenseSummaryItem[] = [
+  {
+    color: "#45DCCC",
+    expense: 0,
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 13,
+    name: "Shopping",
+  },
+];
+
+export const PieGraph = ({
+  transactions,
+}: {
+  transactions: Array<any> | undefined;
+}) => {
+  const [chartData, setChartData] = useState<Array<ExpenseSummaryItem>>(
+    initialExpenseSummary
+  );
+  useEffect(() => {
+    let categoryExpenses: any = {};
+
+    transactions?.forEach((transaction) => {
+      if (transaction._data.category !== "#income") {
+        if (transaction._data.category in categoryExpenses) {
+          categoryExpenses[transaction._data.category] +=
+            transaction._data.amount;
+        } else {
+          categoryExpenses[transaction._data.category] =
+            transaction._data.amount;
+        }
+      }
+    });
+
+    const expenseSummary = Object.keys(categoryExpenses).map((category) => ({
+      name: category,
+      expense: categoryExpenses[category],
+      color: getRandomColor(),
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 13,
+    }));
+
+    setChartData(expenseSummary);
+  }, [transactions]);
 
   return (
     <PieChart
-      data={data}
+      data={chartData}
       width={width}
       height={height / 3.3}
       chartConfig={chartConfig}
@@ -52,3 +102,12 @@ const data = [
     legendFontSize: 13,
   },
 ];
+
+function getRandomColor() {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}

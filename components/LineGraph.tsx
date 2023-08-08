@@ -22,7 +22,7 @@ export const LineGraph = ({
       width={Dimensions.get("window").width} // from react-native
       height={220}
       yAxisLabel="£"
-      yAxisSuffix="k"
+      yAxisSuffix=""
       yAxisInterval={1} // optional, defaults to 1
       chartConfig={{
         backgroundColor: "#3b7250",

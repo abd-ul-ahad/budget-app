@@ -19,6 +19,7 @@ import { RootState } from "../../store";
 import formattedDate from "../../utils/FormatDate";
 import { reload } from "../../store/slices/reloadSlice";
 import { Snackbar } from "react-native-paper";
+import { incomeByMonth } from "../../utils/GenChart";
 
 // Function component named "Transaction"
 export default function Transaction(props: any) {
@@ -32,21 +33,25 @@ export default function Transaction(props: any) {
   // Getting the user data from the Redux store
   const user = useSelector((state: RootState) => state.user);
 
-  const { getDocument } = useFirestore("transactions", user.uid!);
-
   const [resp, setResp] = useState<any[]>();
   const [refreshing, setRefreshing] = useState(false);
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
+  const [chartData, setChartData] = useState<Array<number>>([0]);
+
+  const { getDocument } = useFirestore("transactions", user.uid!);
 
   const load = async () => {
     setRefreshing(true);
     try {
-      getDocument().then((doc) => setResp(doc?.docs));
+      getDocument().then((doc) => {
+        setResp(doc?.docs);
+        setChartData(incomeByMonth(doc?.docs));
+      });
     } catch {
       setToggleSnack(true);
+    } finally {
+      setRefreshing(false);
     }
-
-    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -68,7 +73,7 @@ export default function Transaction(props: any) {
         {/* Section for displaying the "Savings" data */}
         <View className="pt-2 flex justify-center items-center">
           <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">
-            Savings
+            Income
           </Text>
           {/* Rendering the LineGraph component with random data */}
           <LineGraph
@@ -85,21 +90,8 @@ export default function Transaction(props: any) {
               "Oct",
               "Nov",
               "Dec",
-            ]}
-            _data={[
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-            ]}
+            ].slice(0, chartData.length)}
+            _data={chartData}
           />
         </View>
 
@@ -109,7 +101,7 @@ export default function Transaction(props: any) {
             Spending
           </Text>
           {/* Rendering the PieGraph component */}
-          <PieGraph />
+          <PieGraph transactions={resp} />
         </View>
 
         {/* Section for displaying "Monthly" and "Yearly" buttons */}
