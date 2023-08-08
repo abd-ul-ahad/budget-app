@@ -269,16 +269,19 @@ const AddSpending = ({
           description: payload?.description,
           category:
             payload?.category !== undefined ? `${payload?.category}` : "",
-          plan: payload?.plan !== undefined ? `${payload?.plan}` : "",
+          plan:
+            payload?.plan !== undefined && payload?.plan?.trim() !== ""
+              ? `${payload?.plan}`
+              : "no-plan",
         }).then(async () => {
-          payload?.plan !== undefined &&
-            (await updateDocument(
+          if (payload?.plan !== undefined && payload?.plan?.trim() !== "")
+            await updateDocument(
               { currentAmount: +payload?.currentAmount! + +payload?.amount! },
               payload?.id!
             ).then(() => {
-              setIncomeOrSpend(null);
-            }));
-
+              // setIncomeOrSpend(null);
+            });
+          setIncomeOrSpend(null);
           setLoading(false);
           dispatch(set({ toggle: true, msg: "Transaction successful" }));
           dispatch(reload());
