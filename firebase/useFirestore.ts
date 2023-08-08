@@ -19,8 +19,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
           createdAt,
           user: user.uid,
         })
-        .then(() => {
-        });
+        .then(() => {});
     } catch (err: any) {
       return err.code;
     }
@@ -33,9 +32,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
       resp = ref.where("user", "==", Auth.currentUser?.uid).get();
 
       return resp;
-    } catch (err: any) {
-      // console.log(err);
-    }
+    } catch {}
 
     return resp;
   };
@@ -47,11 +44,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
       const updatedDocument = ref
         .doc(id)
         .update({ ...newdoc, updatedAt })
-        .then(() => {
-          console.log("document updated");
-        });
-
-      // console.log(updatedDocument);
+        .then(() => {});
     } catch (err: any) {
       return err.code;
     }
@@ -60,9 +53,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
   // Delete a document
   const deleteDocument = async (id: string) => {
     try {
-      //signle doc ref
       const docRef = ref.doc(id).delete();
-      // console.log(docRef);
     } catch (err: any) {
       return err.code;
     }

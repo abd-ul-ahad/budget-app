@@ -22,6 +22,8 @@ import EditTransactions from "../screens/EditTransactions";
 import Income from "../screens/Income";
 import Spending from "../screens/Spending";
 import EditPlan from "../screens/EditPlan";
+import { useNetInfo } from "@react-native-community/netinfo";
+import NoInternet from "../screens/NoInternet";
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +31,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function CheckAuth() {
   const dispatch = useDispatch();
+  const { isConnected } = useNetInfo();
   const userState = useSelector((state: RootState) => state.user);
 
   const [isLogin, setIsLogin] = useState<boolean>(false);
@@ -57,51 +60,56 @@ export default function CheckAuth() {
   }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {isLogin ? (
-          <Stack.Group>
-            <Stack.Screen
-              name="Main"
-              options={{ headerShown: false }}
-              component={MainTabs}
-            />
-            <Stack.Screen
-              name="EditTransaction"
-              options={{ headerShown: false }}
-              component={EditTransactions}
-            />
-            <Stack.Screen
-              name="Income"
-              options={{ headerShown: false }}
-              component={Income}
-            />
-            <Stack.Screen
-              name="Spending"
-              options={{ headerShown: false }}
-              component={Spending}
-            />
-            <Stack.Screen
-              name="EditPlan"
-              options={{ headerShown: false }}
-              component={EditPlan}
-            />
-          </Stack.Group>
-        ) : (
-          <Stack.Group>
-            <Stack.Screen
-              name="Home"
-              options={{ headerShown: false }}
-              component={WelcomeScreen}
-            />
-            <Stack.Screen
-              name="Login"
-              options={{ headerShown: false }}
-              component={LoginScreen}
-            />
-          </Stack.Group>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      {isConnected === false && <NoInternet />}
+      {isConnected === true  && (
+        <NavigationContainer>
+          <Stack.Navigator>
+            {isLogin ? (
+              <Stack.Group>
+                <Stack.Screen
+                  name="Main"
+                  options={{ headerShown: false }}
+                  component={MainTabs}
+                />
+                <Stack.Screen
+                  name="EditTransaction"
+                  options={{ headerShown: false }}
+                  component={EditTransactions}
+                />
+                <Stack.Screen
+                  name="Income"
+                  options={{ headerShown: false }}
+                  component={Income}
+                />
+                <Stack.Screen
+                  name="Spending"
+                  options={{ headerShown: false }}
+                  component={Spending}
+                />
+                <Stack.Screen
+                  name="EditPlan"
+                  options={{ headerShown: false }}
+                  component={EditPlan}
+                />
+              </Stack.Group>
+            ) : (
+              <Stack.Group>
+                <Stack.Screen
+                  name="Home"
+                  options={{ headerShown: false }}
+                  component={WelcomeScreen}
+                />
+                <Stack.Screen
+                  name="Login"
+                  options={{ headerShown: false }}
+                  component={LoginScreen}
+                />
+              </Stack.Group>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      )}
+    </>
   );
 }

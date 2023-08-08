@@ -13,9 +13,11 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import CheckAuth from "./context/CheckAuth";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 export default function App() {
   const colorScheme = useColorScheme();
+  const {isConnected} = useNetInfo(); 
 
   return (
     <Provider store={store}>

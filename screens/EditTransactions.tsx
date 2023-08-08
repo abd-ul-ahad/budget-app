@@ -53,9 +53,6 @@ export default function EditTransactions(props: any) {
     amount: `${amount}`,
     id,
   };
-
-  console.log(id);
-
   // State variables for edit mode and payload
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
@@ -69,8 +66,6 @@ export default function EditTransactions(props: any) {
   const { updateDocument } = useFirestore("transactions", user.uid!);
 
   async function onUpdate() {
-    console.log(id);
-
     if (payload?.amount!.length >= 1 && payload?.title!.length >= 1) {
       await updateDocument(
         {
@@ -79,7 +74,6 @@ export default function EditTransactions(props: any) {
         },
         id
       ).then(() => {
-        console.log("updated");
         props.navigation.goBack();
         dispatch(set({ toggle: true, msg: "Transaction updated" }));
         dispatch(reload());
