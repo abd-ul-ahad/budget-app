@@ -62,7 +62,7 @@ export default function CheckAuth() {
   return (
     <>
       {isConnected === false && <NoInternet />}
-      {isConnected === true  && (
+      {isConnected === true && (
         <NavigationContainer>
           <Stack.Navigator>
             {isLogin ? (

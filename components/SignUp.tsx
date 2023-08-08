@@ -87,7 +87,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
 
   return (
     <SafeAreaView>
-      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+      <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
       <View className="space-y-4">
         <View className="flex justify-center items-center">
           {colorScheme === "light" ? (

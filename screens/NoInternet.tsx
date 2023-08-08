@@ -1,3 +1,4 @@
+import { StatusBar } from "expo-status-bar";
 import { View, Text, Dimensions, Image } from "react-native";
 
 // Importing constants and components
@@ -12,7 +13,8 @@ const img = require("../assets/images/no-internet.jpg");
 export default function NoInternet(props: any) {
   return (
     <SafeAreaView>
-      <View>
+      <StatusBar style="dark" />
+      <View className="bg-white">
         <View className="flex justify-center items-center">
           <Image
             style={{
