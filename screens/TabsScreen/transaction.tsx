@@ -14,14 +14,17 @@ import Colors from "../../constants/Colors";
 import { PieGraph } from "../../components/PieGraph";
 import { LineGraph } from "../../components/LineGraph";
 import { useFirestore } from "../../firebase/useFirestore";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import formattedDate from "../../utils/FormatDate";
+import { reload } from "../../store/slices/reloadSlice";
+import { Snackbar } from "react-native-paper";
 
 // Function component named "Transaction"
 export default function Transaction(props: any) {
   // Using the useColorScheme hook to detect the current color scheme (light/dark) of the device
   const colorScheme = useColorScheme();
+  const dispatch = useDispatch();
   const reloadState = useSelector((state: RootState) => state.reload);
 
   // Using the useState hook to manage a state variable "labelI" with an initial value of 0
@@ -31,18 +34,18 @@ export default function Transaction(props: any) {
 
   const { getDocument } = useFirestore("transactions", user.uid!);
 
-  const [resp, setResp] = useState<any[]>([]);
+  const [resp, setResp] = useState<any[]>();
   const [refreshing, setRefreshing] = useState(false);
+  const [toggleSnack, setToggleSnack] = useState<boolean>(false);
 
   const load = async () => {
     setRefreshing(true);
-    const d = await getDocument();
-    let r: any = [];
-    d?.forEach((e: any) => {
-      r.push(e);
-    });
+    try {
+      getDocument().then((doc) => setResp(doc?.docs));
+    } catch {
+      setToggleSnack(true);
+    }
 
-    setResp(r);
     setRefreshing(false);
   };
 
@@ -178,6 +181,17 @@ export default function Transaction(props: any) {
           </View>
         </View>
       </ScrollView>
+      <Snackbar
+        style={{ marginBottom: "3%" }}
+        visible={toggleSnack}
+        onDismiss={() => setToggleSnack(false)}
+        action={{
+          label: "Reload",
+          onPress: () => dispatch(reload()),
+        }}
+      >
+        Please reload and try again
+      </Snackbar>
     </SafeAreaView>
   );
 }

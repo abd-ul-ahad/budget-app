@@ -29,35 +29,49 @@ export default function AddEdit({
   const { addDocument, updateDocument } = useFirestore("categories", user.uid!);
 
   const Submit = async () => {
-    if (payload?.category!.length >= 1) {
-      setLoading(true);
-      const d = addDocument({
-        code: payload.category,
-        description: payload.category,
-      }).then(() => setToggle(false));
-      setLoading(false);
-      dispatch(set({ toggle: true, msg: "Category added" }));
-      dispatch(reload());
-    } else {
-      dispatch(set({ toggle: true, msg: "Field is empty" }));
+    try {
+      if (payload?.category!.length >= 1) {
+        setLoading(true);
+        addDocument({
+          code: payload.category,
+          description: payload.category,
+        }).then(() => {
+          setToggle(false);
+          setLoading(false);
+          dispatch(set({ toggle: true, msg: "Category added" }));
+          dispatch(reload());
+        });
+      } else {
+        dispatch(set({ toggle: true, msg: "Field is empty" }));
+      }
+    } catch {
+      setToggle(false);
+      dispatch(set({ toggle: true, msg: "Please reload and again." }));
     }
   };
 
   const Update = async () => {
-    if (payload.category.length >= 1) {
-      setLoading(true);
-      const d = updateDocument(
-        {
-          code: payload.category,
-          description: payload.category,
-        },
-        payload.id
-      ).then(() => setToggle(false));
-      setLoading(false);
-      dispatch(set({ toggle: true, msg: "Category Updated" }));
-      dispatch(reload());
-    } else {
-      dispatch(set({ toggle: true, msg: "Field is empty" }));
+    try {
+      if (payload.category.length >= 1) {
+        setLoading(true);
+        updateDocument(
+          {
+            code: payload.category,
+            description: payload.category,
+          },
+          payload.id
+        ).then(() => {
+          setToggle(false);
+          setLoading(false);
+          dispatch(set({ toggle: true, msg: "Category Updated" }));
+          dispatch(reload());
+        });
+      } else {
+        dispatch(set({ toggle: true, msg: "Field is empty" }));
+      }
+    } catch {
+      setToggle(false);
+      dispatch(set({ toggle: true, msg: "Please reload and again." }));
     }
   };
 

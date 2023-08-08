@@ -8,7 +8,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/index";
 import Hero from "../../components/Hero";
 import Transaction from "../../components/Transaction";
@@ -20,6 +20,8 @@ import Single from "../../components/plan/Single";
 import { useEffect, useState } from "react";
 import { useFirestore } from "../../firebase/useFirestore";
 import { CalculateBalance } from "../../utils/CalculateBalance";
+import { Snackbar } from "react-native-paper";
+import { reload } from "../../store/slices/reloadSlice";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -28,14 +30,19 @@ export default function Home(props: any) {
   // Getting the user data from the Redux store
   const user = useSelector((state: RootState) => state.user);
   const reloadState = useSelector((state: RootState) => state.reload);
+  const dispatch = useDispatch();
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
 
-  const { getDocument } = useFirestore("transactions", user.uid!);
+  const { getDocument: getTransactions } = useFirestore(
+    "transactions",
+    user.uid!
+  );
   const { getDocument: getPlanDocument } = useFirestore("plans", user.uid!);
 
-  const [resp, setResp] = useState<any[]>([]);
-  const [plans, setPlans] = useState<any[]>([]);
+  const [toggleSnack, setToggleSnack] = useState<boolean>(false);
+  const [trans, setTrans] = useState<Array<any>>();
+  const [plans, setPlans] = useState<Array<any>>();
   const [refreshing, setRefreshing] = useState(false);
   const [balances, setBalances] = useState<{
     incomeBalance: number;
@@ -54,21 +61,12 @@ export default function Home(props: any) {
 
   const load = async () => {
     setRefreshing(true);
-    const d = await getDocument();
-    const plans = await getPlanDocument();
-
-    let t: any = [];
-    let p: any = [];
-    d?.forEach((e: any) => {
-      t.push(e);
-    });
-
-    plans?.forEach((e: any) => {
-      p.push(e._data);
-    });
-
-    setPlans(p);
-    setResp(t);
+    try {
+      await getTransactions().then((doc) => setTrans(doc?.docs));
+      await getPlanDocument().then((doc) => setPlans(doc?.docs));
+    } catch {
+      setToggleSnack(true);
+    }
 
     setRefreshing(false);
   };
@@ -120,7 +118,7 @@ export default function Home(props: any) {
             </View>
 
             {/* Placeholder */}
-            {plans.length === 0 && (
+            {plans?.length === 0 && (
               <Text className="w-full text-center pb-2 mt-2">No Plan</Text>
             )}
 
@@ -130,16 +128,17 @@ export default function Home(props: any) {
               data={plans}
               horizontal
               showsHorizontalScrollIndicator={false}
-              keyExtractor={(item) => `${item.createdAt.seconds}`}
+              keyExtractor={(item) => `${item._data.createdAt.seconds}`}
               renderItem={(e: any) => {
                 return (
                   <TouchableOpacity
                     className="px-2 rounded-xl mr-10 py-4"
                     onPress={() => {
                       props.navigation.navigate("EditPlan", {
-                        title: e.item.title,
-                        category: e.item.category,
-                        amount: e.item.budgetAmount,
+                        title: e.item._data.title,
+                        category: e.item._data.category,
+                        amount: e.item._data.budgetAmount,
+                        id: e.item.id,
                       });
                     }}
                     style={{
@@ -149,10 +148,10 @@ export default function Home(props: any) {
                     }}
                   >
                     <Single
-                      title={e.item.title}
-                      category={e.item.category}
-                      amount={e.item.budgetAmount}
-                      currentAmount={e.item.currentAmount}
+                      title={e.item._data.title}
+                      category={e.item._data.category}
+                      amount={e.item._data.budgetAmount}
+                      currentAmount={e.item._data.currentAmount}
                     />
                   </TouchableOpacity>
                 );
@@ -161,9 +160,20 @@ export default function Home(props: any) {
           </View>
 
           {/* Transaction component */}
-          <Transaction resp={resp} navigation={props.navigation} />
+          <Transaction resp={trans} navigation={props.navigation} />
         </ScrollView>
       </FadeInView>
+      <Snackbar
+        style={{ marginBottom: "3%" }}
+        visible={toggleSnack}
+        onDismiss={() => setToggleSnack(false)}
+        action={{
+          label: "Reload",
+          onPress: () => dispatch(reload()),
+        }}
+      >
+        Please reload and try again
+      </Snackbar>
     </SafeAreaView>
   );
 }

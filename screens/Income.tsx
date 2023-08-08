@@ -12,31 +12,40 @@ import { FadeInView } from "../components/animations";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { RootState } from "../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useFirestore } from "../firebase/useFirestore";
 import formattedDate from "../utils/FormatDate";
+import { Snackbar } from "react-native-paper";
+import { reload } from "../store/slices/reloadSlice";
 
 // The main functional component "Income"
 export default function Income(props: any) {
   // Initialize the router and colorScheme using the provided hooks
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   const { getDocument } = useFirestore("transactions", user.uid!);
 
   const [resp, setResp] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [toggleSnack, setToggleSnack] = useState<boolean>(false);
 
   const load = async () => {
     setRefreshing(true);
-    const d = await getDocument();
-    let r: any = [];
-    d?.forEach((e: any) => {
-      if (e._data.category === "#income") r.push(e);
-    });
 
-    setResp(r);
+    try {
+      const d = await getDocument();
+      let r: any = [];
+      d?.forEach((e: any) => {
+        if (e._data.category === "#income") r.push(e);
+      });
+
+      setResp(r);
+    } catch {
+      setToggleSnack(true);
+    }
     setRefreshing(false);
   };
 
@@ -157,6 +166,17 @@ export default function Income(props: any) {
           </View>
         </ScrollView>
       </FadeInView>
+      <Snackbar
+        style={{ marginBottom: "3%" }}
+        visible={toggleSnack}
+        onDismiss={() => setToggleSnack(false)}
+        action={{
+          label: "Reload",
+          onPress: () => dispatch(reload()),
+        }}
+      >
+        Please reload and try again
+      </Snackbar>
     </SafeAreaView>
   );
 }

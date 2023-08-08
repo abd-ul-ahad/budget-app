@@ -13,10 +13,12 @@ import { PieGraph } from "../components/PieGraph";
 import { useEffect, useState } from "react";
 import Colors from "../constants/Colors";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useFirestore } from "../firebase/useFirestore";
 import formattedDate from "../utils/FormatDate";
+import { Snackbar } from "react-native-paper";
+import { reload } from "../store/slices/reloadSlice";
 
 // Defining the Spending component
 export default function Spending(props: any) {
@@ -25,21 +27,27 @@ export default function Spending(props: any) {
   const [labelI, setLabelI] = useState<number>(0);
 
   const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   const { getDocument } = useFirestore("transactions", user.uid!);
 
   const [resp, setResp] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [toggleSnack, setToggleSnack] = useState<boolean>(false);
 
   const load = async () => {
     setRefreshing(true);
-    const d = await getDocument();
-    let r: any = [];
-    d?.forEach((e: any) => {
-      if (e._data.category !== "#income") r.push(e);
-    });
+    try {
+      const d = await getDocument();
+      let r: any = [];
+      d?.forEach((e: any) => {
+        if (e._data.category !== "#income") r.push(e);
+      });
 
-    setResp(r);
+      setResp(r);
+    } catch {
+      setToggleSnack(true);
+    }
     setRefreshing(false);
   };
 
@@ -190,6 +198,17 @@ export default function Spending(props: any) {
           </View>
         </View>
       </ScrollView>
+      <Snackbar
+        style={{ marginBottom: "1%" }}
+        visible={toggleSnack}
+        onDismiss={() => setToggleSnack(false)}
+        action={{
+          label: "Reload",
+          onPress: () => dispatch(reload()),
+        }}
+      >
+        Please reload and try again
+      </Snackbar>
     </SafeAreaView>
   );
 }

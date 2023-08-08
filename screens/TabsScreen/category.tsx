@@ -10,37 +10,40 @@ import Single from "../../components/category/Single";
 import AddEdit from "../../components/category/AddEdit";
 import { useFirestore } from "../../firebase/useFirestore";
 import { RootState } from "../../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RefreshControl } from "react-native";
+import { Snackbar } from "react-native-paper";
+import { reload } from "../../store/slices/reloadSlice";
 
 // Define the Spending component
 export default function Category() {
   // Get the current color scheme
+  const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
   const reloadState = useSelector((state: RootState) => state.reload);
   const { getDocument } = useFirestore("categories", user.uid!);
 
   // State variables
+  const [toggleSnack, setToggleSnack] = useState<boolean>(false);
   const [toggle, setToggle] = useState<boolean>(false);
   const [isNew, setIsNew] = useState<boolean>(true);
   const [payload, setPayload] = useState<{ id: string; category: string }>({
     id: "",
     category: "",
   });
-  const [resp, setResp] =
-    useState<Array<{ id: string; description: string }>>();
+  const [resp, setResp] = useState<Array<any>>();
   const [refreshing, setRefreshing] = useState(false);
 
   const load = async () => {
     setRefreshing(true);
-    const d = await getDocument();
-    let r: any = [];
-    d?.forEach((e: any) => {
-      r.push({ description: e._data.description, id: e.id });
-    });
 
-    setResp(r);
+    try {
+      getDocument().then((doc) => setResp(doc?.docs));
+    } catch {
+      setToggleSnack(true);
+    }
+
     setRefreshing(false);
   };
 
@@ -113,13 +116,13 @@ export default function Category() {
                     <TouchableOpacity
                       className="py-3"
                       onPress={() => {
-                        setPayload({ id: e.id, category: e.description });
+                        setPayload({ id: e.id, category: e._data.description });
                         setToggle(true);
                         setIsNew(false);
                       }}
                     >
                       {/* Render Single component */}
-                      <Single title={e.description} />
+                      <Single title={e._data.description} />
                     </TouchableOpacity>
 
                     {/* Divider between categories */}
@@ -135,6 +138,17 @@ export default function Category() {
             </View>
           </ScrollView>
         </FadeInView>
+        <Snackbar
+          style={{ marginBottom: "1%" }}
+          visible={toggleSnack}
+          onDismiss={() => setToggleSnack(false)}
+          action={{
+            label: "Reload",
+            onPress: () => dispatch(reload()),
+          }}
+        >
+          Please reload and try again
+        </Snackbar>
       </SafeAreaView>
     </>
   );

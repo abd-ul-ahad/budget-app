@@ -56,18 +56,14 @@ export default function EditPlan(props: any) {
   const [toggle, setToggle] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [categories, setCategories] =
-    useState<Array<{ description: string; code: string }>>();
+    useState<Array<any>>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const load = async () => {
     setLoading(true);
-    const d = await getDocument();
-    let r: any = [];
-    d?.forEach((e: any) => {
-      r.push({ description: e._data.description, code: e._data.code });
-    });
-
-    setCategories(r);
+    await getDocument().then(doc => {
+      setCategories(doc?.docs)
+    })
     setLoading(false);
   };
 
@@ -82,7 +78,7 @@ export default function EditPlan(props: any) {
       payload.title.length >= 1
     ) {
       setLoading(true);
-      const d = addDocument({
+      addDocument({
         category: payload?.code,
         budgetAmount: payload?.amount,
         title: payload?.title,
@@ -238,8 +234,8 @@ export default function EditPlan(props: any) {
                         setToggle(false);
                         setPayload({
                           ...payload,
-                          category: e.description,
-                          code: e.code,
+                          category: e._data.description,
+                          code: e._data.code,
                         });
                       }}
                       key={i}
@@ -247,7 +243,7 @@ export default function EditPlan(props: any) {
                       className="rounded-lg px-2 py-2 flex flex-row justify-start items-center"
                     >
                       <Text className="text-base font-semibold tracking-wider">
-                        {e.description}
+                        {e._data.description}
                       </Text>
                     </TouchableOpacity>
                   ))}

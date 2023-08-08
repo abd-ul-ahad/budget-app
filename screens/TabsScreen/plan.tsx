@@ -11,44 +11,33 @@ import Colors from "../../constants/Colors";
 import { FadeInView } from "../../components/animations";
 import React, { useEffect, useState } from "react";
 import Single from "../../components/plan/Single";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useFirestore } from "../../firebase/useFirestore";
+import { Snackbar } from "react-native-paper";
+import { reload } from "../../store/slices/reloadSlice";
 // Define the PlanScreen component
 export default function PlanScreen(props: any) {
   const colorScheme = useColorScheme();
   const reloadState = useSelector((state: RootState) => state.reload);
 
   const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   const { getDocument } = useFirestore("plans", user.uid!);
 
-  const [resp, setResp] = useState<
-    Array<{
-      id: string;
-      title: string;
-      category: string;
-      budgetAmount: number;
-      currentAmount: number;
-    }>
-  >([]);
+  const [resp, setResp] = useState<Array<any>>();
   const [refreshing, setRefreshing] = useState(false);
+  const [toggleSnack, setToggleSnack] = useState<boolean>(false);
 
   const load = async () => {
     setRefreshing(true);
-    const d = await getDocument();
-    let r: any = [];
-    d?.forEach((e: any) => {
-      r.push({
-        title: e._data.title,
-        id: e.id,
-        category: e._data.category,
-        budgetAmount: e._data.budgetAmount,
-        currentAmount: e._data.currentAmount,
-      });
-    });
+    try {
+      await getDocument().then((doc) => setResp(doc?.docs));
+    } catch {
+      setToggleSnack(true);
+    }
 
-    setResp(r);
     setRefreshing(false);
   };
 
@@ -115,19 +104,19 @@ export default function PlanScreen(props: any) {
                         className="py-3"
                         onPress={() => {
                           props.navigation.navigate("EditPlan", {
-                            title: e.title,
-                            category: e.category,
-                            amount: `${e.budgetAmount}`,
-                            id: e.id,
+                            title: e._data.title,
+                            category: e._data.category,
+                            amount: `${e._data.budgetAmount}`,
+                            id: e._data.id,
                           });
                         }}
                       >
                         {/* Render the Single component with progress */}
                         <Single
-                          title={e.title}
-                          category={e.category}
-                          amount={e.budgetAmount}
-                          currentAmount={e.currentAmount}
+                          title={e._data.title}
+                          category={e._data.category}
+                          amount={e._data.budgetAmount}
+                          currentAmount={e._data.currentAmount}
                         />
                       </TouchableOpacity>
                       {/* Divider between plan items */}
@@ -144,6 +133,17 @@ export default function PlanScreen(props: any) {
             </View>
           </ScrollView>
         </FadeInView>
+        <Snackbar
+          style={{ marginBottom: "3%" }}
+          visible={toggleSnack}
+          onDismiss={() => setToggleSnack(false)}
+          action={{
+            label: "Reload",
+            onPress: () => dispatch(reload()),
+          }}
+        >
+          Please reload and try again
+        </Snackbar>
       </SafeAreaView>
     </>
   );

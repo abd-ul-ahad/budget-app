@@ -1,25 +1,22 @@
 import Colors from "../constants/Colors";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Text, View, TouchableOpacity, useColorScheme } from "react-native";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
 import formattedDate from "../utils/FormatDate";
 
 const Transaction = (props: any) => {
-  const user = useSelector((state: RootState) => state.user);
   return (
     <View className="px-3 pt-1 pb-9 space-y-2">
       <Text className="text-lg font-bold dark:text-white">Transactions</Text>
 
       <View>
-        {props.resp.length === 0 && (
+        {props.resp?.length === 0 && (
           <View className="h-screen">
             <Text className="w-full text-center pb-2 mt-2">
               No Transactions
             </Text>
           </View>
         )}
-        {props.resp
+        {props?.resp
           ?.sort(
             (a: any, b: any) =>
               b._data.createdAt.seconds - a._data.createdAt.seconds
