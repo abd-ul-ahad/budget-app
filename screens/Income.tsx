@@ -115,8 +115,8 @@ export default function Income(props: any) {
                 "Oct",
                 "Nov",
                 "Dec",
-              ].slice(0, chartData.length)}
-              _data={chartData}
+              ].slice(0, chartData.length === 0 ? 1 : chartData.length)}
+              _data={chartData.length === 0 ? [0] : chartData}
             />
           </View>
           {/* Container View with some padding */}

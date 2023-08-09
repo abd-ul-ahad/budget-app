@@ -111,8 +111,8 @@ export default function Spending(props: any) {
               "Oct",
               "Nov",
               "Dec",
-            ].slice(0, chartData.length)}
-            _data={chartData}
+            ].slice(0, chartData.length === 0 ? 1 : chartData.length)}
+            _data={chartData.length === 0 ? [0] : chartData}
           />
           {/* Categories */}
           <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">

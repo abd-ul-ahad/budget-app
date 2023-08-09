@@ -1,5 +1,3 @@
-// Importing necessary components and hooks from React Native and other custom modules
-// Note: The actual paths of the components might vary based on the project structure.
 import {
   RefreshControl,
   ScrollView,
@@ -45,7 +43,7 @@ export default function Transaction(props: any) {
     try {
       getDocument().then((doc) => {
         setResp(doc?.docs);
-        setChartData(incomeByMonth(doc?.docs));
+        console.log(setChartData(incomeByMonth(doc?.docs)));
       });
     } catch {
       setToggleSnack(true);
@@ -90,8 +88,8 @@ export default function Transaction(props: any) {
               "Oct",
               "Nov",
               "Dec",
-            ].slice(0, chartData.length)}
-            _data={chartData}
+            ].slice(0, chartData.length === 0 ? 1 : chartData.length)}
+            _data={chartData.length === 0 ? [0] : chartData}
           />
         </View>
 

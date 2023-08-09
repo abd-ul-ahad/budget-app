@@ -58,7 +58,7 @@ export const PieGraph = ({
 
   return (
     <PieChart
-      data={chartData}
+      data={chartData.length === 0 ? data : chartData}
       width={width}
       height={height / 3.3}
       chartConfig={chartConfig}
@@ -81,23 +81,9 @@ const chartConfig = {
 
 const data = [
   {
-    name: "Trousers",
-    expense: 12,
+    name: "No Expense",
+    expense: 100,
     color: "rgba(131, 167, 234, 1)",
-    legendFontColor: "#7F7F7F",
-    legendFontSize: 13,
-  },
-  {
-    name: "Shirts",
-    expense: 48,
-    color: "pink",
-    legendFontColor: "#7F7F7F",
-    legendFontSize: 13,
-  },
-  {
-    name: "Tour",
-    expense: 40,
-    color: "red",
     legendFontColor: "#7F7F7F",
     legendFontSize: 13,
   },
