@@ -20,8 +20,6 @@ import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
 
-const height = Dimensions.get("window").height;
-
 interface Payload {
   title: string;
   amount: string;
@@ -30,10 +28,8 @@ interface Payload {
   id: string;
 }
 
-// Define the EditPlan component
 export default function EditPlan(props: any) {
   const ref = useRef<TextInput>(null);
-  // Get the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
   const dispatch = useDispatch();
 
@@ -118,7 +114,6 @@ export default function EditPlan(props: any) {
   }
 
   return (
-    // Wrap the content in a SafeAreaView to avoid overlapping with the device's safe area
     <SafeAreaView>
       {/* Use the custom FadeInView component to apply fade-in animation */}
       <FadeInView _duration={150}>

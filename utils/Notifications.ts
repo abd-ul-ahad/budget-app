@@ -3,7 +3,7 @@ import * as Notifications from "expo-notifications";
 
 export interface NotificationData {
   title: string;
-  body: string | null;
+  body: { body: string; dateTime: number } | null;
 }
 
 export const triggerNotifications = async (
@@ -23,7 +23,10 @@ export const triggerNotifications = async (
     await Notifications.scheduleNotificationAsync(notification);
     // console.log(typeof JSON.stringify({ title, body: body === null ? "" : body }));
 
-    await storeNotification({ title, body: body === null ? "" : body });
+    await storeNotification({
+      title,
+      body: { body: body === null ? "" : body, dateTime: Date.now() },
+    });
   } catch (error) {
     console.error("Error scheduling notification:", error);
   }
@@ -57,11 +60,3 @@ export const getNotifications = async (): Promise<string | null> => {
     return null;
   }
 };
-
-export async function deleteNotifications() {
-  try {
-    await AsyncStorage.clear();
-  } catch (e) {
-    // clear error
-  }
-}

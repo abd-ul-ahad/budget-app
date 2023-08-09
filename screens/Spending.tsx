@@ -1,4 +1,3 @@
-// Importing necessary modules and components
 import {
   RefreshControl,
   ScrollView,
@@ -21,7 +20,6 @@ import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
 import { spendingByMonth } from "../utils/GenChart";
 
-// Defining the Spending component
 export default function Spending(props: any) {
   // Using hooks to manage state and get color scheme
   const colorScheme = useColorScheme();

@@ -53,7 +53,7 @@ export default function Notifications(props: any) {
           />
         </TouchableOpacity>
       </View>
-      <View className="w-full flex flex-col justify-start items-start">
+      <View className="w-full flex flex-col justify-start items-start px-3 pt-8">
         {notifi?.length === 0 && (
           <Text className="text-base font-semibold tracking-wider w-full text-center">
             No Notifications
@@ -62,18 +62,22 @@ export default function Notifications(props: any) {
         {notifi.map((e, i) => (
           <View
             key={i}
-            className="w-full flex flex-row justify-between items-center  px-3"
+            style={{
+              borderBottomWidth: notifi.length - 1 === i ? 0 : 1,
+              borderColor: "#767676",
+            }}
+            className="w-full flex flex-row justify-between items-center py-3"
           >
             <View className="flex flex-col justify-start items-start">
               <Text className="text-lg font-semibold tracking-widest">
                 {e.title}
               </Text>
-              {e.body !== "" && (
+              {e.body?.body !== "" && (
                 <Text
                   className="tracking-wider text-base text-center font-semibold"
                   style={{ color: "#767676" }}
                 >
-                  {e.body}
+                  {e.body?.body}
                 </Text>
               )}
             </View>
@@ -81,11 +85,38 @@ export default function Notifications(props: any) {
               className="tracking-wider text-base text-center font-semibold"
               style={{ color: "#767676" }}
             >
-              23d
+              {e?.body?.dateTime !== undefined &&
+                formatTimeDifference(
+                  Date.now() - (Date.now() - e?.body?.dateTime)
+                )}
             </Text>
           </View>
         ))}
       </View>
     </View>
   );
+}
+function formatTimeDifference(dateTime: number) {
+  const timeDifferenceInSeconds = Math.floor((Date.now() - dateTime) / 1000);
+
+  if (timeDifferenceInSeconds < 60) {
+    return `${timeDifferenceInSeconds} second${
+      timeDifferenceInSeconds !== 1 ? "s" : ""
+    }`;
+  } else if (timeDifferenceInSeconds < 3600) {
+    const minutes = Math.floor(timeDifferenceInSeconds / 60);
+    return `${minutes} minute${minutes !== 1 ? "s" : ""}`;
+  } else if (timeDifferenceInSeconds < 86400) {
+    const hours = Math.floor(timeDifferenceInSeconds / 3600);
+    return `${hours} hour${hours !== 1 ? "s" : ""}`;
+  } else if (timeDifferenceInSeconds < 2592000) {
+    const days = Math.floor(timeDifferenceInSeconds / 86400);
+    return `${days} day${days !== 1 ? "s" : ""}`;
+  } else if (timeDifferenceInSeconds < 31536000) {
+    const months = Math.floor(timeDifferenceInSeconds / 2592000);
+    return `${months} month${months !== 1 ? "s" : ""}`;
+  } else {
+    const years = Math.floor(timeDifferenceInSeconds / 31536000);
+    return `${years} year${years !== 1 ? "s" : ""}`;
+  }
 }

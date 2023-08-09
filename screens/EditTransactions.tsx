@@ -1,5 +1,4 @@
 import {
-  // React Native components
   View,
   Dimensions,
   ImageBackground,
@@ -13,7 +12,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons, Ionicons } from "@expo/vector-icons";
-// import { useLocalSearchParams, useRouter } from "expo-router";
 import { ToWords } from "to-words";
 import Colors from "../constants/Colors";
 import { useState } from "react";
@@ -82,7 +80,6 @@ export default function EditTransactions(props: any) {
   }
 
   return (
-    // SafeAreaView provides padding to avoid notches or other elements overlapping content
     <SafeAreaView>
       <ScrollView
         style={{

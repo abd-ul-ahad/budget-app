@@ -10,11 +10,11 @@ const { width, height } = Dimensions.get("window");
 const img = require("../assets/images/no-internet.png");
 
 // MainScreen component
-export default function NoInternet(props: any) {
+export default function NoInternet() {
   return (
     <SafeAreaView>
       <StatusBar style="dark" />
-      <View className="bg-white">
+      <View>
         <View className="flex justify-center items-center">
           <Image
             style={{

@@ -20,7 +20,6 @@ import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
 import { incomeByMonth } from "../utils/GenChart";
 
-// The main functional component "Income"
 export default function Income(props: any) {
   // Initialize the router and colorScheme using the provided hooks
   const colorScheme = useColorScheme();
