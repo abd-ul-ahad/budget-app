@@ -10,20 +10,20 @@ import {
   TextInput,
   useColorScheme,
   BackHandler,
-  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons, Ionicons } from "@expo/vector-icons";
 // import { useLocalSearchParams, useRouter } from "expo-router";
 import { ToWords } from "to-words";
 import Colors from "../constants/Colors";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Snackbar } from "react-native-paper";
 import { useFirestore } from "../firebase/useFirestore";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { set } from "../store/slices/snackSlice";
 import { reload } from "../store/slices/reloadSlice";
+import { triggerNotifications } from "../utils/Notifications";
 
 const image = require("../assets/images/banner.png");
 
@@ -75,7 +75,7 @@ export default function EditTransactions(props: any) {
         id
       ).then(() => {
         props.navigation.goBack();
-        dispatch(set({ toggle: true, msg: "Transaction updated" }));
+        triggerNotifications("Transaction updated", null);
         dispatch(reload());
       });
     }

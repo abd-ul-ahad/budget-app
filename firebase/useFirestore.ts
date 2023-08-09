@@ -12,14 +12,16 @@ export const useFirestore = (collectionNew: string, id: string) => {
   // Add a document
   const addDocument = async (doc: any) => {
     try {
-      const createdAt = timeStamp;
-      await ref
-        .add({
-          ...doc,
-          createdAt,
-          user: user.uid,
-        })
-        .then(() => {});
+      if (user.uid !== null) {
+        const createdAt = timeStamp;
+        await ref
+          .add({
+            ...doc,
+            createdAt,
+            user: user.uid,
+          })
+          .then(() => {});
+      }
     } catch (err: any) {
       return err.code;
     }

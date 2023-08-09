@@ -9,6 +9,7 @@ import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { set } from "../../store/slices/snackSlice";
 import { reload } from "../../store/slices/reloadSlice";
+import { triggerNotifications } from "../../utils/Notifications";
 
 export default function AddEdit({
   setToggle,
@@ -38,7 +39,7 @@ export default function AddEdit({
         }).then(() => {
           setToggle(false);
           setLoading(false);
-          dispatch(set({ toggle: true, msg: "Category added" }));
+          triggerNotifications("Category added", null);
           dispatch(reload());
         });
       } else {
@@ -63,7 +64,7 @@ export default function AddEdit({
         ).then(() => {
           setToggle(false);
           setLoading(false);
-          dispatch(set({ toggle: true, msg: "Category Updated" }));
+          triggerNotifications("Category updated", null);
           dispatch(reload());
         });
       } else {

@@ -20,6 +20,7 @@ import { RootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import { set } from "../store/slices/snackSlice";
 import { reload } from "../store/slices/reloadSlice";
+import { triggerNotifications } from "../utils/Notifications";
 
 const image = require("../assets/images/banner.png");
 
@@ -125,7 +126,7 @@ const AddIncome = ({
       });
       setLoading(false);
       setIncomeOrSpend(null);
-      dispatch(set({ toggle: true, msg: "Transaction successful" }));
+      triggerNotifications("Transaction successful", null);
       dispatch(reload());
       return;
     }
@@ -286,7 +287,7 @@ const AddSpending = ({
             });
           setIncomeOrSpend(null);
           setLoading(false);
-          dispatch(set({ toggle: true, msg: "Transaction successful" }));
+          triggerNotifications("Transaction successful", null);
           dispatch(reload());
         });
         return;

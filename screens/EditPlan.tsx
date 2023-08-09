@@ -6,12 +6,10 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { Fontisto, Ionicons, Octicons } from "@expo/vector-icons";
+import { Ionicons, Octicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { Text, View } from "../components/Themed";
 import { FadeInView } from "../components/animations";
-// import { useLocalSearchParams } from "expo-router";
-// import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useRef, useState } from "react";
 import { useFirestore } from "../firebase/useFirestore";
@@ -20,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { set } from "../store/slices/snackSlice";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
+import { triggerNotifications } from "../utils/Notifications";
 
 const height = Dimensions.get("window").height;
 
@@ -55,15 +54,14 @@ export default function EditPlan(props: any) {
 
   const [toggle, setToggle] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-  const [categories, setCategories] =
-    useState<Array<any>>();
+  const [categories, setCategories] = useState<Array<any>>();
   const [loading, setLoading] = useState<boolean>(false);
 
   const load = async () => {
     setLoading(true);
-    await getDocument().then(doc => {
-      setCategories(doc?.docs)
-    })
+    await getDocument().then((doc) => {
+      setCategories(doc?.docs);
+    });
     setLoading(false);
   };
 
@@ -87,7 +85,7 @@ export default function EditPlan(props: any) {
         setToggle(false);
         props.navigation.goBack();
         setLoading(false);
-        dispatch(set({ toggle: true, msg: "Plan added" }));
+        triggerNotifications("Plan added", null)
         dispatch(reload());
       });
 
@@ -111,7 +109,7 @@ export default function EditPlan(props: any) {
         id
       ).then(() => {
         props.navigation.goBack();
-        dispatch(set({ toggle: true, msg: "Plan updated" }));
+        triggerNotifications("Plan updated", null)
         dispatch(reload());
       });
       return;

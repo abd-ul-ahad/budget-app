@@ -36,7 +36,6 @@ const initialPayload: Payload = {
 };
 
 export default function Login({ flatListRef }: { flatListRef: any }) {
-  const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState<Payload>(initialPayload);
@@ -48,14 +47,11 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
 
   // logging in
   const { login } = useLogin();
-
   const handleSubmit = async () => {
     setIsLoading(true);
     if (payload.isEmail && payload.isPass) {
       try {
         await login(payload.email!, payload.password!);
-        dispatch(set({ toggle: true, msg: "Login Successful" }));
-
         triggerNotifications("Login Successful", null);
       } catch (error: any) {
         setToggleSnackbar({

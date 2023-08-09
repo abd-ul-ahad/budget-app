@@ -21,6 +21,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useSignUp } from "../firebase/useSignUp";
 import { Snackbar } from "react-native-paper";
+import { triggerNotifications } from "../utils/Notifications";
 
 interface Payload {
   name?: string;
@@ -64,6 +65,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
     if (isName && isEmail && isPass && isPassMatched) {
       try {
         await signup(payload.email!, payload.password!, "K");
+        triggerNotifications("Sign Up Successful", null);
       } catch (error: any) {
         setToggleSnackbar({
           open: true,

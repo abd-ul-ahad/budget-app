@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   useColorScheme,
   StyleSheet,
-  BackHandler,
   ScrollView,
 } from "react-native";
 
