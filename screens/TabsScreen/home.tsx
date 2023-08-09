@@ -86,7 +86,10 @@ export default function Home(props: any) {
           style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
         >
           {/* Hero component */}
-          <Hero currentBalance={balances?.currentBalance} />
+          <Hero
+            currentBalance={balances?.currentBalance}
+            navigation={props.navigation}
+          />
 
           {/* Income and Outcome components */}
 

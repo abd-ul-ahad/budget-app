@@ -24,6 +24,7 @@ import Spending from "../screens/Spending";
 import EditPlan from "../screens/EditPlan";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NoInternet from "../screens/NoInternet";
+import Notifications from "../screens/Notifications";
 
 const Stack = createNativeStackNavigator();
 
@@ -91,6 +92,11 @@ export default function CheckAuth() {
                   name="EditPlan"
                   options={{ headerShown: false }}
                   component={EditPlan}
+                />
+                <Stack.Screen
+                  name="Notifications"
+                  options={{ headerShown: false, presentation: "modal" }}
+                  component={Notifications}
                 />
               </Stack.Group>
             ) : (

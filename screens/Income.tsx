@@ -88,7 +88,10 @@ export default function Income(props: any) {
                 />
               </TouchableOpacity>
               {/* TouchableOpacity with a bell icon */}
-              <TouchableOpacity className="py-4 px-4">
+              <TouchableOpacity
+                className="py-4 px-4"
+                onPress={() => props.navigation.navigate("Notifications")}
+              >
                 <Feather
                   name="bell"
                   size={24}

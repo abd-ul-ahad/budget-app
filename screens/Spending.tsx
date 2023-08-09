@@ -84,7 +84,10 @@ export default function Spending(props: any) {
               />
             </TouchableOpacity>
             {/* Notification icon */}
-            <TouchableOpacity className="py-4 px-4">
+            <TouchableOpacity
+              className="py-4 px-4"
+              onPress={() => props.navigation.navigate("Notifications")}
+            >
               <Feather
                 name="bell"
                 size={24}

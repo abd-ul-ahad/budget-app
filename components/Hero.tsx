@@ -23,7 +23,7 @@ import { reload } from "../store/slices/reloadSlice";
 
 const image = require("../assets/images/banner.png");
 
-const Hero = ({ currentBalance }: any) => {
+const Hero = ({ currentBalance, navigation }: any) => {
   const toWords = new ToWords();
   const [incomeOrSpend, setIncomeOrSpend] = useState<number | null>(null);
 
@@ -38,7 +38,10 @@ const Hero = ({ currentBalance }: any) => {
           className="flex-1 justify-between items-start flex-col px-3 pb-5"
         >
           <View className="flex justify-end items-end w-full">
-            <TouchableOpacity className="py-4 px-4">
+            <TouchableOpacity
+              className="py-4 px-4"
+              onPress={() => navigation.navigate("Notifications")}
+            >
               <Feather name="bell" size={24} color="white" />
             </TouchableOpacity>
             <View className="flex justify-start items-start w-full space-y-2">
