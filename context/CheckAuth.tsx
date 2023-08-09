@@ -10,13 +10,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // importing redux provider
-import { useSelector, useDispatch } from "react-redux";
-import type { RootState } from "../store";
+import { useDispatch } from "react-redux";
 
 //importing screens
 import WelcomeScreen from "../screens/Auth/Welcome";
 import LoginScreen from "../screens/Auth/Login";
-import MainTabs from "../screens/TabsScreen";
+import MainTabs from "../screens/MainTabs";
 
 import EditTransactions from "../screens/EditTransactions";
 import Income from "../screens/Income";
@@ -25,6 +24,7 @@ import EditPlan from "../screens/EditPlan";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NoInternet from "../screens/NoInternet";
 import Notifications from "../screens/Notifications";
+import GoalBasedSavings from "../screens/Savings/GoalBasedSaving";
 
 const Stack = createNativeStackNavigator();
 
@@ -96,6 +96,11 @@ export default function CheckAuth() {
                   name="Notifications"
                   options={{ headerShown: false, presentation: "modal" }}
                   component={Notifications}
+                />
+                <Stack.Screen
+                  name="GoalBasedSavings"
+                  options={{ headerShown: false, presentation: "modal" }}
+                  component={GoalBasedSavings}
                 />
               </Stack.Group>
             ) : (

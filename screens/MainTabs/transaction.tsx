@@ -17,7 +17,7 @@ import { RootState } from "../../store";
 import formattedDate from "../../utils/FormatDate";
 import { reload } from "../../store/slices/reloadSlice";
 import { Snackbar } from "react-native-paper";
-import { incomeByMonth } from "../../utils/GenChart";
+import { incomeByMonth, incomeByYear } from "../../utils/GenChart";
 
 // Function component named "Transaction"
 export default function Transaction(props: any) {
@@ -34,7 +34,8 @@ export default function Transaction(props: any) {
   const [resp, setResp] = useState<any[]>();
   const [refreshing, setRefreshing] = useState(false);
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
-  const [chartData, setChartData] = useState<Array<number>>([0]);
+  const [chartDataByMonth, setChartDataByMonth] = useState<Array<number>>([0]);
+  const [chartDataByYear, setChartDataByYear] = useState<any>([0]);
 
   const { getDocument } = useFirestore("transactions", user.uid!);
 
@@ -43,17 +44,24 @@ export default function Transaction(props: any) {
     try {
       getDocument().then((doc) => {
         setResp(doc?.docs);
+        setChartDataByMonth(incomeByMonth(doc?.docs));
+        setChartDataByYear(incomeByYear(doc?.docs));
       });
     } catch {
       setToggleSnack(true);
     } finally {
       setRefreshing(false);
+      
     }
   };
 
   useEffect(() => {
     load();
   }, [reloadState]);
+
+  useEffect(() => {
+    setChartDataByMonth(incomeByMonth(resp));
+  }, [labelI]);
 
   // JSX code starts here
   return (
@@ -74,21 +82,28 @@ export default function Transaction(props: any) {
           </Text>
           {/* Rendering the LineGraph component with random data */}
           <LineGraph
-            _labels={[
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ].slice(0, chartData.length === 0 ? 1 : chartData.length)}
-            _data={chartData.length === 0 ? [0] : chartData}
+            _labels={
+              labelI === 0
+                ? [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                  ].slice(
+                    0,
+                    chartDataByMonth.length === 0 ? 1 : chartDataByMonth.length
+                  )
+                : chartDataByYear.years || [""]
+            }
+            _data={labelI === 0 ? chartDataByMonth : (chartDataByYear.data || [0])}
           />
         </View>
 

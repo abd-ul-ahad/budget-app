@@ -18,7 +18,11 @@ import { useFirestore } from "../firebase/useFirestore";
 import formattedDate from "../utils/FormatDate";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
-import { spendingByMonth } from "../utils/GenChart";
+import {
+  incomeByMonth,
+  incomeByYear,
+  spendingByMonth,
+} from "../utils/GenChart";
 
 export default function Spending(props: any) {
   // Using hooks to manage state and get color scheme
@@ -33,7 +37,8 @@ export default function Spending(props: any) {
   const [resp, setResp] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
-  const [chartData, setChartData] = useState<Array<number>>([0]);
+  const [chartDataByMonth, setChartDataByMonth] = useState<Array<number>>([0]);
+  const [chartDataByYear, setChartDataByYear] = useState<any>([0]);
 
   const load = async () => {
     setRefreshing(true);
@@ -43,7 +48,8 @@ export default function Spending(props: any) {
       d?.forEach((e: any) => {
         if (e._data.category !== "#income") r.push(e);
       });
-      setChartData(spendingByMonth(r));
+      setChartDataByMonth(incomeByMonth(d?.docs));
+      setChartDataByYear(incomeByYear(d?.docs));
       setResp(r);
     } catch {
       setToggleSnack(true);
@@ -99,21 +105,30 @@ export default function Spending(props: any) {
           </Text>
           {/* Line Graph */}
           <LineGraph
-            _labels={[
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ].slice(0, chartData.length === 0 ? 1 : chartData.length)}
-            _data={chartData.length === 0 ? [0] : chartData}
+            _labels={
+              labelI === 0
+                ? [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                  ].slice(
+                    0,
+                    chartDataByMonth.length === 0 ? 1 : chartDataByMonth.length
+                  )
+                : chartDataByYear.years || [""]
+            }
+            _data={
+              labelI === 0 ? chartDataByMonth : chartDataByYear.data || [0]
+            }
           />
           {/* Categories */}
           <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">

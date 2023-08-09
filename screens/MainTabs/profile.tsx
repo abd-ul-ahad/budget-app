@@ -11,7 +11,7 @@ import { Snackbar } from "react-native-paper";
 import { useState } from "react";
 import Colors from "../../constants/Colors";
 
-export default function Profile() {
+export default function Profile(props: any) {
   const { logout } = useLogout();
   const colorScheme = useColorScheme();
   const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
@@ -29,11 +29,8 @@ export default function Profile() {
             </Text>
           </View>
           <View className="w-full px-5 pt-3">
-          <View className="w-full">
-              <TouchableOpacity
-                className="py-3 flex w-full justify-start items-start"
-                // onPress={() => setToggleSnackbar(true)}
-              >
+            <View className="w-full">
+              <TouchableOpacity className="py-3 flex w-full justify-start items-start">
                 <Text className="font-semibold tracking-wider text-base">
                   Account
                 </Text>
@@ -42,7 +39,7 @@ export default function Profile() {
             <View className="w-full">
               <TouchableOpacity
                 className="py-3 flex w-full justify-start items-start"
-                // onPress={() => setToggleSnackbar(true)}
+                onPress={() => props.navigation.navigate("GoalBasedSavings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
                   Goal based saving

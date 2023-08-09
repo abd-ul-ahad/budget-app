@@ -60,7 +60,7 @@ export default function Notifications(props: any) {
               No Notifications
             </Text>
           )}
-          {notifi.map((e, i) => (
+          {notifi?.reverse()?.map((e, i) => (
             <View
               key={i}
               style={{
