@@ -24,9 +24,9 @@ export default function Notifications(props: any) {
   return (
     <ScrollView contentContainerStyle={{ flex: 1 }}>
       <View className="flex-1 justify-start items-center pt-7">
-        <View className="w-full flex flex-row justify-between pl-3 items-center">
+        <View className="w-full flex flex-row justify-between items-center">
           <TouchableOpacity
-            className="py-4 px-5"
+            className="py-4 px-3"
             onPress={() => props.navigation.goBack()}
           >
             <Ionicons

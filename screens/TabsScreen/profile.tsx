@@ -1,24 +1,65 @@
-import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+} from "react-native";
 import { Text, View } from "../../components/Themed";
 import { useLogout } from "../../firebase/useLogout";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { useState } from "react";
+import Colors from "../../constants/Colors";
 
 export default function Profile() {
   const { logout } = useLogout();
+  const colorScheme = useColorScheme();
   const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <View className="flex-1 justify-center items-center h-screen">
-          <TouchableOpacity
-            className="px-3 py-2 bg-slate-500"
-            onPress={() => setToggleSnackbar(true)}
-          >
-            <Text>Logout</Text>
-          </TouchableOpacity>
+    <>
+      <ScrollView
+        contentContainerStyle={{ flex: 1 }}
+        style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
+      >
+        <View className="flex justify-center items-center pt-6">
+          <View className="flex justify-start items-start w-full pt-5 pb-3">
+            <Text className="text-xl font-semibold tracking-wider pl-6">
+              Settings
+            </Text>
+          </View>
+          <View className="w-full px-5 pt-3">
+          <View className="w-full">
+              <TouchableOpacity
+                className="py-3 flex w-full justify-start items-start"
+                // onPress={() => setToggleSnackbar(true)}
+              >
+                <Text className="font-semibold tracking-wider text-base">
+                  Account
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View className="w-full">
+              <TouchableOpacity
+                className="py-3 flex w-full justify-start items-start"
+                // onPress={() => setToggleSnackbar(true)}
+              >
+                <Text className="font-semibold tracking-wider text-base">
+                  Goal based saving
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View className="w-full">
+              <TouchableOpacity
+                className="py-3 flex w-full justify-start items-start"
+                onPress={() => setToggleSnackbar(true)}
+              >
+                <Text className="font-semibold tracking-wider text-base">
+                  Logout
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </ScrollView>
       <Snackbar
@@ -34,6 +75,6 @@ export default function Profile() {
       >
         Are you sure?
       </Snackbar>
-    </SafeAreaView>
+    </>
   );
 }
