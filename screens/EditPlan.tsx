@@ -85,7 +85,7 @@ export default function EditPlan(props: any) {
         setToggle(false);
         props.navigation.goBack();
         setLoading(false);
-        triggerNotifications("Plan added", null)
+        triggerNotifications("Plan", `#${payload?.title} is added`);
         dispatch(reload());
       });
 
@@ -109,7 +109,7 @@ export default function EditPlan(props: any) {
         id
       ).then(() => {
         props.navigation.goBack();
-        triggerNotifications("Plan updated", null)
+        triggerNotifications("Plan", `#${payload?.title} is updated`);
         dispatch(reload());
       });
       return;

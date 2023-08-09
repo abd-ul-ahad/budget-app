@@ -126,7 +126,7 @@ const AddIncome = ({
       });
       setLoading(false);
       setIncomeOrSpend(null);
-      triggerNotifications("Transaction successful", null);
+      triggerNotifications("Deposit", `${amount} £ is Deposit`);
       dispatch(reload());
       return;
     }
@@ -287,7 +287,7 @@ const AddSpending = ({
             });
           setIncomeOrSpend(null);
           setLoading(false);
-          triggerNotifications("Transaction successful", null);
+          triggerNotifications("Credit", `${payload?.amount} £ is Credit`);
           dispatch(reload());
         });
         return;

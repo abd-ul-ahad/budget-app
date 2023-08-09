@@ -39,7 +39,7 @@ export default function AddEdit({
         }).then(() => {
           setToggle(false);
           setLoading(false);
-          triggerNotifications("Category added", null);
+          triggerNotifications("Category", `#${payload?.category} is added`);
           dispatch(reload());
         });
       } else {
@@ -64,7 +64,7 @@ export default function AddEdit({
         ).then(() => {
           setToggle(false);
           setLoading(false);
-          triggerNotifications("Category updated", null);
+          triggerNotifications("Category", `#${payload?.category} is updated`);
           dispatch(reload());
         });
       } else {
