@@ -10,7 +10,7 @@ const Transaction = (props: any) => {
 
       <View>
         {props.resp?.length === 0 && (
-          <View className="h-screen">
+          <View>
             <Text className="w-full text-center pb-2 mt-2">
               No Transactions
             </Text>

@@ -1,4 +1,3 @@
-// Importing necessary modules from React and React Native
 import { useRef, useState } from "react";
 import {
   View,
@@ -26,8 +25,6 @@ export default function WelcomeScreen(props: any) {
 
   // Creating a reference to the FlatList component
   const flatListRef = useRef<FlatList>(null);
-
-  // State to keep track of the current index of the FlatList
   const [cIndex, setCIndex] = useState<number>(0);
 
   // Rendering the main view

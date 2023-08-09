@@ -21,7 +21,6 @@ export const triggerNotifications = async (
     };
 
     await Notifications.scheduleNotificationAsync(notification);
-    // console.log(typeof JSON.stringify({ title, body: body === null ? "" : body }));
 
     await storeNotification({
       title,

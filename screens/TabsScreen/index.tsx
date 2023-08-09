@@ -15,18 +15,16 @@ import { useColorScheme } from "react-native";
 import Colors from "../../constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { reset, set } from "../../store/slices/snackSlice";
 import { StatusBar } from "expo-status-bar";
+import { set } from "../../store/slices/snackSlice";
 
 const Tab = createMaterialBottomTabNavigator();
 
 export default function MainTabs() {
   const theme = useTheme();
-  theme.colors.secondaryContainer = "transperent";
-
   const dispatch = useDispatch();
+  theme.colors.secondaryContainer = "transperent";
   const snackbar = useSelector((state: RootState) => state.snackbar);
-
   const colorScheme = useColorScheme();
   return (
     <>

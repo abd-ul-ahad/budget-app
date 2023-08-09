@@ -80,6 +80,7 @@ export default function Home(props: any) {
       <FadeInView _duration={400}>
         {/* ScrollView to enable scrolling */}
         <ScrollView
+          contentContainerStyle={{ flex: 1 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={load} />
           }

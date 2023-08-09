@@ -19,6 +19,7 @@ import { set } from "../store/slices/snackSlice";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
+import { CalculateBalance } from "../utils/CalculateBalance";
 
 interface Payload {
   title: string;
@@ -34,6 +35,7 @@ export default function EditPlan(props: any) {
   const dispatch = useDispatch();
 
   const user = useSelector((state: RootState) => state.user);
+
   const { getDocument } = useFirestore("categories", user.uid!);
   const { addDocument, updateDocument } = useFirestore("plans", user.uid!);
 
@@ -52,6 +54,20 @@ export default function EditPlan(props: any) {
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [categories, setCategories] = useState<Array<any>>();
   const [loading, setLoading] = useState<boolean>(false);
+
+  const [balances, setBalances] = useState<{
+    incomeBalance: number;
+    outcomeBalance: number;
+    currentBalance: number;
+  }>({ incomeBalance: 0, outcomeBalance: 0, currentBalance: 0 });
+
+  const loadBalances = async () => {
+    const { incomeBalance, outcomeBalance, currentBalance } =
+      await CalculateBalance();
+    setBalances({ incomeBalance, outcomeBalance, currentBalance });
+  };
+
+  loadBalances();
 
   const load = async () => {
     setLoading(true);
@@ -181,7 +197,10 @@ export default function EditPlan(props: any) {
               {/* Budget amount input section */}
               <View className="space-y-1 pt-5">
                 <Text className="dark:text-white text-lg font-semibold">
-                  Budget Amount <Text className="text-sm">(Limit: 10000)</Text>
+                  Budget Amount{" "}
+                  <Text className="text-sm">
+                    (Limit: {balances?.currentBalance})
+                  </Text>
                 </Text>
                 {/* TextInput for entering the budget amount */}
                 <TextInput
@@ -191,7 +210,13 @@ export default function EditPlan(props: any) {
                   value={payload?.amount}
                   placeholderTextColor="grey"
                   keyboardType="default"
-                  onChangeText={(amount) => setPayload({ ...payload, amount })}
+                  onChangeText={(amount) => {
+                    if (+amount <= balances?.currentBalance)
+                      setPayload({ ...payload, amount });
+                    else {
+                      dispatch(set({ toggle: true, msg: "Limit exceed" }));
+                    }
+                  }}
                 />
               </View>
 

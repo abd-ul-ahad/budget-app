@@ -33,7 +33,6 @@ SplashScreen.preventAutoHideAsync();
 export default function CheckAuth() {
   const dispatch = useDispatch();
   const { isConnected } = useNetInfo();
-  const userState = useSelector((state: RootState) => state.user);
 
   const [isLogin, setIsLogin] = useState<boolean>(false);
 

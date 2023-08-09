@@ -43,7 +43,6 @@ export default function Transaction(props: any) {
     try {
       getDocument().then((doc) => {
         setResp(doc?.docs);
-        console.log(setChartData(incomeByMonth(doc?.docs)));
       });
     } catch {
       setToggleSnack(true);

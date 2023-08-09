@@ -1,4 +1,4 @@
-import { TouchableOpacity, useColorScheme } from "react-native";
+import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
 import { Text, View } from "../components/Themed";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
@@ -22,78 +22,80 @@ export default function Notifications(props: any) {
   }, [reload]);
 
   return (
-    <View className="flex-1 justify-start items-center pt-7">
-      <View className="w-full flex flex-row justify-between pl-3 items-center">
-        <TouchableOpacity
-          className="py-4 px-5"
-          onPress={() => props.navigation.goBack()}
-        >
-          <Ionicons
-            name="chevron-back-sharp"
-            size={26}
-            color={Colors[colorScheme ?? "light"].text}
-          />
-        </TouchableOpacity>
-        <Text className="text-xl font-bold tracking-wider text-start pl-2 py-4">
-          Notifications
-        </Text>
-        <TouchableOpacity
-          className="py-4 px-5"
-          onPress={async () => {
-            try {
-              await AsyncStorage.clear();
-              setReload(!reload);
-            } catch {}
-          }}
-        >
-          <MaterialIcons
-            name="delete-sweep"
-            size={26}
-            color={Colors[colorScheme ?? "light"].text}
-          />
-        </TouchableOpacity>
-      </View>
-      <View className="w-full flex flex-col justify-start items-start px-3 pt-8">
-        {notifi?.length === 0 && (
-          <Text className="text-base font-semibold tracking-wider w-full text-center">
-            No Notifications
-          </Text>
-        )}
-        {notifi.map((e, i) => (
-          <View
-            key={i}
-            style={{
-              borderBottomWidth: notifi.length - 1 === i ? 0 : 1,
-              borderColor: "#767676",
-            }}
-            className="w-full flex flex-row justify-between items-center py-3"
+    <ScrollView contentContainerStyle={{ flex: 1 }}>
+      <View className="flex-1 justify-start items-center pt-7">
+        <View className="w-full flex flex-row justify-between pl-3 items-center">
+          <TouchableOpacity
+            className="py-4 px-5"
+            onPress={() => props.navigation.goBack()}
           >
-            <View className="flex flex-col justify-start items-start">
-              <Text className="text-lg font-semibold tracking-widest">
-                {e.title}
-              </Text>
-              {e.body?.body !== "" && (
-                <Text
-                  className="tracking-wider text-base text-center font-semibold"
-                  style={{ color: "#767676" }}
-                >
-                  {e.body?.body}
-                </Text>
-              )}
-            </View>
-            <Text
-              className="tracking-wider text-base text-center font-semibold"
-              style={{ color: "#767676" }}
-            >
-              {e?.body?.dateTime !== undefined &&
-                formatTimeDifference(
-                  Date.now() - (Date.now() - e?.body?.dateTime)
-                )}
+            <Ionicons
+              name="chevron-back-sharp"
+              size={26}
+              color={Colors[colorScheme ?? "light"].text}
+            />
+          </TouchableOpacity>
+          <Text className="text-xl font-bold tracking-wider text-start pl-2 py-4">
+            Notifications
+          </Text>
+          <TouchableOpacity
+            className="py-4 px-5"
+            onPress={async () => {
+              try {
+                await AsyncStorage.clear();
+                setReload(!reload);
+              } catch {}
+            }}
+          >
+            <MaterialIcons
+              name="delete-sweep"
+              size={26}
+              color={Colors[colorScheme ?? "light"].text}
+            />
+          </TouchableOpacity>
+        </View>
+        <View className="w-full flex flex-col justify-start items-start px-3 pt-8">
+          {notifi?.length === 0 && (
+            <Text className="text-base font-semibold tracking-wider w-full text-center">
+              No Notifications
             </Text>
-          </View>
-        ))}
+          )}
+          {notifi.map((e, i) => (
+            <View
+              key={i}
+              style={{
+                borderBottomWidth: notifi.length - 1 === i ? 0 : 1,
+                borderColor: "#767676",
+              }}
+              className="w-full flex flex-row justify-between items-center py-3"
+            >
+              <View className="flex flex-col justify-start items-start">
+                <Text className="text-lg font-semibold tracking-widest">
+                  {e.title}
+                </Text>
+                {e.body?.body !== "" && (
+                  <Text
+                    className="tracking-wider text-base text-center font-semibold"
+                    style={{ color: "#767676" }}
+                  >
+                    {e.body?.body}
+                  </Text>
+                )}
+              </View>
+              <Text
+                className="tracking-wider text-base text-center font-semibold"
+                style={{ color: "#767676" }}
+              >
+                {e?.body?.dateTime !== undefined &&
+                  formatTimeDifference(
+                    Date.now() - (Date.now() - e?.body?.dateTime)
+                  )}
+              </Text>
+            </View>
+          ))}
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 function formatTimeDifference(dateTime: number) {

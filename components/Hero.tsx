@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { set } from "../store/slices/snackSlice";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
+import { CalculateBalance } from "../utils/CalculateBalance";
 
 const image = require("../assets/images/banner.png");
 
@@ -114,7 +115,7 @@ const AddIncome = ({
   const { addDocument } = useFirestore("transactions", Auth.currentUser?.uid!);
 
   const Submit = async () => {
-    if (amount.length >= 1 && description.length >= 1) {
+    if (+amount >= 1 && description.length >= 1) {
       setLoading(true);
       const d = addDocument({
         amount: +amount,
@@ -258,12 +259,26 @@ const AddSpending = ({
     load();
   }, []);
 
+  const [balances, setBalances] = useState<{
+    incomeBalance: number;
+    outcomeBalance: number;
+    currentBalance: number;
+  }>({ incomeBalance: 0, outcomeBalance: 0, currentBalance: 0 });
+
+  const loadBalances = async () => {
+    const { incomeBalance, outcomeBalance, currentBalance } =
+      await CalculateBalance();
+    setBalances({ incomeBalance, outcomeBalance, currentBalance });
+  };
+
+  loadBalances();
+
   // on submit
 
   const Submit = async () => {
     try {
       if (
-        payload?.amount.length >= 1 &&
+        +payload?.amount >= 1 &&
         payload.description.length >= 1 &&
         (payload.category?.length! >= 1 || payload?.plan?.length! >= 1)
       ) {
@@ -332,10 +347,17 @@ const AddSpending = ({
         </View>
         <View className="space-y-1">
           <Text className="dark:text-white text-lg font-semibold">
-            Spend Amount <Text className="text-sm">(Limit: 10000)</Text>
+            Spend Amount{" "}
+            <Text className="text-sm">(Limit: {balances?.currentBalance})</Text>
           </Text>
           <TextInput
-            onChangeText={(amount) => setPayload({ ...payload, amount })}
+            onChangeText={(amount) => {
+              if (+amount <= balances?.currentBalance)
+                setPayload({ ...payload, amount });
+              else {
+                dispatch(set({ toggle: true, msg: "Limit exceed" }));
+              }
+            }}
             className="py-2 px-3 dark:text-white rounded-lg"
             value={payload?.amount}
             style={{ borderColor: "grey", borderWidth: 2 }}

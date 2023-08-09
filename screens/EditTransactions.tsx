@@ -19,7 +19,6 @@ import { Snackbar } from "react-native-paper";
 import { useFirestore } from "../firebase/useFirestore";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { set } from "../store/slices/snackSlice";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
 
