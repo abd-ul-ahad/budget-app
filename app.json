@@ -23,7 +23,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.budgetapp.mob"
+      "package": "com.budgetapp.mob",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

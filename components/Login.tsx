@@ -19,6 +19,7 @@ import { useLogin } from "../firebase/useLogin";
 import { Snackbar } from "react-native-paper";
 import { set } from "../store/slices/snackSlice";
 import { useDispatch } from "react-redux";
+import { triggerNotifications } from "../utils/Notifications";
 
 interface Payload {
   email?: string;
@@ -54,7 +55,8 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
       try {
         await login(payload.email!, payload.password!);
         dispatch(set({ toggle: true, msg: "Login Successful" }));
-        123456;
+
+        triggerNotifications("", "");
       } catch (error: any) {
         setToggleSnackbar({
           open: true,

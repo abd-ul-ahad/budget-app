@@ -29,17 +29,6 @@ export default function LoginScreen(props: any) {
   // Get the current color scheme of the device
   const colorScheme = useColorScheme();
 
-  // The following code was commented out, which means it's not currently being used
-
-  // useEffect(() => {
-  //   const backHandler = BackHandler.addEventListener(
-  //     "hardwareBackPress",
-  //     () => true
-  //   );
-
-  //   return () => backHandler.remove();
-  // }, []);
-
   return (
     // SafeAreaView ensures the UI fits within safe areas of different devices
     <SafeAreaView

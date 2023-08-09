@@ -13,11 +13,37 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import CheckAuth from "./context/CheckAuth";
-import { useNetInfo } from "@react-native-community/netinfo";
+import * as Permissions from "expo-permissions";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    };
+  },
+});
 
 export default function App() {
   const colorScheme = useColorScheme();
-  const {isConnected} = useNetInfo(); 
+
+  // Managing permissions for notifications
+  // React.useEffect(() => {
+  //   Permissions.getAsync(Permissions.NOTIFICATIONS)
+  //     .then((statusObj) => {
+  //       if (statusObj.status !== "granted") {
+  //         return Permissions.askAsync(Permissions.NOTIFICATIONS);
+  //       }
+  //       return statusObj;
+  //     })
+  //     .then((statusObj) => {
+  //       if (statusObj.status !== "granted") {
+  //         return;
+  //       }
+  //     });
+  // }, []);
 
   return (
     <Provider store={store}>
