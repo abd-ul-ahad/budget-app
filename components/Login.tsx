@@ -56,7 +56,7 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
         await login(payload.email!, payload.password!);
         dispatch(set({ toggle: true, msg: "Login Successful" }));
 
-        triggerNotifications("", "");
+        triggerNotifications("Login Successful", null);
       } catch (error: any) {
         setToggleSnackbar({
           open: true,

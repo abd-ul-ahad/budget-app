@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "expo": "~49.0.5",
     "expo-build-properties": "~0.8.3",
+    "expo-device": "^5.4.0",
     "expo-modules-autolinking": "~1.1.0",
     "expo-notifications": "^0.20.1",
     "expo-permissions": "^14.2.1",

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useColorScheme } from "react-native";
+import { Platform, useColorScheme } from "react-native";
 
 // importing redux provider
 import { store } from "./store/index";
@@ -13,7 +13,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import CheckAuth from "./context/CheckAuth";
-import * as Permissions from "expo-permissions";
+import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({
@@ -29,21 +29,33 @@ Notifications.setNotificationHandler({
 export default function App() {
   const colorScheme = useColorScheme();
 
-  // Managing permissions for notifications
-  // React.useEffect(() => {
-  //   Permissions.getAsync(Permissions.NOTIFICATIONS)
-  //     .then((statusObj) => {
-  //       if (statusObj.status !== "granted") {
-  //         return Permissions.askAsync(Permissions.NOTIFICATIONS);
-  //       }
-  //       return statusObj;
-  //     })
-  //     .then((statusObj) => {
-  //       if (statusObj.status !== "granted") {
-  //         return;
-  //       }
-  //     });
-  // }, []);
+  const [expoPushToken, setExpoPushToken] = React.useState<any>("");
+  const [notification, setNotification] = React.useState<any>(false);
+  const notificationListener = React.useRef<any>();
+  const responseListener = React.useRef<any>();
+
+  React.useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   return (
     <Provider store={store}>
@@ -52,4 +64,34 @@ export default function App() {
       </ThemeProvider>
     </Provider>
   );
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  }
+
+  return token;
 }
