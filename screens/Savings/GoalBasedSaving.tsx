@@ -5,7 +5,12 @@ import {
   useColorScheme,
 } from "react-native";
 import { Text, View } from "../../components/Themed";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  Feather,
+  FontAwesome,
+  FontAwesome5,
+  Ionicons,
+} from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import {
   storeNotification,
@@ -66,7 +71,7 @@ export default function Notifications(props: any) {
     <SafeAreaView>
       <ScrollView>
         <View className="flex-1 justify-start items-center pb-7">
-          <View className="w-full flex flex-row justify-start items-center pt-4">
+          <View className="w-full flex flex-row justify-between items-center pt-4">
             <TouchableOpacity
               className="py-4 px-3"
               onPress={() => props.navigation.goBack()}
@@ -77,9 +82,20 @@ export default function Notifications(props: any) {
                 color={Colors[colorScheme ?? "light"].text}
               />
             </TouchableOpacity>
-            <Text className="text-xl font-bold tracking-wider text-start pl-2 py-4">
+            <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
               Goal based saving
             </Text>
+
+            <TouchableOpacity
+              className="py-4 px-3"
+              onPress={() => props.navigation.navigate("Home")}
+            >
+              <FontAwesome
+                name="home"
+                size={26}
+                color={Colors[colorScheme ?? "light"].text}
+              />
+            </TouchableOpacity>
           </View>
           <View className="w-full flex flex-col justify-center items-start px-3 pt-8">
             {/* Amount */}

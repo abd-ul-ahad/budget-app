@@ -59,3 +59,23 @@ export const getNotifications = async (): Promise<string | null> => {
     return null;
   }
 };
+
+export const deleteNotification = async (index: number) => {
+  try {
+    const notifications = await getNotifications();
+
+    if (notifications) {
+      const parsedNotifications: NotificationData[] = JSON.parse(notifications);
+
+      if (index >= 0 && index < parsedNotifications.length) {
+        parsedNotifications.splice(index, 1);
+
+        const jsonValue = JSON.stringify(parsedNotifications);
+
+        await AsyncStorage.setItem("notifications-budget-app", jsonValue);
+      }
+    }
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+  }
+};

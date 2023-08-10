@@ -24,12 +24,12 @@ export default function Profile(props: any) {
         style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
       >
         <View className="flex justify-center items-center pt-6">
-          <View className="flex justify-between flex-row items-start w-full pt-5 pb-3">
-            <Text className="text-xl font-semibold tracking-wider pl-6">
+          <View className="flex justify-between flex-row items-start w-full pb-3">
+            <Text className="text-xl font-semibold py-4 tracking-wider pl-6">
               Settings
             </Text>
             <TouchableOpacity
-              className="py-2 px-4"
+              className="py-4 px-4"
               onPress={() => props.navigation.navigate("Notifications")}
             >
               <Feather name="bell" size={24} color="black" />
