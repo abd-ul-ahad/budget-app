@@ -46,6 +46,7 @@ export default function Notifications(props: any) {
               Notifications
             </Text>
             <TouchableOpacity
+              disabled={notifi?.length === 0}
               className="py-4 px-5"
               onPress={async () => {
                 try {

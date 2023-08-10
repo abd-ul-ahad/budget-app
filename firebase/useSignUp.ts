@@ -5,6 +5,7 @@ import { Auth } from "./init";
 // react redux
 import { useDispatch } from "react-redux";
 import { login as LoginState } from "../store/slices/userSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const useSignUp = () => {
   const dispatch = useDispatch();
@@ -27,7 +28,15 @@ export const useSignUp = () => {
     );
 
     //add display name for the user
-    //   await updateProfile(user, { displayName });
+    const update = {
+      displayName: displayName,
+    };
+
+    try {
+      await AsyncStorage.clear();
+    } catch {}
+
+    await Auth.currentUser?.updateProfile(update);
   };
 
   return { signup };

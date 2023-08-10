@@ -88,9 +88,9 @@ export default function MainTabs() {
           name="Profile"
           component={Profile}
           options={{
-            tabBarLabel: "Settings",
+            tabBarLabel: "Profile",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="ios-settings" size={28} color={color} />
+              <Ionicons name="md-person" size={26} color={color} />
             ),
           }}
         />

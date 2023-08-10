@@ -64,7 +64,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
 
     if (isName && isEmail && isPass && isPassMatched) {
       try {
-        await signup(payload.email!, payload.password!, "K");
+        await signup(payload.email!, payload.password!, payload.name!);
         triggerNotifications("Sign Up Successful", null);
       } catch (error: any) {
         setToggleSnackbar({

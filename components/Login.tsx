@@ -20,6 +20,7 @@ import { Snackbar } from "react-native-paper";
 import { set } from "../store/slices/snackSlice";
 import { useDispatch } from "react-redux";
 import { triggerNotifications } from "../utils/Notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Payload {
   email?: string;
@@ -53,6 +54,8 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
       try {
         await login(payload.email!, payload.password!);
         triggerNotifications("Login Successful", null);
+
+        await AsyncStorage.clear();
       } catch (error: any) {
         setToggleSnackbar({
           open: true,
