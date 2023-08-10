@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Snackbar } from "react-native-paper";
 import { useState } from "react";
 import Colors from "../../constants/Colors";
+import { Feather } from "@expo/vector-icons";
 
 export default function Profile(props: any) {
   const { logout } = useLogout();
@@ -23,10 +24,16 @@ export default function Profile(props: any) {
         style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
       >
         <View className="flex justify-center items-center pt-6">
-          <View className="flex justify-start items-start w-full pt-5 pb-3">
+          <View className="flex justify-between flex-row items-start w-full pt-5 pb-3">
             <Text className="text-xl font-semibold tracking-wider pl-6">
               Settings
             </Text>
+            <TouchableOpacity
+              className="py-2 px-4"
+              onPress={() => props.navigation.navigate("Notifications")}
+            >
+              <Feather name="bell" size={24} color="black" />
+            </TouchableOpacity>
           </View>
           <View className="w-full px-5 pt-3">
             <View className="w-full">

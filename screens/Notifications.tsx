@@ -6,6 +6,9 @@ import { getNotifications } from "../utils/Notifications";
 import { useEffect, useState } from "react";
 import type { NotificationData } from "../utils/Notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Dimensions } from "react-native";
+
+const width = Dimensions.get("window").width;
 
 export default function Notifications(props: any) {
   const colorScheme = useColorScheme();
@@ -54,7 +57,7 @@ export default function Notifications(props: any) {
             />
           </TouchableOpacity>
         </View>
-        <View className="w-full flex flex-col justify-start items-start px-3 pt-8">
+        <View className="w-full flex flex-col justify-start items-start pt-8">
           {notifi?.length === 0 && (
             <Text className="text-base font-semibold tracking-wider w-full text-center">
               No Notifications
@@ -63,19 +66,19 @@ export default function Notifications(props: any) {
           {notifi?.reverse()?.map((e, i) => (
             <View
               key={i}
-              style={{
-                borderBottomWidth: notifi.length - 1 === i ? 0 : 1,
-                borderColor: "#767676",
-              }}
               className="w-full flex flex-row justify-between items-center py-3"
             >
-              <View className="flex flex-col justify-start items-start">
-                <Text className="text-lg font-semibold tracking-widest">
+              <View
+                className="flex flex-col justify-start items-start"
+                style={{ width: width / 1.3 }}
+              >
+                <Text className="text-lg pl-2 font-semibold tracking-widest">
                   {e.title}
                 </Text>
                 {e.body?.body !== "" && (
                   <Text
-                    className="tracking-wider text-base text-center font-semibold"
+                    className="tracking-wider text-base text-start
+                    pl-2 font-semibold"
                     style={{ color: "#767676" }}
                   >
                     {e.body?.body}
@@ -83,8 +86,8 @@ export default function Notifications(props: any) {
                 )}
               </View>
               <Text
-                className="tracking-wider text-base text-center font-semibold"
-                style={{ color: "#767676" }}
+                className="tracking-wider text-base text-start font-semibold"
+                style={{ color: "#767676", width: width / 4.8 }}
               >
                 {e?.body?.dateTime !== undefined &&
                   formatTimeDifference(
