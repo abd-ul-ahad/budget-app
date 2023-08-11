@@ -17,10 +17,10 @@ import WelcomeScreen from "../screens/Auth/Welcome";
 import LoginScreen from "../screens/Auth/Login";
 import MainTabs from "../screens/MainTabs";
 
-import EditTransactions from "../screens/EditTransactions";
+import EditTransactions from "../screens/Modify/EditTransactions";
 import Income from "../screens/Income";
 import Spending from "../screens/Spending";
-import EditPlan from "../screens/EditPlan";
+import EditPlan from "../screens/Modify/EditPlan";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NoInternet from "../screens/NoInternet";
 import Notifications from "../screens/Notifications";

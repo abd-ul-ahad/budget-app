@@ -35,7 +35,6 @@ export default function Notifications(props: any) {
 
   const onSubmit = async () => {
     setLoading(true);
-    console.log({ amount, income, date });
 
     try {
       if (amount < 1) {

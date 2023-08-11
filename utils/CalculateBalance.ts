@@ -21,7 +21,7 @@ export const CalculateBalance = async () => {
     if (doc._data.category === "#income") {
       incomeBalance += parseInt(doc._data.amount);
     } else {
-      if (doc._data.plan !== "#income") {
+      if (doc._data.plan === "no-plan") {
         outcomeBalance += parseInt(doc._data.amount);
       }
     }

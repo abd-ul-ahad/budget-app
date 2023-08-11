@@ -7,7 +7,6 @@ const Transaction = (props: any) => {
   return (
     <View className="px-3 pt-1 pb-9 space-y-2">
       <Text className="text-lg font-bold dark:text-white">Transactions</Text>
-
       <View>
         {props.resp?.length === 0 && (
           <View>
@@ -25,7 +24,8 @@ const Transaction = (props: any) => {
             <Single
               id={e.id}
               key={i}
-              title={e._data.description}
+              plan={e._data.plan}
+              description={e._data.description}
               date={formattedDate(e._data.createdAt)}
               amount={e._data.amount}
               isIncome={e._data.category === "#income"}
@@ -40,7 +40,7 @@ const Transaction = (props: any) => {
 };
 
 export const Single = ({
-  title,
+  description,
   date,
   amount,
   isLast,
@@ -48,10 +48,12 @@ export const Single = ({
   navigation,
   category,
   id,
+  plan,
 }: {
+  plan: string;
   id: string;
   category: string;
-  title: string;
+  description: string;
   date: string;
   amount: string;
   isLast: boolean;
@@ -59,13 +61,19 @@ export const Single = ({
   navigation: any;
 }) => {
   const colorScheme = useColorScheme();
-  // const router = useRouter();
 
   return (
     <View>
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("EditTransaction", { title, date, amount, id })
+          navigation.navigate("EditTransaction", {
+            description,
+            date,
+            amount,
+            id,
+            plan: plan,
+            category: category,
+          })
         }
         className="space-x-3 py-2 flex justify-between items-center flex-row"
       >
@@ -85,7 +93,7 @@ export const Single = ({
             className="text-lg font-semibold tracking-wider"
             style={{ color: Colors[colorScheme ?? "light"].text }}
           >
-            {title}
+            {description}
           </Text>
 
           <Text className="text-xs" style={{ color: "gray" }}>

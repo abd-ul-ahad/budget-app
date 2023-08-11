@@ -390,6 +390,14 @@ const AddSpending = ({
             className="py-2 space-y-1"
             style={{ display: whichOne === 1 ? "flex" : "none" }}
           >
+            {categories?.length === 0 && (
+              <Text
+                className="text-base text-center font-semibold"
+                style={{ color: Colors[colorScheme ?? "light"].text }}
+              >
+                No category.
+              </Text>
+            )}
             {categories?.map((e, i) => (
               <TouchableOpacity
                 onPress={() => {
@@ -457,7 +465,7 @@ const AddSpending = ({
                 className="rounded-lg px-2 py-2 flex flex-row justify-start items-center"
               >
                 <Text className="text-base font-semibold tracking-wider">
-                  {e.data.title}
+                  {e._data.title}
                 </Text>
               </TouchableOpacity>
             ))}

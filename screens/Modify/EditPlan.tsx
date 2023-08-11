@@ -7,19 +7,19 @@ import {
   useColorScheme,
 } from "react-native";
 import { Ionicons, Octicons } from "@expo/vector-icons";
-import Colors from "../constants/Colors";
-import { Text, View } from "../components/Themed";
-import { FadeInView } from "../components/animations";
+import Colors from "../../constants/Colors";
+import { Text, View } from "../../components/Themed";
+import { FadeInView } from "../../components/animations";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect, useRef, useState } from "react";
-import { useFirestore } from "../firebase/useFirestore";
-import { RootState } from "../store";
+import { useFirestore } from "../../firebase/useFirestore";
+import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { set } from "../store/slices/snackSlice";
+import { set } from "../../store/slices/snackSlice";
 import { Snackbar } from "react-native-paper";
-import { reload } from "../store/slices/reloadSlice";
-import { triggerNotifications } from "../utils/Notifications";
-import { CalculateBalance } from "../utils/CalculateBalance";
+import { reload } from "../../store/slices/reloadSlice";
+import { triggerNotifications } from "../../utils/Notifications";
+import { CalculateBalance } from "../../utils/CalculateBalance";
 
 interface Payload {
   title: string;
