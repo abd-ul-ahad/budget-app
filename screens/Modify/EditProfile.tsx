@@ -155,7 +155,61 @@ export default function EditProfile(props: any) {
             </Text>
           </View>
 
-          <Text className="dark:text-white text-lg font-semibold mb-1">
+          <View>
+            <Text className="dark:text-white text-lg font-semibold mb-1">
+              Password
+            </Text>
+            <View className="flex flex-row">
+              <TextInput
+                className="py-2 px-3 dark:text-white rounded-l-full w-11/12"
+                style={{
+                  borderColor: "grey",
+                  borderLeftWidth: 2,
+                  borderBottomWidth: 2,
+                  borderTopWidth: 2,
+                }}
+                placeholder="*****"
+                secureTextEntry={!showPassword}
+                placeholderTextColor="grey"
+                keyboardType="default"
+                value={payload.password}
+                onChangeText={(text) =>
+                  setPayload({
+                    ...payload,
+                    password: text,
+                    isPass: ValPassword(text),
+                    isPassMatched: ConPassword(text, payload.cPassword!),
+                  })
+                }
+              />
+              <Pressable
+                className="rounded-r-full h-full flex justify-between items-center py-3 pr-2"
+                onPress={() => setShowPassword(!showPassword)}
+                style={{
+                  borderColor: "grey",
+                  borderRightWidth: 2,
+                  borderBottomWidth: 2,
+                  borderTopWidth: 2,
+                }}
+              >
+                {showPassword ? (
+                  <FontAwesome5
+                    name="eye"
+                    size={18}
+                    color={Colors[colorScheme ?? "light"].text}
+                  />
+                ) : (
+                  <FontAwesome5
+                    name="eye-slash"
+                    size={16}
+                    color={Colors[colorScheme ?? "light"].text}
+                  />
+                )}
+              </Pressable>
+            </View>
+          </View>
+
+          <Text className="dark:text-white text-lg font-semibold mb-1 mt-4">
             New password
           </Text>
           <View className="flex flex-row">

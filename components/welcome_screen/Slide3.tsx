@@ -34,7 +34,7 @@ export default function Slide3({navigation}: any) {
           </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate("Login")}
-            className="flex justify-between items-center mt-5 flex-row py-4 rounded-full"
+            className="flex justify-between items-center my-5 flex-row py-4 rounded-full"
             style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
           >
             <Entypo

@@ -67,7 +67,7 @@ const Hero = ({ currentBalance, navigation }: any) => {
             </View>
           </View>
 
-          <View className="flex justify-between items-center flex-row w-full">
+          <View className="flex justify-between items-center mt-3 flex-row w-full">
             <TouchableOpacity
               className="px-10 py-3 rounded-xl"
               style={styles.button}

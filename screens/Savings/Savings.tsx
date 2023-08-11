@@ -1,15 +1,21 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, View } from "../../components/Themed";
-import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Dimensions, SafeAreaView, useColorScheme } from "react-native";
+import WaveChart from "../../components/WaveChart";
 import Colors from "../../constants/Colors";
+import { ScrollView } from "react-native";
+import { Text, View } from "../../components/Themed";
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{
+        backgroundColor: Colors[colorScheme ?? "light"].background,
+      }}
+    >
       <ScrollView>
-        <View className="w-full flex flex-row justify-start items-center pt-4">
+        <View className="flex-row flex mt-6 justify-start items-center">
           <TouchableOpacity
             className="py-4 px-3"
             onPress={() => props.navigation.goBack()}
@@ -24,7 +30,9 @@ export default function Savings(props: any) {
             Savings
           </Text>
         </View>
-        
+        <View style={{ height: 800 }}>
+          <WaveChart />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
