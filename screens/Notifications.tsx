@@ -18,6 +18,7 @@ export default function Notifications(props: any) {
   const [reload, setReload] = useState<boolean>(false);
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(-1);
+  const [deleteToggle, setDeleteToggle] = useState<boolean>(false);
 
   const load = async () => {
     let resp = await getNotifications();
@@ -48,12 +49,7 @@ export default function Notifications(props: any) {
             <TouchableOpacity
               disabled={notifi?.length === 0}
               className="py-4 px-5"
-              onPress={async () => {
-                try {
-                  await AsyncStorage.clear();
-                  setReload(!reload);
-                } catch {}
-              }}
+              onPress={() => setDeleteToggle(true)}
             >
               <MaterialIcons
                 name="delete-outline"
@@ -121,6 +117,22 @@ export default function Notifications(props: any) {
         }}
       >
         Are you sure?
+      </Snackbar>
+      <Snackbar
+        style={{ marginBottom: "1%" }}
+        visible={deleteToggle}
+        onDismiss={() => setDeleteToggle(false)}
+        action={{
+          label: "All",
+          onPress: async () => {
+            try {
+              await AsyncStorage.clear();
+              setReload(!reload);
+            } catch {}
+          },
+        }}
+      >
+        Clear all?
       </Snackbar>
     </SafeAreaView>
   );

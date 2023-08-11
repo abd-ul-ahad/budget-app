@@ -1,72 +1,75 @@
 import {
   Image,
-  Platform,
   Pressable,
+  ScrollView,
   TextInput,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { Text, View } from "../components/Themed";
-import Colors from "../constants/Colors";
-import { Entypo, FontAwesome5 } from "@expo/vector-icons";
-import { useState } from "react";
-// import { useRouter } from "expo-router";
-import {
-  ValEmail,
-  ValName,
-  ValPassword,
-  ConPassword,
-} from "../constants/Validations";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
-import { useSignUp } from "../firebase/useSignUp";
+import { Text, View } from "../../components/Themed";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import Colors from "../../constants/Colors";
+import { RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { Payload, initialPayload } from "../../components/SignUp";
+import { ConPassword, ValName, ValPassword } from "../../constants/Validations";
+import { triggerNotifications } from "../../utils/Notifications";
 import { Snackbar } from "react-native-paper";
-import { triggerNotifications } from "../utils/Notifications";
+import { Auth } from "../../firebase/init";
+import { login as LoginState } from "../../store/slices/userSlice";
+import { firebase } from "@react-native-firebase/auth";
 
-export interface Payload {
-  name?: string;
-  email?: string;
-  password?: string;
-  cPassword?: string;
-  isName?: boolean | null;
-  isEmail?: boolean | null;
-  isPass?: boolean | null;
-  isPassMatched?: boolean | null;
-}
-
-export const initialPayload: Payload = {
-  name: "",
-  email: "",
-  password: "",
-  cPassword: "",
-  isName: null,
-  isEmail: null,
-  isPass: null,
-  isPassMatched: null,
-};
-
-export default function SignUp({ flatListRef }: { flatListRef: any }) {
+export default function EditProfile(props: any) {
+  const dispatch = useDispatch();
   const colorScheme = useColorScheme();
+  const user = useSelector((state: RootState) => state.user);
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [payload, setPayload] = useState<Payload>(initialPayload);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [payload, setPayload] = useState<Payload>({
+    ...initialPayload,
+    name: user.name,
+  });
   const [toggleSnackbar, setToggleSnackbar] = useState<{
     open: boolean;
     msg: string;
   }>({ open: false, msg: "" });
-
-  const { signup } = useSignUp();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const { isName, isEmail, isPass, isPassMatched } = payload;
+    const { isName, isPass, isPassMatched } = payload;
 
-    if (isName && isEmail && isPass && isPassMatched) {
+    if (isName && ((isPass && isPassMatched) || payload.password === "")) {
       try {
-        await signup(payload.email!, payload.password!, payload.name!);
-        triggerNotifications("Sign Up Successful", null);
+        const update = {
+          displayName: payload.name,
+        };
+
+        payload.name === user.name &&
+          setToggleSnackbar({ open: true, msg: "Can't set the value" });
+
+        payload.name !== user.name &&
+          (await Auth.currentUser?.updateProfile(update));
+
+        // TODO
+        // payload.password !== "" &&
+        //   (await firebase.auth.EmailAuthProvider.credential(
+        //     Auth.currentUser!,
+        //     "df"
+        //   ));
+        dispatch(
+          LoginState({
+            name: Auth.currentUser?.displayName!,
+            email: Auth.currentUser?.email!,
+            uid: Auth.currentUser?.uid!,
+          })
+        );
+        triggerNotifications("Profile updated.", null);
       } catch (error: any) {
+        console.log({ error });
+
         setToggleSnackbar({
           open: true,
           msg:
@@ -82,29 +85,53 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
       setIsLoading(false);
       return;
     }
-
-    setPayload({ isEmail: false, isPass: false });
     setIsLoading(false);
   };
 
   return (
     <SafeAreaView>
-      <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
-      <View className="space-y-4">
-        <View className="flex justify-center items-center">
-          {colorScheme === "light" ? (
-            <Image
-              style={{ resizeMode: "contain", width: 200, height: 200 }}
-              source={require("../assets/images/logo.png")}
+      <ScrollView>
+        <View className="w-full flex flex-row justify-start items-center pt-4">
+          <TouchableOpacity
+            className="py-4 px-3"
+            onPress={() => props.navigation.goBack()}
+          >
+            <Ionicons
+              name="chevron-back-sharp"
+              size={26}
+              color={Colors[colorScheme ?? "light"].text}
             />
-          ) : (
-            <Image
-              style={{ resizeMode: "contain", width: 200, height: 200 }}
-              source={require("../assets/images/logo-dark.png")}
-            />
-          )}
+          </TouchableOpacity>
+          <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
+            Profile
+          </Text>
         </View>
-        <View>
+        <View className="flex justify-center items-center space-y-3 pt-3 pb-5">
+          <Image
+            className="rounded-full"
+            style={{
+              width: 100,
+              height: 100,
+              resizeMode: "stretch",
+            }}
+            source={require("../../assets/images/fff.webp")}
+          />
+          <View className="px-3">
+            <Text
+              className="text-xl text-center font-semibold"
+              style={{ color: Colors[colorScheme ?? "light"].text }}
+            >
+              {user.name}
+            </Text>
+            <Text
+              className="tracking-wider text-base text-center font-semibold"
+              style={{ color: "#767676" }}
+            >
+              {user.email}
+            </Text>
+          </View>
+        </View>
+        <View className="px-3">
           <View className="space-y-1">
             <Text className="dark:text-white text-base font-semibold">
               Username
@@ -127,32 +154,9 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
               Invalid Name
             </Text>
           </View>
-          <View className="space-y-1">
-            <Text className="dark:text-white text-base font-semibold">
-              Email
-            </Text>
-            <TextInput
-              className="border-2 py-2 px-3 dark:text-white rounded-full"
-              style={{ borderColor: "grey", borderWidth: 2 }}
-              placeholderTextColor="grey"
-              placeholder="e.g username@domain.com"
-              keyboardType="default"
-              value={payload.email}
-              onChangeText={(text) =>
-                setPayload({ ...payload, email: text, isEmail: ValEmail(text) })
-              }
-            />
-            <Text
-              className="text-right text-red-700 mr-2"
-              style={{
-                opacity: payload.isEmail === false ? 1 : 0,
-              }}
-            >
-              Invalid Email
-            </Text>
-          </View>
+
           <Text className="dark:text-white text-lg font-semibold mb-1">
-            Password
+            New password
           </Text>
           <View className="flex flex-row">
             <TextInput
@@ -239,39 +243,18 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
             </Text>
           </View>
         </View>
-        <TouchableOpacity
-          className="flex justify-between items-center flex-row py-4 rounded-full"
-          style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
-          onPress={() => handleSubmit()}
-        >
-          <Entypo
-            name="chevron-right"
-            size={1}
-            className="opacity-1"
-            color={Colors[colorScheme ?? "light"].tint}
-          />
-          <Text style={{ color: "white" }} className="text-sm tracking-wide ">
-            {isLoading ? "Loading..." : "Register"}
-          </Text>
-          <Entypo name="chevron-right" size={20} color={"white"} />
-        </TouchableOpacity>
-        <View className="flex flex-row justify-center items-center">
-          <Text>Already registered?</Text>
+        <View className="px-3 pb-10">
           <TouchableOpacity
-            className="py-2 px-3"
-            onPress={() =>
-              flatListRef.current?.scrollToIndex({ animated: true, index: 0 })
-            }
+            className="flex justify-center items-center flex-row py-4 rounded-full"
+            style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+            onPress={() => handleSubmit()}
           >
-            <Text
-              style={{ color: Colors[colorScheme ?? "light"].tint }}
-              className="font-bold tracking-wider"
-            >
-              Login
+            <Text style={{ color: "white" }} className="text-sm tracking-wide ">
+              {isLoading ? "Loading..." : "Update"}
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
       <Snackbar
         style={{ marginBottom: "1%" }}
         visible={toggleSnackbar?.open}

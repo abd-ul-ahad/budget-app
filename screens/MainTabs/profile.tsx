@@ -60,7 +60,10 @@ export default function Profile(props: any) {
               </View>
             </View>
             <View className="w-full">
-              <TouchableOpacity className="pl-6 py-3 flex w-full justify-start items-start">
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate("EditProfile")}
+                className="pl-6 py-3 flex w-full justify-start items-start"
+              >
                 <Text className="font-semibold tracking-wider text-base">
                   Account
                 </Text>

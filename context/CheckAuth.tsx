@@ -26,6 +26,7 @@ import NoInternet from "../screens/NoInternet";
 import Notifications from "../screens/Notifications";
 import GoalBasedSavings from "../screens/Savings/GoalBasedSaving";
 import Savings from "../screens/Savings/Savings";
+import EditProfile from "../screens/Modify/EditProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -107,6 +108,11 @@ export default function CheckAuth() {
                   name="Savings"
                   options={{ headerShown: false, presentation: "modal" }}
                   component={Savings}
+                />
+                <Stack.Screen
+                  name="EditProfile"
+                  options={{ headerShown: false, presentation: "modal" }}
+                  component={EditProfile}
                 />
               </Stack.Group>
             ) : (

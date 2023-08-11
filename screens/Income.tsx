@@ -143,9 +143,10 @@ export default function Income(props: any) {
                   )
                   .map((e: any, i: number, a: any) => (
                     <Single
+                      plan={e._data.plan}
                       key={i}
                       id={e.id}
-                      title={e._data.description}
+                      description={e._data.description}
                       date={formattedDate(e._data.createdAt)}
                       amount={e._data.amount}
                       isIncome={e._data.category === "#income"}
