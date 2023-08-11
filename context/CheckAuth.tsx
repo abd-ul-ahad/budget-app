@@ -25,6 +25,7 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import NoInternet from "../screens/NoInternet";
 import Notifications from "../screens/Notifications";
 import GoalBasedSavings from "../screens/Savings/GoalBasedSaving";
+import Savings from "../screens/Savings/Savings";
 
 const Stack = createNativeStackNavigator();
 
@@ -101,6 +102,11 @@ export default function CheckAuth() {
                   name="GoalBasedSavings"
                   options={{ headerShown: false, presentation: "modal" }}
                   component={GoalBasedSavings}
+                />
+                <Stack.Screen
+                  name="Savings"
+                  options={{ headerShown: false, presentation: "modal" }}
+                  component={Savings}
                 />
               </Stack.Group>
             ) : (

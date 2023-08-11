@@ -33,7 +33,7 @@ export default function WelcomeScreen(props: any) {
       {/* Outer container with a flex layout */}
       <View
         className="flex justify-start items-start h-screen"
-        style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
+        style={{ backgroundColor: Colors[colorScheme ?? "light"].background, height: "100%" }}
       >
         {/* FlatList to display slides */}
         <FlatList

@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Platform, useColorScheme } from "react-native";
+import { Platform, useColorScheme, LogBox } from "react-native";
+LogBox.ignoreAllLogs()
 
 // importing redux provider
 import { store } from "./store/index";

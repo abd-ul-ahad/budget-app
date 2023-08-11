@@ -83,7 +83,7 @@ export default function Notifications(props: any) {
               />
             </TouchableOpacity>
             <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
-              Goal based saving
+              Saving strategies
             </Text>
 
             <TouchableOpacity

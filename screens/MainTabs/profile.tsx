@@ -30,7 +30,7 @@ export default function Profile(props: any) {
       >
         <View className="flex justify-center items-center pt-6">
           <View className="flex mb-3 justify-between flex-row items-start w-full">
-            <Text className="text-2xl font-semibold py-4 tracking-wider pl-6">
+            <Text className="text-2xl font-semibold py-4 tracking-wider pl-4">
               Profile
             </Text>
             <TouchableOpacity
@@ -41,7 +41,7 @@ export default function Profile(props: any) {
             </TouchableOpacity>
           </View>
           <View className="w-full pt-1">
-            <View className="flex pl-3 space-x-6 mb-5 flex-row justify-start items-center">
+            <View className="flex pl-6 space-x-6 mb-5 flex-row justify-start items-center">
               <Image
                 className="rounded-full"
                 style={{ width: 50, height: 50, resizeMode: "stretch" }}
@@ -60,7 +60,7 @@ export default function Profile(props: any) {
               </View>
             </View>
             <View className="w-full">
-              <TouchableOpacity className="px-5 py-3 flex w-full justify-start items-start">
+              <TouchableOpacity className="pl-6 py-3 flex w-full justify-start items-start">
                 <Text className="font-semibold tracking-wider text-base">
                   Account
                 </Text>
@@ -68,11 +68,19 @@ export default function Profile(props: any) {
             </View>
             <View className="w-full">
               <TouchableOpacity
-                className="px-5 py-3 flex w-full justify-start items-start"
+                className="pl-6 py-3 flex w-full justify-start items-start"
+                onPress={() => props.navigation.navigate("Savings")}
+              >
+                <Text className="font-semibold tracking-wider text-base">
+                  Savings
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="pl-6 py-3 flex w-full justify-start items-start"
                 onPress={() => props.navigation.navigate("GoalBasedSavings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
-                  Goal based saving
+                  Saving strategies
                 </Text>
               </TouchableOpacity>
             </View>
@@ -81,7 +89,7 @@ export default function Profile(props: any) {
               style={{ borderTopWidth: 15, borderTopColor: "#f5f5f5" }}
             >
               <TouchableOpacity
-                className="px-5 py-3 flex w-full justify-start items-start"
+                className="pl-6 py-3 flex w-full justify-start items-start"
                 onPress={() => setToggleSnackbar(true)}
               >
                 <Text className="font-semibold tracking-wider text-base">
