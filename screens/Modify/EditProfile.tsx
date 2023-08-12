@@ -13,13 +13,36 @@ import Colors from "../../constants/Colors";
 import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { Payload, initialPayload } from "../../components/SignUp";
 import { ConPassword, ValName, ValPassword } from "../../constants/Validations";
 import { triggerNotifications } from "../../utils/Notifications";
 import { Snackbar } from "react-native-paper";
 import { Auth } from "../../firebase/init";
 import { login as LoginState } from "../../store/slices/userSlice";
 import { firebase } from "@react-native-firebase/auth";
+
+export interface Payload {
+  name?: string;
+  email?: string;
+  oldPassword?: string;
+  newPassword?: string;
+  cPassword?: string;
+  isName?: boolean | null;
+  isEmail?: boolean | null;
+  isNewPass?: boolean | null;
+  isPassMatched?: boolean | null;
+  isOldPass?: boolean | null;
+}
+
+export const initialPayload: Payload = {
+  newPassword: "",
+  cPassword: "",
+  oldPassword: "",
+  isName: null,
+  isEmail: null,
+  isNewPass: null,
+  isPassMatched: null,
+  isOldPass: null,
+};
 
 export default function EditProfile(props: any) {
   const dispatch = useDispatch();
@@ -39,37 +62,72 @@ export default function EditProfile(props: any) {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const { isName, isPass, isPassMatched } = payload;
+    const { isName, isNewPass, isPassMatched, isOldPass } = payload;
 
-    if (isName && ((isPass && isPassMatched) || payload.password === "")) {
+    if (
+      isName !== false &&
+      ((isNewPass && isPassMatched && isOldPass) || payload.newPassword === "")
+    ) {
       try {
         const update = {
           displayName: payload.name,
         };
 
-        payload.name === user.name &&
-          setToggleSnackbar({ open: true, msg: "Can't set the value" });
+        payload.name !== user.name &&
+          (async function () {
+            await Auth.currentUser?.updateProfile(update);
+            setToggleSnackbar({
+              open: true,
+              msg: "Name updated.",
+            });
+
+            // updating state variables
+            dispatch(
+              LoginState({
+                name: Auth.currentUser?.displayName!,
+                email: Auth.currentUser?.email!,
+                uid: Auth.currentUser?.uid!,
+              })
+            );
+          })();
+
+        // changing password
+        const provider = firebase.auth.EmailAuthProvider;
+        const authCredential = provider.credential(
+          user.email,
+          payload.oldPassword!
+        );
+
+        payload.isOldPass === true &&
+          Auth.currentUser
+            ?.reauthenticateWithCredential(authCredential)
+            .then((r) => {
+              var user = firebase.auth().currentUser;
+              user!
+                .updatePassword(payload.newPassword!)
+                .then(() => {
+                  triggerNotifications("Profile updated.", null);
+                  return;
+                })
+                .catch((error) => {
+                  setToggleSnackbar({
+                    open: true,
+                    msg: "Please try again later",
+                  });
+                  return;
+                });
+            })
+            .catch((error) => {
+              setToggleSnackbar({
+                open: true,
+                msg: "Please try again later",
+              });
+              return;
+            });
 
         payload.name !== user.name &&
-          (await Auth.currentUser?.updateProfile(update));
-
-        // TODO
-        // payload.password !== "" &&
-        //   (await firebase.auth.EmailAuthProvider.credential(
-        //     Auth.currentUser!,
-        //     "df"
-        //   ));
-        dispatch(
-          LoginState({
-            name: Auth.currentUser?.displayName!,
-            email: Auth.currentUser?.email!,
-            uid: Auth.currentUser?.uid!,
-          })
-        );
-        triggerNotifications("Profile updated.", null);
+          triggerNotifications("Profile updated.", null);
       } catch (error: any) {
-        console.log({ error });
-
         setToggleSnackbar({
           open: true,
           msg:
@@ -81,7 +139,6 @@ export default function EditProfile(props: any) {
         return;
       }
 
-      setPayload(initialPayload);
       setIsLoading(false);
       return;
     }
@@ -172,13 +229,12 @@ export default function EditProfile(props: any) {
                 secureTextEntry={!showPassword}
                 placeholderTextColor="grey"
                 keyboardType="default"
-                value={payload.password}
+                value={payload.oldPassword}
                 onChangeText={(text) =>
                   setPayload({
                     ...payload,
-                    password: text,
-                    isPass: ValPassword(text),
-                    isPassMatched: ConPassword(text, payload.cPassword!),
+                    oldPassword: text,
+                    isOldPass: ValPassword(text),
                   })
                 }
               />
@@ -207,9 +263,15 @@ export default function EditProfile(props: any) {
                 )}
               </Pressable>
             </View>
+            <Text
+              className="text-right text-red-700 mt-1 mr-2"
+              style={{ opacity: payload.isOldPass === false ? 1 : 0 }}
+            >
+              Minimum 6 characters
+            </Text>
           </View>
 
-          <Text className="dark:text-white text-lg font-semibold mb-1 mt-4">
+          <Text className="dark:text-white text-lg font-semibold mb-1 mt-1">
             New password
           </Text>
           <View className="flex flex-row">
@@ -225,12 +287,12 @@ export default function EditProfile(props: any) {
               secureTextEntry={!showPassword}
               placeholderTextColor="grey"
               keyboardType="default"
-              value={payload.password}
+              value={payload.newPassword}
               onChangeText={(text) =>
                 setPayload({
                   ...payload,
-                  password: text,
-                  isPass: ValPassword(text),
+                  newPassword: text,
+                  isNewPass: ValPassword(text),
                   isPassMatched: ConPassword(text, payload.cPassword!),
                 })
               }
@@ -262,12 +324,12 @@ export default function EditProfile(props: any) {
           </View>
           <Text
             className="text-right text-red-700 mt-1 mr-2"
-            style={{ opacity: payload.isPass === false ? 1 : 0 }}
+            style={{ opacity: payload.isNewPass === false ? 1 : 0 }}
           >
             Minimum 6 characters
           </Text>
           <View className="space-y-1">
-            <Text className="dark:text-white text-base foInvalid credentialsnt-semibold">
+            <Text className="dark:text-white text-base font-semibold">
               Confirm Password
             </Text>
             <TextInput
@@ -285,12 +347,12 @@ export default function EditProfile(props: any) {
                 setPayload({
                   ...payload,
                   cPassword: text,
-                  isPassMatched: ConPassword(payload.password!, text),
+                  isPassMatched: ConPassword(payload.newPassword!, text),
                 })
               }
             />
             <Text
-              className="text-right text-red-700 mt-1 mr-2"
+              className="text-right text-red-700 mt-1 py-2 mr-2"
               style={{ opacity: payload.isPassMatched === false ? 1 : 0 }}
             >
               Password does not matched

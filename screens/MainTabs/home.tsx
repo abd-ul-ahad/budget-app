@@ -47,14 +47,12 @@ export default function Home(props: any) {
   const [plans, setPlans] = useState<Array<any>>();
   const [refreshing, setRefreshing] = useState(false);
 
-  const loadBalances = async () => {
+  (async () => {
     const { incomeBalance, outcomeBalance, currentBalance } =
       await CalculateBalance();
 
     dispatch(setBalances({ incomeBalance, outcomeBalance, currentBalance }));
-  };
-
-  loadBalances();
+  })();
 
   const load = async () => {
     setRefreshing(true);
