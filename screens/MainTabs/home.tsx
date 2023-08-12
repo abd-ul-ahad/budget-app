@@ -23,6 +23,7 @@ import { CalculateBalance } from "../../utils/CalculateBalance";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { setBalances } from "../../store/slices/balanceSlice";
+import Savings from "../../components/Savings";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -32,6 +33,7 @@ export default function Home(props: any) {
   const user = useSelector((state: RootState) => state.user);
   const balances = useSelector((state: RootState) => state.balances);
   const reloadState = useSelector((state: RootState) => state.reload);
+
   const dispatch = useDispatch();
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
@@ -41,10 +43,12 @@ export default function Home(props: any) {
     user.uid!
   );
   const { getDocument: getPlanDocument } = useFirestore("plans", user.uid!);
+  const { getDocument: getSavings } = useFirestore("savings", user.uid!);
 
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
   const [trans, setTrans] = useState<Array<any>>();
   const [plans, setPlans] = useState<Array<any>>();
+  const [savings, setSavings] = useState<Array<any>>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   (async () => {
@@ -59,6 +63,7 @@ export default function Home(props: any) {
     try {
       await getTransactions().then((doc) => setTrans(doc?.docs));
       await getPlanDocument().then((doc) => setPlans(doc?.docs));
+      await getSavings().then((doc) => setSavings(doc?.docs!));
     } catch {
       setToggleSnack(true);
     }
@@ -102,6 +107,9 @@ export default function Home(props: any) {
               navigation={props.navigation}
             />
           </View>
+
+          {/* Savings */}
+          <Savings savings={savings} navigation={props.navigation} />
 
           {/* Plans section */}
           <View className="px-3 pt-1 pb-9 space-y-2">

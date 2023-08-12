@@ -2,7 +2,6 @@ import { View, useColorScheme } from "react-native";
 import { Text } from "../Themed";
 import Colors from "../../constants/Colors";
 import { ProgressBar } from "react-native-paper";
-import { useState } from "react";
 
 export default function Single({
   progress = 0,

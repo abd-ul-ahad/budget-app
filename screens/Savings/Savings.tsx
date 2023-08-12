@@ -1,23 +1,75 @@
-import {
-  Dimensions,
-  SafeAreaView,
-  TextInput,
-  useColorScheme,
-} from "react-native";
+import { SafeAreaView, TextInput, useColorScheme } from "react-native";
 import WaveChart from "../../components/WaveChart";
 import Colors from "../../constants/Colors";
 import { ScrollView } from "react-native";
 import { Text, View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Snackbar } from "react-native-paper";
+import { useFirestore } from "../../firebase/useFirestore";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { triggerNotifications } from "../../utils/Notifications";
+import calculateSavingsByMonth from "../../utils/Savings";
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
 
-  const [loading, setLoading] = useState<boolean>();
+  // from redux
+  const user = useSelector((state: RootState) => state.user);
+  const reloadState = useSelector((state: RootState) => state.reload);
 
-  const onSubmit = async () => {};
+  // state variables
+  const [loading, setLoading] = useState<boolean>();
+  const [openSnackbar, setOpenSnackbar] = useState<{
+    open: boolean;
+    msg: string;
+  }>({ open: false, msg: "" });
+  const [amount, setAmount] = useState<number>(0);
+  //
+  const [allSavings, setAllSavings] = useState<Array<any>>();
+  const [currentMonthSavings, setCurrentMonthSavings] = useState<{
+    currentAmount: number;
+    targetAmount: number;
+    month: string;
+  }>({ targetAmount: 0, currentAmount: 0, month: "" });
+
+  //
+  const { addDocument, getDocument } = useFirestore("savings", user.uid!);
+
+  const onSubmit = async () => {
+    try {
+      setLoading(true);
+      if (amount > 0) {
+        addDocument({ currentAmount: amount, targetAmount: amount }).then(
+          () => {
+            triggerNotifications(`${amount} £ to Savings.`, null);
+          }
+        );
+      } else {
+        setOpenSnackbar({ open: true, msg: "Invalid amount." });
+      }
+    } catch {
+      setOpenSnackbar({ open: true, msg: "Error please try again later." });
+    }
+
+    setLoading(false);
+  };
+
+  // loading savings
+  useEffect(() => {
+    (async function () {
+      getDocument()
+        .then((doc) => {
+          setAllSavings(doc?.docs);
+          setCurrentMonthSavings(calculateSavingsByMonth(doc?.docs));
+        })
+        .catch(() => {
+          setOpenSnackbar({ open: true, msg: "Error please start app." });
+        });
+    })();
+  }, [reloadState]);
 
   return (
     <SafeAreaView
@@ -43,7 +95,7 @@ export default function Savings(props: any) {
         </View>
         <View className="px-3 mt-3 space-y-2">
           <Text className="dark:text-white text-lg font-semibold">
-            Spend Amount
+            Save Amount
           </Text>
           <TextInput
             className="py-2 px-3 dark:text-white rounded-lg"
@@ -51,6 +103,11 @@ export default function Savings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
+            value={amount === 0 ? "" : `${amount}`}
+            onChangeText={(text) => {
+              var numberRegex = /^\d+$/;
+              if (numberRegex.test(text)) setAmount(+text);
+            }}
           />
           <TouchableOpacity
             disabled={loading}
@@ -64,7 +121,12 @@ export default function Savings(props: any) {
           </TouchableOpacity>
         </View>
         <View className="flex pl-3 flex-row justify-between items-center mt-4">
-          <Text className="text-xl font-bold tracking-wider">This month</Text>
+          <View>
+            <Text className="text-xl font-bold tracking-wider">This month</Text>
+            <Text className="text-base tracking-wider">
+              ( {currentMonthSavings.month} )
+            </Text>
+          </View>
           <TouchableOpacity className="flex flex-row justify-between items-center py-2 px-3">
             <Text className="text-base text-red-600 font-semibold tracking-wider">
               All
@@ -77,9 +139,22 @@ export default function Savings(props: any) {
           </TouchableOpacity>
         </View>
         <View style={{ height: 800 }}>
-          <WaveChart />
+          <WaveChart
+            level={
+              (currentMonthSavings.currentAmount /
+                currentMonthSavings.targetAmount) *
+              100
+            }
+          />
         </View>
       </ScrollView>
+      <Snackbar
+        style={{ marginBottom: "1%" }}
+        visible={openSnackbar.open}
+        onDismiss={() => setOpenSnackbar({ ...openSnackbar, open: false })}
+      >
+        {openSnackbar.msg}
+      </Snackbar>
     </SafeAreaView>
   );
 }

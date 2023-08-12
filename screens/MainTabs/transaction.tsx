@@ -51,7 +51,6 @@ export default function Transaction(props: any) {
       setToggleSnack(true);
     } finally {
       setRefreshing(false);
-      
     }
   };
 
@@ -103,7 +102,9 @@ export default function Transaction(props: any) {
                   )
                 : chartDataByYear.years || [""]
             }
-            _data={labelI === 0 ? chartDataByMonth : (chartDataByYear.data || [0])}
+            _data={
+              labelI === 0 ? chartDataByMonth : chartDataByYear.data || [0]
+            }
           />
         </View>
 
@@ -170,7 +171,8 @@ export default function Transaction(props: any) {
                   <Single
                     key={i}
                     id={e.id}
-                    title={e._data.description}
+                    plan={e._data.plan}
+                    description={e._data.description}
                     date={formattedDate(e._data.createdAt)}
                     amount={e._data.amount}
                     isIncome={e._data.category === "#income"}

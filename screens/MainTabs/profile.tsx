@@ -41,7 +41,15 @@ export default function Profile(props: any) {
             </TouchableOpacity>
           </View>
           <View className="w-full pt-1">
-            <View className="flex pl-6 space-x-6 mb-5 flex-row justify-start items-center">
+            <View className="pl-6 py-3 flex w-full justify-start items-start">
+              <Text className="font-semibold tracking-wider text-base">
+                Account
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("EditProfile")}
+              className="flex pl-6 space-x-6 mb-5 flex-row justify-start items-center"
+            >
               <Image
                 className="rounded-full"
                 style={{ width: 50, height: 50, resizeMode: "stretch" }}
@@ -58,17 +66,20 @@ export default function Profile(props: any) {
                   {user?.email}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
             <View className="w-full">
               <TouchableOpacity
-                onPress={() => props.navigation.navigate("EditProfile")}
                 className="pl-6 py-3 flex w-full justify-start items-start"
+                onPress={() => setToggleSnackbar(true)}
               >
                 <Text className="font-semibold tracking-wider text-base">
-                  Account
+                  Logout
                 </Text>
               </TouchableOpacity>
             </View>
+
+            {/* Divider */}
+            <View style={{ borderTopWidth: 6, borderTopColor: "#f5f5f5" }} />
             <View className="w-full">
               <TouchableOpacity
                 className="pl-6 py-3 flex w-full justify-start items-start"
@@ -84,19 +95,6 @@ export default function Profile(props: any) {
               >
                 <Text className="font-semibold tracking-wider text-base">
                   Saving strategies
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View
-              className="w-full"
-              style={{ borderTopWidth: 15, borderTopColor: "#f5f5f5" }}
-            >
-              <TouchableOpacity
-                className="pl-6 py-3 flex w-full justify-start items-start"
-                onPress={() => setToggleSnackbar(true)}
-              >
-                <Text className="font-semibold tracking-wider text-base">
-                  Logout
                 </Text>
               </TouchableOpacity>
             </View>

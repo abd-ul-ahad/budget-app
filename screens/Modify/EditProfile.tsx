@@ -101,7 +101,7 @@ export default function EditProfile(props: any) {
         payload.isOldPass === true &&
           Auth.currentUser
             ?.reauthenticateWithCredential(authCredential)
-            .then((r) => {
+            .then(() => {
               var user = firebase.auth().currentUser;
               user!
                 .updatePassword(payload.newPassword!)
@@ -109,7 +109,7 @@ export default function EditProfile(props: any) {
                   triggerNotifications("Profile updated.", null);
                   return;
                 })
-                .catch((error) => {
+                .catch(() => {
                   setToggleSnackbar({
                     open: true,
                     msg: "Please try again later",
@@ -117,7 +117,7 @@ export default function EditProfile(props: any) {
                   return;
                 });
             })
-            .catch((error) => {
+            .catch(() => {
               setToggleSnackbar({
                 open: true,
                 msg: "Please try again later",

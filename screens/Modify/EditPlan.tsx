@@ -1,6 +1,4 @@
-// Import necessary components and libraries
 import {
-  Dimensions,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -19,7 +17,6 @@ import { set } from "../../store/slices/snackSlice";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
-import { CalculateBalance } from "../../utils/CalculateBalance";
 
 interface Payload {
   title: string;
