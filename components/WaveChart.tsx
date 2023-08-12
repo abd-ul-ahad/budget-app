@@ -1,14 +1,9 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text as DefaultText, View } from "../components/Themed";
+import { View } from "../components/Themed";
 import {
   Alert,
   Dimensions,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import {
   Skia,
@@ -30,11 +25,10 @@ import { line, curveBasis } from "d3";
 const dimens = Dimensions.get("screen");
 const width = 150;
 const frequency = 2;
-const initialAmplitude = 10;
+const initialAmplitude = 2;
 const verticalShiftConst = 100;
 const height = 600;
 const horizontalShift = (dimens.width - width) / 2;
-// const indicatorArray = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 const indicatorArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 export default function WaveChart() {
@@ -130,7 +124,7 @@ export default function WaveChart() {
             key={val.toString()}
             x={50}
             y={getLabelYValueOffset(val)}
-            text={getYLabelValue((indicatorArray.length - i - 1)*10)}
+            text={getYLabelValue((indicatorArray.length - i - 1) * 10)}
             font={font}
             color={Colors[colorScheme ?? "light"].text}
           />

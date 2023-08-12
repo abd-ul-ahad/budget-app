@@ -69,7 +69,7 @@ export default function CheckAuth() {
           <Stack.Navigator>
             {isLogin ? (
               <Stack.Group>
-                {/* <Stack.Screen
+                <Stack.Screen
                   name="Main"
                   options={{ headerShown: false }}
                   component={MainTabs}
@@ -109,7 +109,7 @@ export default function CheckAuth() {
                   name="EditProfile"
                   options={{ headerShown: false, presentation: "modal" }}
                   component={EditProfile}
-                /> */}
+                />
                 <Stack.Screen
                   name="Savings"
                   options={{ headerShown: false, presentation: "modal" }}
