@@ -149,7 +149,10 @@ export default function Savings(props: any) {
                   </Text>
                 )}
               </View>
-              <TouchableOpacity className="flex flex-row justify-between items-center py-2 px-3">
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate("AllTimeSavings")}
+                className="flex flex-row justify-between items-center py-2 px-3"
+              >
                 <Text className="text-base text-red-600 font-semibold tracking-wider">
                   All
                 </Text>

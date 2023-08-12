@@ -1,6 +1,6 @@
 import { ProgressBar } from "react-native-paper";
 import { Text, View } from "./Themed";
-import { TouchableOpacity, useColorScheme } from "react-native";
+import { TouchableOpacity, useColorScheme, TextInput } from "react-native";
 import Colors from "../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -12,6 +12,9 @@ import { useSelector } from "react-redux";
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+
+  const [amount, setAmount] = useState<number>(0);
+  const [openImport, setOpenImport] = useState<boolean>(false);
 
   //
   const [currentMonthSavings, setCurrentMonthSavings] = useState<{
@@ -70,7 +73,7 @@ export default function Savings(props: any) {
   );
 }
 
-const Single = ({
+export const Single = ({
   month,
   amount,
   progress,

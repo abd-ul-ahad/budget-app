@@ -42,9 +42,7 @@ export default function Profile(props: any) {
           </View>
           <View className="w-full pt-1">
             <View className="pl-6 py-3 flex w-full justify-start items-start">
-              <Text className="font-semibold tracking-wider text-base">
-                Account
-              </Text>
+              <Text className="font-semibold tracking-wider">Account</Text>
             </View>
             <TouchableOpacity
               onPress={() => props.navigation.navigate("EditProfile")}
@@ -81,12 +79,15 @@ export default function Profile(props: any) {
             {/* Divider */}
             <View style={{ borderTopWidth: 6, borderTopColor: "#f5f5f5" }} />
             <View className="w-full">
+              <View className="pl-6 py-3 flex w-full justify-start items-start">
+                <Text className="font-semibold tracking-wider">Savings</Text>
+              </View>
               <TouchableOpacity
                 className="pl-6 py-3 flex w-full justify-start items-start"
                 onPress={() => props.navigation.navigate("Savings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
-                  Savings
+                  Saving Goals
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -94,7 +95,15 @@ export default function Profile(props: any) {
                 onPress={() => props.navigation.navigate("GoalBasedSavings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
-                  Saving strategies
+                  Goal based saving strategies
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="pl-6 py-3 flex w-full justify-start items-start"
+                onPress={() => props.navigation.navigate("GoalBasedSavings")}
+              >
+                <Text className="font-semibold tracking-wider text-base">
+                  Financial education
                 </Text>
               </TouchableOpacity>
             </View>

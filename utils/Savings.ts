@@ -51,8 +51,10 @@ export default function calculateSavingsByMonth(
       0
     );
 
+    const monthWithYear = `${monthNames[currentMonth]} ${year}`;
+
     return {
-      month: monthNames[currentMonth],
+      month: monthWithYear,
       currentAmount,
       totalSavings,
       targetAmount,

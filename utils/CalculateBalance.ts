@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useFirestore } from "../firebase/useFirestore";
 import { RootState } from "../store";
+import calculateSavingsByMonth from "./Savings";
 
 export const CalculateBalance = async () => {
   const user = useSelector((state: RootState) => state.user);
@@ -9,6 +10,7 @@ export const CalculateBalance = async () => {
     user.uid!
   );
   const { getDocument: getPlanDocument } = useFirestore("plans", user.uid!);
+  const { getDocument: getSavings } = useFirestore("savings", user.uid!);
 
   let incomeBalance = 0;
   let outcomeBalance = 0;
@@ -16,6 +18,8 @@ export const CalculateBalance = async () => {
 
   const d = await getTransactionDocument();
   const plans = await getPlanDocument();
+  const savings = await getSavings();
+  const { currentAmount } = calculateSavingsByMonth(savings?.docs);
 
   d?.forEach((doc: any) => {
     if (doc._data.category === "#income") {
@@ -28,6 +32,7 @@ export const CalculateBalance = async () => {
   });
 
   currentBalance = incomeBalance - outcomeBalance;
+  currentBalance -= currentAmount;
 
   plans?.forEach((plan: any) => {
     currentBalance -= parseInt(plan._data.budgetAmount);

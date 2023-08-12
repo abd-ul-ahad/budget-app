@@ -27,6 +27,7 @@ import Notifications from "../screens/Notifications";
 import GoalBasedSavings from "../screens/Savings/GoalBasedSaving";
 import Savings from "../screens/Savings/Savings";
 import EditProfile from "../screens/Modify/EditProfile";
+import AllTimeSavings from "../screens/Savings/AllTimeSavings";
 
 const Stack = createNativeStackNavigator();
 
@@ -114,6 +115,11 @@ export default function CheckAuth() {
                   name="Savings"
                   options={{ headerShown: false, presentation: "modal" }}
                   component={Savings}
+                />
+                <Stack.Screen
+                  name="AllTimeSavings"
+                  options={{ headerShown: false, presentation: "modal" }}
+                  component={AllTimeSavings}
                 />
               </Stack.Group>
             ) : (
