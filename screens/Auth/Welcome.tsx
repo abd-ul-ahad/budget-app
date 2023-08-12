@@ -32,14 +32,13 @@ export default function WelcomeScreen(props: any) {
   return (
     <SafeAreaView>
       {/* Outer container with a flex layout */}
-      <ScrollView>
-        <View
-          className="flex justify-start items-start h-screen"
-          style={{
-            backgroundColor: Colors[colorScheme ?? "light"].background,
-            height: "100%",
-          }}
-        >
+      <ScrollView
+        style={{
+          backgroundColor: Colors[colorScheme ?? "light"].background,
+          height: "100%",
+        }}
+      >
+        <View className="flex justify-start items-start h-screen">
           {/* FlatList to display slides */}
           <FlatList
             ref={flatListRef}
@@ -103,7 +102,7 @@ export default function WelcomeScreen(props: any) {
             <TouchableOpacity
               disabled={cIndex === 2 ? true : false}
               style={{ opacity: cIndex === 2 ? 0 : 1 }}
-              className="py-7 px-3"
+              className="py-3 px-3"
               onPress={() => {
                 try {
                   // Scroll to the last slide when the "SKIP" button is pressed

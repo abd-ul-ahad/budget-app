@@ -27,8 +27,10 @@ export default function Savings(props: any) {
     (async () => {
       try {
         await getSavings().then((doc) => {
-          setSavings(doc?.docs!);
-          setCurrentMonthSavings(calculateSavingsByMonth(doc?.docs!));
+          const { month, currentAmount, targetAmount } =
+            calculateSavingsByMonth(doc?.docs);
+          doc?.docs !== undefined && setSavings(doc?.docs);
+          setCurrentMonthSavings({ month, currentAmount, targetAmount });
         });
       } catch {}
     })();

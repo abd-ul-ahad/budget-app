@@ -8,13 +8,15 @@ import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Snackbar } from "react-native-paper";
 import { useFirestore } from "../../firebase/useFirestore";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { triggerNotifications } from "../../utils/Notifications";
 import calculateSavingsByMonth from "../../utils/Savings";
+import { reload } from "../../store/slices/reloadSlice";
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
+  const dispatch = useDispatch();
 
   // from redux
   const user = useSelector((state: RootState) => state.user);
@@ -28,12 +30,13 @@ export default function Savings(props: any) {
   }>({ open: false, msg: "" });
   const [amount, setAmount] = useState<number>(0);
   //
-  const [allSavings, setAllSavings] = useState<Array<any>>();
+  const [allSavings, setAllSavings] = useState<Array<any>>([]);
   const [currentMonthSavings, setCurrentMonthSavings] = useState<{
     currentAmount: number;
+    totalSavings: number;
     targetAmount: number;
     month: string;
-  }>({ targetAmount: 0, currentAmount: 0, month: "" });
+  }>({ targetAmount: 0, currentAmount: 0, month: "", totalSavings: 0 });
 
   //
   const { addDocument, getDocument } = useFirestore("savings", user.uid!);
@@ -45,6 +48,7 @@ export default function Savings(props: any) {
         addDocument({ currentAmount: amount, targetAmount: amount }).then(
           () => {
             triggerNotifications(`${amount} £ to Savings.`, null);
+            dispatch(reload());
           }
         );
       } else {
@@ -62,7 +66,7 @@ export default function Savings(props: any) {
     (async function () {
       getDocument()
         .then((doc) => {
-          setAllSavings(doc?.docs);
+          doc?.docs !== undefined && setAllSavings(doc?.docs);
           setCurrentMonthSavings(calculateSavingsByMonth(doc?.docs));
         })
         .catch(() => {
@@ -77,7 +81,7 @@ export default function Savings(props: any) {
         backgroundColor: Colors[colorScheme ?? "light"].background,
       }}
     >
-      <ScrollView>
+      <ScrollView style={{ height: "100%" }}>
         <View className="flex-row flex mt-6 justify-start items-center">
           <TouchableOpacity
             className="py-4 px-3"
@@ -93,6 +97,18 @@ export default function Savings(props: any) {
             Savings
           </Text>
         </View>
+
+        {/*  */}
+        <View className="w-full py-8 space-y-1">
+          <Text className="px-4 font-bold text-3xl w-full text-center tracking-widest">
+            {currentMonthSavings.totalSavings || 0} £
+          </Text>
+          <Text className="dark:text-white text-center w-full text-xl font-semibold">
+            Total savings
+          </Text>
+        </View>
+        {/*  */}
+
         <View className="px-3 mt-3 space-y-2">
           <Text className="dark:text-white text-lg font-semibold">
             Save Amount
@@ -120,33 +136,43 @@ export default function Savings(props: any) {
             </Text>
           </TouchableOpacity>
         </View>
-        <View className="flex pl-3 flex-row justify-between items-center mt-4">
-          <View>
-            <Text className="text-xl font-bold tracking-wider">This month</Text>
-            <Text className="text-base tracking-wider">
-              ( {currentMonthSavings.month} )
-            </Text>
-          </View>
-          <TouchableOpacity className="flex flex-row justify-between items-center py-2 px-3">
-            <Text className="text-base text-red-600 font-semibold tracking-wider">
-              All
-            </Text>
-            <Entypo
-              name="chevron-small-right"
-              size={24}
-              color="rgb(220, 38, 38)"
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={{ height: 800 }}>
-          <WaveChart
-            level={
-              (currentMonthSavings.currentAmount /
-                currentMonthSavings.targetAmount) *
-              100
-            }
-          />
-        </View>
+        {allSavings?.length !== 0 ? (
+          <>
+            <View className="flex pl-3 flex-row justify-between items-center mt-4">
+              <View>
+                <Text className="text-xl font-bold tracking-wider">
+                  This month
+                </Text>
+                {currentMonthSavings.month && (
+                  <Text className="text-base tracking-wider">
+                    ( {currentMonthSavings.month} )
+                  </Text>
+                )}
+              </View>
+              <TouchableOpacity className="flex flex-row justify-between items-center py-2 px-3">
+                <Text className="text-base text-red-600 font-semibold tracking-wider">
+                  All
+                </Text>
+                <Entypo
+                  name="chevron-small-right"
+                  size={24}
+                  color="rgb(220, 38, 38)"
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={{ height: 800 }}>
+              <WaveChart
+                level={
+                  (currentMonthSavings.currentAmount /
+                    currentMonthSavings.targetAmount) *
+                  100
+                }
+              />
+            </View>
+          </>
+        ) : (
+          <Text className="w-full text-center pb-2 mt-8">No savings</Text>
+        )}
       </ScrollView>
       <Snackbar
         style={{ marginBottom: "1%" }}

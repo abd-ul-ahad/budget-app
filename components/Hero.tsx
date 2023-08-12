@@ -170,7 +170,10 @@ const AddIncome = ({
         <View className="space-y-1">
           <Text className="dark:text-white text-lg font-semibold">Amount</Text>
           <TextInput
-            onChangeText={(text) => setAmount(text)}
+            onChangeText={(text) => {
+              var numberRegex = /^\d+$/;
+              if (numberRegex.test(text)) setAmount(text);
+            }}
             className="py-2 px-3 dark:text-white rounded-lg"
             value={amount}
             style={{ borderColor: "grey", borderWidth: 2 }}
@@ -343,7 +346,9 @@ const AddSpending = ({
           </Text>
           <TextInput
             onChangeText={(amount) => {
-              if (+amount <= currentBalance) setPayload({ ...payload, amount });
+              var numberRegex = /^\d+$/;
+              if (+amount <= currentBalance && numberRegex.test(amount))
+                setPayload({ ...payload, amount });
               else {
                 dispatch(set({ toggle: true, msg: "Limit exceed" }));
               }

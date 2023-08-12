@@ -1,7 +1,12 @@
 export default function calculateSavingsByMonth(
   elements: any[] | undefined,
   targetMonth?: number
-): { month: string; currentAmount: number; targetAmount: number } {
+): {
+  month: string;
+  currentAmount: number;
+  targetAmount: number;
+  totalSavings: number;
+} {
   if (elements !== undefined) {
     const now = new Date();
     const currentMonth =
@@ -41,15 +46,21 @@ export default function calculateSavingsByMonth(
       (total, element) => total + element._data.targetAmount,
       0
     );
+    const totalSavings = filteredElements?.reduce(
+      (total, element) => total + element._data.currentAmount,
+      0
+    );
 
     return {
       month: monthNames[currentMonth],
       currentAmount,
+      totalSavings,
       targetAmount,
     };
   } else {
     return {
       month: "",
+      totalSavings: 0,
       currentAmount: 0,
       targetAmount: 0,
     };
