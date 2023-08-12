@@ -10,37 +10,38 @@ import { useFirestore } from "../../firebase/useFirestore";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { Single } from "../../components/Savings";
+import { RefreshControl } from "react-native-gesture-handler";
 
 export default function AllTimeSavings(props: any) {
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+  const reloadState = useSelector((state: RootState) => state.reload);
 
   //
-  const [currentMonthSavings, setCurrentMonthSavings] = useState<{
-    currentAmount: number;
-    targetAmount: number;
-    month: string;
-  }>({ targetAmount: 0, currentAmount: 0, month: "" });
+  const [refresh, setRefresh] = useState<boolean>(false);
   const [savings, setSavings] = useState<Array<any>>([]);
 
   const { getDocument: getSavings } = useFirestore("savings", user.uid!);
 
+  const load = async () => {
+    setRefresh(true);
+    try {
+      await getSavings().then(
+        (doc) => doc?.docs !== undefined && setSavings(doc?.docs)
+      );
+    } catch {}
+    setRefresh(false);
+  };
   useEffect(() => {
-    (async () => {
-      try {
-        await getSavings().then((doc) => {
-          const { month, currentAmount, targetAmount } =
-            calculateSavingsByMonth(doc?.docs);
-          doc?.docs !== undefined && setSavings(doc?.docs);
-          setCurrentMonthSavings({ month, currentAmount, targetAmount });
-        });
-      } catch {}
-    })();
-  }, []);
+    load();
+  }, [reloadState]);
 
   return (
     <SafeAreaView>
       <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refresh} onRefresh={load} />
+        }
         style={{
           backgroundColor: Colors[colorScheme ?? "light"].background,
           height: "100%",
@@ -62,23 +63,56 @@ export default function AllTimeSavings(props: any) {
           </Text>
         </View>
         <View className="px-2 my-5">
-          {savings?.length === 0 ? (
+          {savings?.length === 0 && (
             <Text className="w-full text-center pb-2 mt-2">No savings</Text>
-          ) : (
-            <Single
-              month={currentMonthSavings.month}
-              amount={currentMonthSavings.targetAmount}
-              progress={
-                currentMonthSavings.currentAmount !== 0 ||
-                currentMonthSavings.currentAmount !== 0
-                  ? currentMonthSavings.currentAmount /
-                    currentMonthSavings.currentAmount
-                  : 0
-              }
-            />
           )}
+
+          {savings.map((e, i) => {
+            return (
+              <Single
+                key={i}
+                navigation={props.navigation}
+                id={e.id}
+                month={timestampToMonthYear(e._data.createdAt)}
+                amount={e._data.targetAmount}
+                progress={
+                  e._data.currentAmount !== 0 || e._data.targetAmount !== 0
+                    ? e._data.currentAmount / e._data.targetAmount
+                    : 0
+                }
+              />
+            );
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+function timestampToMonthYear(timestamp: {
+  nanoseconds: number;
+  seconds: number;
+}): string {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const date = new Date(
+    timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
+  );
+  const monthName = months[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${monthName} ${year}`;
 }

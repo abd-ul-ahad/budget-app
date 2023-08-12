@@ -58,6 +58,8 @@ export default function Savings(props: any) {
         <Text className="w-full text-center pb-2 mt-2">No savings</Text>
       ) : (
         <Single
+          id={""}
+          navigation={null}
           month={currentMonthSavings.month}
           amount={currentMonthSavings.targetAmount}
           progress={
@@ -77,14 +79,26 @@ export const Single = ({
   month,
   amount,
   progress,
+  id,
+  navigation,
 }: {
   month: string;
   amount: number;
   progress: number;
+  id: string;
+  navigation: any;
 }) => {
   const colorScheme = useColorScheme();
   return (
     <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("EditSavings", {
+          id,
+          month,
+          amount,
+          progress,
+        })
+      }
       className="w-full px-3 rounded-xl mr-10 py-4"
       style={{
         backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,

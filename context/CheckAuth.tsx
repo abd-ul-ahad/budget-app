@@ -28,6 +28,7 @@ import GoalBasedSavings from "../screens/Savings/GoalBasedSaving";
 import Savings from "../screens/Savings/Savings";
 import EditProfile from "../screens/Modify/EditProfile";
 import AllTimeSavings from "../screens/Savings/AllTimeSavings";
+import EditSavings from "../screens/Modify/EditSavings";
 
 const Stack = createNativeStackNavigator();
 
@@ -120,6 +121,11 @@ export default function CheckAuth() {
                   name="AllTimeSavings"
                   options={{ headerShown: false, presentation: "modal" }}
                   component={AllTimeSavings}
+                />
+                <Stack.Screen
+                  name="EditSavings"
+                  options={{ headerShown: false, presentation: "modal" }}
+                  component={EditSavings}
                 />
               </Stack.Group>
             ) : (
