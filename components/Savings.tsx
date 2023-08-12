@@ -5,24 +5,34 @@ import Colors from "../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import calculateSavingsByMonth from "../utils/Savings";
+import { useFirestore } from "../firebase/useFirestore";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
+  const user = useSelector((state: RootState) => state.user);
+
+  //
   const [currentMonthSavings, setCurrentMonthSavings] = useState<{
     currentAmount: number;
     targetAmount: number;
     month: string;
   }>({ targetAmount: 0, currentAmount: 0, month: "" });
+  const [savings, setSavings] = useState<Array<any>>([]);
+
+  const { getDocument: getSavings } = useFirestore("savings", user.uid!);
 
   useEffect(() => {
-    setCurrentMonthSavings(calculateSavingsByMonth(props.savings));
+    (async () => {
+      try {
+        await getSavings().then((doc) => {
+          setSavings(doc?.docs!);
+          setCurrentMonthSavings(calculateSavingsByMonth(doc?.docs!));
+        });
+      } catch {}
+    })();
   }, []);
-
-  console.log(
-    currentMonthSavings.currentAmount / currentMonthSavings.targetAmount,
-    currentMonthSavings.currentAmount,
-    currentMonthSavings.targetAmount
-  );
 
   return (
     <View className="px-4 mb-5">
@@ -39,7 +49,7 @@ export default function Savings(props: any) {
           />
         </TouchableOpacity>
       </View>
-      {props.savings?.length === 0 ? (
+      {savings?.length === 0 ? (
         <Text className="w-full text-center pb-2 mt-2">No savings</Text>
       ) : (
         <Single
