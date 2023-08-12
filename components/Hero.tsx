@@ -93,7 +93,10 @@ const Hero = ({ currentBalance, navigation }: any) => {
       {incomeOrSpend === 0 ? (
         <AddIncome setIncomeOrSpend={setIncomeOrSpend} />
       ) : incomeOrSpend === 1 ? (
-        <AddSpending setIncomeOrSpend={setIncomeOrSpend} />
+        <AddSpending
+          currentBalance={currentBalance}
+          setIncomeOrSpend={setIncomeOrSpend}
+        />
       ) : null}
     </>
   );
@@ -203,7 +206,9 @@ const AddIncome = ({
 
 const AddSpending = ({
   setIncomeOrSpend,
+  currentBalance,
 }: {
+  currentBalance: number;
   setIncomeOrSpend: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const colorScheme = useColorScheme();
@@ -258,20 +263,6 @@ const AddSpending = ({
   useEffect(() => {
     load();
   }, []);
-
-  const [balances, setBalances] = useState<{
-    incomeBalance: number;
-    outcomeBalance: number;
-    currentBalance: number;
-  }>({ incomeBalance: 0, outcomeBalance: 0, currentBalance: 0 });
-
-  const loadBalances = async () => {
-    const { incomeBalance, outcomeBalance, currentBalance } =
-      await CalculateBalance();
-    setBalances({ incomeBalance, outcomeBalance, currentBalance });
-  };
-
-  loadBalances();
 
   // on submit
 
@@ -348,12 +339,11 @@ const AddSpending = ({
         <View className="space-y-1">
           <Text className="dark:text-white text-lg font-semibold">
             Spend Amount{" "}
-            <Text className="text-sm">(Limit: {balances?.currentBalance})</Text>
+            <Text className="text-sm">(Limit: {currentBalance})</Text>
           </Text>
           <TextInput
             onChangeText={(amount) => {
-              if (+amount <= balances?.currentBalance)
-                setPayload({ ...payload, amount });
+              if (+amount <= currentBalance) setPayload({ ...payload, amount });
               else {
                 dispatch(set({ toggle: true, msg: "Limit exceed" }));
               }

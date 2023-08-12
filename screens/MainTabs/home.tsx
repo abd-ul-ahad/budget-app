@@ -22,6 +22,7 @@ import { useFirestore } from "../../firebase/useFirestore";
 import { CalculateBalance } from "../../utils/CalculateBalance";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
+import { setBalances } from "../../store/slices/balanceSlice";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -29,6 +30,7 @@ const width = Dimensions.get("window").width;
 export default function Home(props: any) {
   // Getting the user data from the Redux store
   const user = useSelector((state: RootState) => state.user);
+  const balances = useSelector((state: RootState) => state.balances);
   const reloadState = useSelector((state: RootState) => state.reload);
   const dispatch = useDispatch();
   // Getting the color scheme of the device (light or dark)
@@ -44,17 +46,12 @@ export default function Home(props: any) {
   const [trans, setTrans] = useState<Array<any>>();
   const [plans, setPlans] = useState<Array<any>>();
   const [refreshing, setRefreshing] = useState(false);
-  const [balances, setBalances] = useState<{
-    incomeBalance: number;
-    outcomeBalance: number;
-    currentBalance: number;
-  }>();
 
   const loadBalances = async () => {
     const { incomeBalance, outcomeBalance, currentBalance } =
       await CalculateBalance();
 
-    setBalances({ incomeBalance, outcomeBalance, currentBalance });
+    dispatch(setBalances({ incomeBalance, outcomeBalance, currentBalance }));
   };
 
   loadBalances();
@@ -82,7 +79,7 @@ export default function Home(props: any) {
         <ScrollView
           contentContainerStyle={{
             flex: 1,
-            minHeight: Dimensions.get("window").height
+            minHeight: Dimensions.get("window").height,
           }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={load} />
