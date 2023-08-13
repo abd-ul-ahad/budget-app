@@ -1,4 +1,9 @@
-import { SafeAreaView, TextInput, useColorScheme } from "react-native";
+import {
+  RefreshControl,
+  SafeAreaView,
+  TextInput,
+  useColorScheme,
+} from "react-native";
 import WaveChart from "../../components/WaveChart";
 import Colors from "../../constants/Colors";
 import { ScrollView } from "react-native";
@@ -66,19 +71,21 @@ export default function Savings(props: any) {
     setLoading(false);
   };
 
+  const load = () => {
+    setLoading(true);
+    getDocument()
+      .then((doc) => {
+        doc?.docs !== undefined && setAllSavings(doc?.docs);
+        setCurrentMonthSavings(calculateSavingsByMonth(doc?.docs));
+      })
+      .catch(() => {
+        setOpenSnackbar({ open: true, msg: "Error please start app." });
+      });
+    setLoading(false);
+  };
+
   // loading savings
-  useEffect(() => {
-    (async function () {
-      getDocument()
-        .then((doc) => {
-          doc?.docs !== undefined && setAllSavings(doc?.docs);
-          setCurrentMonthSavings(calculateSavingsByMonth(doc?.docs));
-        })
-        .catch(() => {
-          setOpenSnackbar({ open: true, msg: "Error please start app." });
-        });
-    })();
-  }, [reloadState]);
+  useEffect(() => load(), [reloadState]);
 
   return (
     <SafeAreaView
@@ -86,7 +93,12 @@ export default function Savings(props: any) {
         backgroundColor: Colors[colorScheme ?? "light"].background,
       }}
     >
-      <ScrollView style={{ height: "100%" }}>
+      <ScrollView
+        style={{ height: "100%" }}
+        refreshControl={
+          <RefreshControl refreshing={loading!} onRefresh={load} />
+        }
+      >
         <View className="flex-row flex mt-6 justify-start items-center">
           <TouchableOpacity
             className="py-4 px-3"

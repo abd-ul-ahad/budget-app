@@ -36,7 +36,7 @@ export default function EditSavings(props: any) {
   const onUpdate = async () => {
     try {
       setLoading(true);
-      if (amount > 0) {
+      if (amount >= 0) {
         if (amount <= currentBalance) {
           await updateDocument(
             {
@@ -44,6 +44,7 @@ export default function EditSavings(props: any) {
             },
             params.id
           ).then(() => {
+            props.navigation.goBack();
             triggerNotifications(`Update ${amount} £ to Savings.`, null);
             dispatch(reload());
           });
@@ -125,7 +126,7 @@ export default function EditSavings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
-            value={amount === 0 ? "" : `${amount}`}
+            value={amount >= 0 ? `${amount}` : ""}
             onChangeText={(text) => {
               var numberRegex = /^\d+$/;
               if (numberRegex.test(text)) setAmount(+text);

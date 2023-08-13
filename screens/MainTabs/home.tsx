@@ -24,6 +24,7 @@ import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { setBalances } from "../../store/slices/balanceSlice";
 import Savings from "../../components/Savings";
+import calculateSavingsByMonth from "../../utils/Savings";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -42,12 +43,21 @@ export default function Home(props: any) {
     "transactions",
     user.uid!
   );
+  const { getDocument: getSavings } = useFirestore("savings", user.uid!);
   const { getDocument: getPlanDocument } = useFirestore("plans", user.uid!);
 
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
   const [trans, setTrans] = useState<Array<any>>();
   const [plans, setPlans] = useState<Array<any>>();
+  const [savings, setSavings] = useState<Array<any>>([]);
   const [refreshing, setRefreshing] = useState(false);
+
+  //
+  const [currentMonthSavings, setCurrentMonthSavings] = useState<{
+    currentAmount: number;
+    targetAmount: number;
+    month: string;
+  }>({ targetAmount: 0, currentAmount: 0, month: "" });
 
   (async () => {
     const { incomeBalance, outcomeBalance, currentBalance } =
@@ -61,6 +71,15 @@ export default function Home(props: any) {
     try {
       await getTransactions().then((doc) => setTrans(doc?.docs));
       await getPlanDocument().then((doc) => setPlans(doc?.docs));
+
+      // loading savings
+      await getSavings().then((doc) => {
+        const { month, currentAmount, targetAmount } = calculateSavingsByMonth(
+          doc?.docs
+        );
+        doc?.docs !== undefined && setSavings(doc?.docs);
+        setCurrentMonthSavings({ month, currentAmount, targetAmount });
+      });
     } catch {
       setToggleSnack(true);
     }
@@ -106,7 +125,11 @@ export default function Home(props: any) {
           </View>
 
           {/* Savings */}
-          <Savings navigation={props.navigation} />
+          <Savings
+            navigation={props.navigation}
+            savings={savings}
+            balances={currentMonthSavings}
+          />
 
           {/* Plans section */}
           <View className="px-3 pt-1 pb-9 space-y-2">

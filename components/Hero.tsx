@@ -21,7 +21,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { set } from "../store/slices/snackSlice";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
-import { CalculateBalance } from "../utils/CalculateBalance";
 
 const image = require("../assets/images/banner.png");
 
@@ -37,7 +36,7 @@ const Hero = ({ currentBalance, navigation }: any) => {
         <ImageBackground
           source={image}
           resizeMode="cover"
-          className="flex-1 justify-between items-start flex-col px-3 pb-5"
+          className="flex-1 justify-between items-start flex-col px-3 pb-3"
         >
           <View className="flex justify-end items-end w-full">
             <TouchableOpacity
