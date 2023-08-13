@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { set } from "../store/slices/snackSlice";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
+import { OnlyNumbers } from "../constants/Validations";
 
 const image = require("../assets/images/banner.png");
 
@@ -170,8 +171,7 @@ const AddIncome = ({
           <Text className="dark:text-white text-lg font-semibold">Amount</Text>
           <TextInput
             onChangeText={(text) => {
-              var numberRegex = /^\d+$/;
-              if (numberRegex.test(text)) setAmount(text);
+              if (OnlyNumbers(text)) setAmount(text);
             }}
             className="py-2 px-3 dark:text-white rounded-lg"
             value={amount}
@@ -345,12 +345,12 @@ const AddSpending = ({
           </Text>
           <TextInput
             onChangeText={(amount) => {
-              var numberRegex = /^\d+$/;
-              if (+amount <= currentBalance && numberRegex.test(amount))
-                setPayload({ ...payload, amount });
-              else {
-                dispatch(set({ toggle: true, msg: "Limit exceed" }));
-              }
+              if (OnlyNumbers(amount))
+                if (+amount <= currentBalance)
+                  setPayload({ ...payload, amount });
+                else {
+                  dispatch(set({ toggle: true, msg: "Limit exceed" }));
+                }
             }}
             className="py-2 px-3 dark:text-white rounded-lg"
             value={payload?.amount}

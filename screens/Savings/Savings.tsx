@@ -18,6 +18,7 @@ import { RootState } from "../../store";
 import { triggerNotifications } from "../../utils/Notifications";
 import calculateSavingsByMonth from "../../utils/Savings";
 import { reload } from "../../store/slices/reloadSlice";
+import { OnlyNumbers } from "../../constants/Validations";
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
@@ -141,8 +142,7 @@ export default function Savings(props: any) {
             keyboardType="numeric"
             value={amount === 0 ? "" : `${amount}`}
             onChangeText={(text) => {
-              var numberRegex = /^\d+$/;
-              if (numberRegex.test(text)) setAmount(+text);
+              if (OnlyNumbers(text)) setAmount(+text);
             }}
           />
           <TouchableOpacity

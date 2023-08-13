@@ -13,6 +13,7 @@ import { Calendar } from "react-native-calendars";
 import { TextInput } from "react-native";
 import { isValidOrFutureDate } from "../../utils/FormatDate";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { OnlyNumbers } from "../../constants/Validations";
 
 export default function Notifications(props: any) {
   const colorScheme = useColorScheme();
@@ -92,7 +93,9 @@ export default function Notifications(props: any) {
               placeholderTextColor="grey"
               keyboardType="numeric"
               value={`${amount === 0 ? "" : amount}`}
-              onChangeText={(text) => setAmount(+text)}
+              onChangeText={(text) => {
+                if (OnlyNumbers(text)) setAmount(+text);
+              }}
             />
             <Text
               className="text-base text-red-500 font-bold"
@@ -114,7 +117,9 @@ export default function Notifications(props: any) {
               placeholderTextColor="grey"
               keyboardType="numeric"
               value={`${income === 0 ? "" : income}`}
-              onChangeText={(text) => setIncome(+text)}
+              onChangeText={(text) => {
+                if (OnlyNumbers(text)) setIncome(+text);
+              }}
             />
             <Text
               className="text-base text-red-500 font-bold"

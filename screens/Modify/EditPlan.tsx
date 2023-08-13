@@ -17,6 +17,7 @@ import { set } from "../../store/slices/snackSlice";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
+import { OnlyNumbers } from "../../constants/Validations";
 
 interface Payload {
   title: string;
@@ -35,10 +36,7 @@ export default function EditPlan(props: any) {
   const { currentBalance } = useSelector((state: RootState) => state.balances);
 
   const { getDocument } = useFirestore("categories", user.uid!);
-  const { addDocument, updateDocument, deleteDocument } = useFirestore(
-    "plans",
-    user.uid!
-  );
+  const { addDocument, updateDocument } = useFirestore("plans", user.uid!);
 
   // Extract the title, amount, and category from local search parameters
   const { title, amount, category, id } = props.route.params;
@@ -196,11 +194,12 @@ export default function EditPlan(props: any) {
                   placeholderTextColor="grey"
                   keyboardType="default"
                   onChangeText={(amount) => {
-                    if (+amount <= currentBalance)
-                      setPayload({ ...payload, amount });
-                    else {
-                      dispatch(set({ toggle: true, msg: "Limit exceed" }));
-                    }
+                    if (OnlyNumbers(amount))
+                      if (+amount <= currentBalance)
+                        setPayload({ ...payload, amount });
+                      else {
+                        dispatch(set({ toggle: true, msg: "Limit exceed" }));
+                      }
                   }}
                 />
               </View>

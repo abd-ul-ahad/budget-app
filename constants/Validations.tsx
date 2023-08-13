@@ -17,4 +17,9 @@ const ConPassword = (password: string, cPassword: string) => {
   return password === cPassword;
 };
 
-export { ValEmail, ValName, ValPassword, ConPassword };
+const OnlyNumbers = (number: string): boolean => {
+  var numberRegex = /^\d+$/;
+  return numberRegex.test(number);
+};
+
+export { ValEmail, ValName, ValPassword, ConPassword, OnlyNumbers };

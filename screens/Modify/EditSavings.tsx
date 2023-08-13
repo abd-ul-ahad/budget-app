@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
+import { OnlyNumbers } from "../../constants/Validations";
 
 export default function EditSavings(props: any) {
   const colorScheme = useColorScheme();
@@ -128,8 +129,7 @@ export default function EditSavings(props: any) {
             keyboardType="numeric"
             value={amount >= 0 ? `${amount}` : ""}
             onChangeText={(text) => {
-              var numberRegex = /^\d+$/;
-              if (numberRegex.test(text)) setAmount(+text);
+              if (OnlyNumbers(text)) setAmount(+text);
             }}
           />
           <TouchableOpacity

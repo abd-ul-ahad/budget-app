@@ -22,6 +22,7 @@ import { RootState } from "../../store";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
 import { CalculateBalance } from "../../utils/CalculateBalance";
+import { OnlyNumbers } from "../../constants/Validations";
 
 const image = require("../../assets/images/banner.png");
 
@@ -231,7 +232,9 @@ export default function EditTransactions(props: any) {
             <TextInput
               className="py-2 px-3 rounded-lg dark:text-white"
               value={payload.amount}
-              onChangeText={(amount) => setPayload({ ...payload, amount })}
+              onChangeText={(amount) => {
+                if (OnlyNumbers(amount)) setPayload({ ...payload, amount });
+              }}
               style={{ borderColor: "grey", borderWidth: 2 }}
               placeholder="0"
               placeholderTextColor="grey"
