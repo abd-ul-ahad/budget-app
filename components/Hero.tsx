@@ -32,7 +32,7 @@ const Hero = ({ currentBalance, navigation }: any) => {
   return (
     <>
       <View
-        style={{ width: "100%", height: Dimensions.get("window").height / 3 }}
+        style={{ width: "100%", height: Dimensions.get("window").height / 2.8 }}
       >
         <ImageBackground
           source={image}
@@ -67,7 +67,7 @@ const Hero = ({ currentBalance, navigation }: any) => {
             </View>
           </View>
 
-          <View className="flex justify-between items-center mt-3 flex-row w-full">
+          <View className="flex justify-between items-center mt-3 mb-1 flex-row w-full">
             <TouchableOpacity
               className="px-10 py-3 rounded-xl"
               style={styles.button}

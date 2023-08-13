@@ -1,4 +1,3 @@
-// Import required modules and components
 import {
   RefreshControl,
   ScrollView,
@@ -16,8 +15,7 @@ import { RootState } from "../../store";
 import { useFirestore } from "../../firebase/useFirestore";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
-import { CalculateBalance } from "../../utils/CalculateBalance";
-// Define the PlanScreen component
+
 export default function PlanScreen(props: any) {
   const colorScheme = useColorScheme();
   const reloadState = useSelector((state: RootState) => state.reload);

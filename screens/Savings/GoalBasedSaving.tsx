@@ -5,17 +5,9 @@ import {
   useColorScheme,
 } from "react-native";
 import { Text, View } from "../../components/Themed";
-import {
-  Feather,
-  FontAwesome,
-  FontAwesome5,
-  Ionicons,
-} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
-import {
-  storeNotification,
-  triggerNotifications,
-} from "../../utils/Notifications";
+import { triggerNotifications } from "../../utils/Notifications";
 import { useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { TextInput } from "react-native";
@@ -70,7 +62,7 @@ export default function Notifications(props: any) {
     <SafeAreaView>
       <ScrollView>
         <View className="flex-1 justify-start items-center pb-7">
-          <View className="w-full flex flex-row justify-between items-center pt-4">
+          <View className="w-full flex flex-row justify-start items-center pt-4">
             <TouchableOpacity
               className="py-4 px-3"
               onPress={() => props.navigation.goBack()}
@@ -84,17 +76,6 @@ export default function Notifications(props: any) {
             <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
               Saving strategies
             </Text>
-
-            <TouchableOpacity
-              className="py-4 px-3"
-              onPress={() => props.navigation.navigate("Home")}
-            >
-              <FontAwesome
-                name="home"
-                size={26}
-                color={Colors[colorScheme ?? "light"].text}
-              />
-            </TouchableOpacity>
           </View>
           <View className="w-full flex flex-col justify-center items-start px-3 pt-8">
             {/* Amount */}
@@ -149,7 +130,10 @@ export default function Notifications(props: any) {
               Select a date:
             </Text>
             <Calendar
-              style={{ width: Dimensions.get("window").width / 1.05 }}
+              style={{
+                width: Dimensions.get("window").width / 1.05,
+                backgroundColor: Colors[colorScheme ?? "light"].background,
+              }}
               onDayPress={(day) => {
                 setDate(day.dateString);
               }}
@@ -157,7 +141,7 @@ export default function Notifications(props: any) {
                 [date]: {
                   selected: true,
                   disableTouchEvent: true,
-                  selectedColor: "orange",
+                  selectedColor: Colors[colorScheme ?? "light"].tint,
                 },
               }}
             />

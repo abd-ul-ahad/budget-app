@@ -1,16 +1,14 @@
-import { ScrollView, useColorScheme } from "react-native";
+import { RefreshControl, ScrollView, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { useEffect, useState } from "react";
-import calculateSavingsByMonth from "../../utils/Savings";
 import { useFirestore } from "../../firebase/useFirestore";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { Single } from "../../components/Savings";
-import { RefreshControl } from "react-native-gesture-handler";
 
 export default function AllTimeSavings(props: any) {
   const colorScheme = useColorScheme();
@@ -32,6 +30,7 @@ export default function AllTimeSavings(props: any) {
     } catch {}
     setRefresh(false);
   };
+
   useEffect(() => {
     load();
   }, [reloadState]);
@@ -47,7 +46,7 @@ export default function AllTimeSavings(props: any) {
           height: "100%",
         }}
       >
-        <View className="flex-row flex mt-6 justify-start items-center">
+        <View className="flex-row flex mt-2 justify-start items-center">
           <TouchableOpacity
             className="py-4 px-3"
             onPress={() => props.navigation.goBack()}
@@ -70,6 +69,7 @@ export default function AllTimeSavings(props: any) {
           {savings.map((e, i) => {
             return (
               <Single
+                currentAmount={e._data.currentAmount}
                 key={i}
                 navigation={props.navigation}
                 id={e.id}

@@ -16,10 +16,13 @@ export default function EditSavings(props: any) {
   const colorScheme = useColorScheme();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
+  const { currentBalance } = useSelector((state: RootState) => state.balances);
+
+  //
   const params = props.route.params;
 
   // state
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<number>(params.currentAmount);
   const [loading, setLoading] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<{
     open: boolean;
@@ -34,15 +37,19 @@ export default function EditSavings(props: any) {
     try {
       setLoading(true);
       if (amount > 0) {
-        await updateDocument(
-          {
-            currentAmount: amount,
-          },
-          params.id
-        ).then(() => {
-          triggerNotifications(`Update ${amount} £ to Savings.`, null);
-          dispatch(reload());
-        });
+        if (amount <= currentBalance) {
+          await updateDocument(
+            {
+              currentAmount: amount,
+            },
+            params.id
+          ).then(() => {
+            triggerNotifications(`Update ${amount} £ to Savings.`, null);
+            dispatch(reload());
+          });
+        } else {
+          setOpenSnackbar({ open: true, msg: "Not enough balance." });
+        }
       } else {
         setOpenSnackbar({ open: true, msg: "Invalid amount." });
       }
@@ -74,7 +81,7 @@ export default function EditSavings(props: any) {
           height: "100%",
         }}
       >
-        <View className="flex-row flex mt-6 justify-start items-center">
+        <View className="flex-row flex mt-2 justify-start items-center">
           <TouchableOpacity
             className="py-3 px-3"
             onPress={() => props.navigation.goBack()}
@@ -93,6 +100,18 @@ export default function EditSavings(props: any) {
         <View className="w-full mt-6">
           <Text className="w-full text-center text-2xl font-bold tracking-widest">
             {params.month}
+          </Text>
+          <Text
+            style={{ color: "#767676" }}
+            className="w-full text-center font-semibold tracking-wider"
+          >
+            Target: {params.amount} £
+          </Text>
+          <Text
+            style={{ color: "#767676" }}
+            className="w-full text-center font-semibold tracking-wider"
+          >
+            Saving: {params.currentAmount} £
           </Text>
         </View>
 

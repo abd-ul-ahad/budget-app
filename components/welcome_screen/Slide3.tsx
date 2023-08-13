@@ -10,7 +10,7 @@ import {
 
 const { width, height } = Dimensions.get("window");
 
-export default function Slide3({navigation}: any) {
+export default function Slide3({ navigation }: any) {
   const colorScheme = useColorScheme();
   return (
     <>
@@ -19,7 +19,7 @@ export default function Slide3({navigation}: any) {
           style={{ width, height: height / 1.7, resizeMode: "stretch" }}
           source={require("../../assets/images/fff.webp")}
         />
-        <View className="mt-4 space-y-5 px-3">
+        <View className="mt-4 space-y-2 px-3">
           <Text
             className="text-xl text-center font-semibold"
             style={{ color: Colors[colorScheme ?? "light"].text }}
@@ -34,7 +34,7 @@ export default function Slide3({navigation}: any) {
           </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate("Login")}
-            className="flex justify-between items-center my-5 flex-row py-4 rounded-full"
+            className="flex justify-between items-center mt-3 flex-row py-4 rounded-full"
             style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
           >
             <Entypo

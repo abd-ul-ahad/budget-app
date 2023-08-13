@@ -35,7 +35,10 @@ export default function EditPlan(props: any) {
   const { currentBalance } = useSelector((state: RootState) => state.balances);
 
   const { getDocument } = useFirestore("categories", user.uid!);
-  const { addDocument, updateDocument } = useFirestore("plans", user.uid!);
+  const { addDocument, updateDocument, deleteDocument } = useFirestore(
+    "plans",
+    user.uid!
+  );
 
   // Extract the title, amount, and category from local search parameters
   const { title, amount, category, id } = props.route.params;
@@ -105,7 +108,7 @@ export default function EditPlan(props: any) {
         id
       ).then(() => {
         props.navigation.goBack();
-        triggerNotifications("Plan", `#${payload?.title} is updated`);
+        triggerNotifications("Plan", `#${payload?.title} is updated.`);
         dispatch(reload());
       });
       return;

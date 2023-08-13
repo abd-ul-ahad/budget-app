@@ -94,7 +94,7 @@ export default function Home(props: any) {
 
           {/* Income and Outcome components */}
 
-          <View className="flex flex-row items-center justify-between px-4 py-4">
+          <View className="flex flex-row items-center justify-between space-x-1 px-2 py-4">
             <Income
               incomeBalance={balances?.incomeBalance || 0}
               navigation={props.navigation}
@@ -206,7 +206,7 @@ const Income = ({
     >
       <View className="flex flex-row justify-center space-x-4 items-center">
         <SimpleLineIcons name="graph" size={28} color="rgb(22 163 74)" />
-        <Text className="text-2xl font-bold tracking-widest">Income</Text>
+        <Text className="text-xl font-bold tracking-widest">Income</Text>
       </View>
       <View className="flex justify-center items-start">
         <Text className="">£ {incomeBalance}</Text>
@@ -237,7 +237,7 @@ const Outcome = ({
     >
       <View className="flex flex-row justify-center space-x-4 items-center">
         <SimpleLineIcons name="graph" size={28} color="rgb(185 28 28)" />
-        <Text className="text-2xl font-bold tracking-widest">Spending</Text>
+        <Text className="text-xl font-bold tracking-widest">Spending</Text>
       </View>
       <View className="flex justify-center items-start">
         <Text className="">£ {outcomeBalance}</Text>

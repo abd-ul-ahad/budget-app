@@ -13,9 +13,6 @@ export default function Savings(props: any) {
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
 
-  const [amount, setAmount] = useState<number>(0);
-  const [openImport, setOpenImport] = useState<boolean>(false);
-
   //
   const [currentMonthSavings, setCurrentMonthSavings] = useState<{
     currentAmount: number;
@@ -40,7 +37,7 @@ export default function Savings(props: any) {
   }, []);
 
   return (
-    <View className="px-4 mb-5">
+    <View className="px-2 mb-5">
       <View className="flex flex-row justify-between items-center mb-3">
         <Text className="text-lg font-bold dark:text-white">Savings</Text>
         <TouchableOpacity
@@ -60,13 +57,14 @@ export default function Savings(props: any) {
         <Single
           id={""}
           navigation={null}
+          currentAmount={`${currentMonthSavings.currentAmount}`}
           month={currentMonthSavings.month}
           amount={currentMonthSavings.targetAmount}
           progress={
             currentMonthSavings.currentAmount !== 0 ||
-            currentMonthSavings.currentAmount !== 0
+            currentMonthSavings.targetAmount !== 0
               ? currentMonthSavings.currentAmount /
-                currentMonthSavings.currentAmount
+                currentMonthSavings.targetAmount
               : 0
           }
         />
@@ -81,7 +79,9 @@ export const Single = ({
   progress,
   id,
   navigation,
+  currentAmount,
 }: {
+  currentAmount?: string;
   month: string;
   amount: number;
   progress: number;
@@ -92,11 +92,13 @@ export const Single = ({
   return (
     <TouchableOpacity
       onPress={() =>
+        navigation !== null &&
         navigation.navigate("EditSavings", {
           id,
           month,
           amount,
           progress,
+          currentAmount,
         })
       }
       className="w-full px-3 rounded-xl mr-10 py-4"
@@ -104,9 +106,22 @@ export const Single = ({
         backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
       }}
     >
-      <Text className="w-full text-start text-lg font-bold tracking-widest">
-        {month}
-      </Text>
+      <View
+        style={{
+          backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
+        }}
+        className="flex flex-row justify-between items-center pb-2"
+      >
+        <Text className="text-start text-lg font-bold tracking-widest">
+          {month}
+        </Text>
+        <Text
+          style={{ color: "#767676" }}
+          className="text-start text-base font-semibold tracking-widest"
+        >
+          {(Number(currentAmount) / amount) * 100 || 0} %
+        </Text>
+      </View>
       <View className="w-full">
         <Text
           style={{

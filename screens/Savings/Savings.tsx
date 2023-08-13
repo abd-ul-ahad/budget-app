@@ -21,6 +21,7 @@ export default function Savings(props: any) {
   // from redux
   const user = useSelector((state: RootState) => state.user);
   const reloadState = useSelector((state: RootState) => state.reload);
+  const { currentBalance } = useSelector((state: RootState) => state.balances);
 
   // state variables
   const [loading, setLoading] = useState<boolean>();
@@ -45,12 +46,16 @@ export default function Savings(props: any) {
     try {
       setLoading(true);
       if (amount > 0) {
-        addDocument({ currentAmount: amount, targetAmount: amount }).then(
-          () => {
-            triggerNotifications(`${amount} £ to Savings.`, null);
-            dispatch(reload());
-          }
-        );
+        if (amount <= currentBalance) {
+          addDocument({ currentAmount: amount, targetAmount: amount }).then(
+            () => {
+              triggerNotifications(`${amount} £ to Savings.`, null);
+              dispatch(reload());
+            }
+          );
+        } else {
+          setOpenSnackbar({ open: true, msg: "Not enough balance." });
+        }
       } else {
         setOpenSnackbar({ open: true, msg: "Invalid amount." });
       }
@@ -103,7 +108,10 @@ export default function Savings(props: any) {
           <Text className="px-4 font-bold text-3xl w-full text-center tracking-widest">
             {currentMonthSavings.totalSavings || 0} £
           </Text>
-          <Text className="dark:text-white text-center w-full text-xl font-semibold">
+          <Text
+            style={{ color: "#767676" }}
+            className="dark:text-white text-center w-full text-xl font-semibold"
+          >
             Total savings
           </Text>
         </View>

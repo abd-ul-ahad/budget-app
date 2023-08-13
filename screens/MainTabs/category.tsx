@@ -1,4 +1,3 @@
-// Import required components and modules
 import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
 import { Text, View } from "../../components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";

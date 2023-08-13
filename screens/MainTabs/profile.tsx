@@ -28,8 +28,8 @@ export default function Profile(props: any) {
           backgroundColor: Colors[colorScheme ?? "light"].background,
         }}
       >
-        <View className="flex justify-center items-center pt-6">
-          <View className="flex mb-3 justify-between flex-row items-start w-full">
+        <View className="flex justify-center items-center pt-2">
+          <View className="flex mb-3 justify-between flex-row items-center w-full">
             <Text className="text-2xl font-semibold py-4 tracking-wider pl-4">
               Profile
             </Text>
@@ -42,7 +42,12 @@ export default function Profile(props: any) {
           </View>
           <View className="w-full pt-1">
             <View className="pl-6 py-3 flex w-full justify-start items-start">
-              <Text className="font-semibold tracking-wider">Account</Text>
+              <Text
+                className="font-semibold tracking-wider"
+                style={{ color: "#767676" }}
+              >
+                Account
+              </Text>
             </View>
             <TouchableOpacity
               onPress={() => props.navigation.navigate("EditProfile")}
@@ -77,10 +82,20 @@ export default function Profile(props: any) {
             </View>
 
             {/* Divider */}
-            <View style={{ borderTopWidth: 6, borderTopColor: "#f5f5f5" }} />
+            <View
+              style={{
+                borderTopWidth: 6,
+                borderTopColor: colorScheme === "light" ? "#f5f5f5" : "#767676",
+              }}
+            />
             <View className="w-full">
               <View className="pl-6 py-3 flex w-full justify-start items-start">
-                <Text className="font-semibold tracking-wider">Savings</Text>
+                <Text
+                  className="font-semibold tracking-wider"
+                  style={{ color: "#767676" }}
+                >
+                  Savings
+                </Text>
               </View>
               <TouchableOpacity
                 className="pl-6 py-3 flex w-full justify-start items-start"
@@ -100,7 +115,7 @@ export default function Profile(props: any) {
               </TouchableOpacity>
               <TouchableOpacity
                 className="pl-6 py-3 flex w-full justify-start items-start"
-                onPress={() => props.navigation.navigate("GoalBasedSavings")}
+                // onPress={() => props.navigation.navigate("GoalBasedSavings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
                   Financial education

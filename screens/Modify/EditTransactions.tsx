@@ -47,7 +47,7 @@ export default function EditTransactions(props: any) {
 
   // refs for category and plans
   const refC = useRef<TextInput>(null); // ref for categories
-  const refP = useRef<TextInput>(null); // ref for categories
+  const refP = useRef<TextInput>(null); // ref for plans
 
   // Retrieve initial state from local search params
   const params = props.route.params;

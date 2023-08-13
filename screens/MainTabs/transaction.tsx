@@ -19,9 +19,7 @@ import { reload } from "../../store/slices/reloadSlice";
 import { Snackbar } from "react-native-paper";
 import { incomeByMonth, incomeByYear } from "../../utils/GenChart";
 
-// Function component named "Transaction"
 export default function Transaction(props: any) {
-  // Using the useColorScheme hook to detect the current color scheme (light/dark) of the device
   const colorScheme = useColorScheme();
   const dispatch = useDispatch();
   const reloadState = useSelector((state: RootState) => state.reload);
