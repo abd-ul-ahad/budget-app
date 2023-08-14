@@ -29,6 +29,7 @@ import Savings from "../screens/Savings/Savings";
 import EditProfile from "../screens/Modify/EditProfile";
 import AllTimeSavings from "../screens/Savings/AllTimeSavings";
 import EditSavings from "../screens/Modify/EditSavings";
+import FinancialEdu from "../screens/Savings/FinancialEdu";
 
 const Stack = createNativeStackNavigator();
 
@@ -103,29 +104,34 @@ export default function CheckAuth() {
                 />
                 <Stack.Screen
                   name="GoalBasedSavings"
-                  options={{ headerShown: false, presentation: "modal" }}
+                  options={{ headerShown: false }}
                   component={GoalBasedSavings}
                 />
 
                 <Stack.Screen
                   name="EditProfile"
-                  options={{ headerShown: false, presentation: "modal" }}
+                  options={{ headerShown: false }}
                   component={EditProfile}
                 />
                 <Stack.Screen
                   name="Savings"
-                  options={{ headerShown: false, presentation: "modal" }}
+                  options={{ headerShown: false }}
                   component={Savings}
                 />
                 <Stack.Screen
                   name="AllTimeSavings"
-                  options={{ headerShown: false, presentation: "modal" }}
+                  options={{ headerShown: false }}
                   component={AllTimeSavings}
                 />
                 <Stack.Screen
                   name="EditSavings"
-                  options={{ headerShown: false, presentation: "modal" }}
+                  options={{ headerShown: false }}
                   component={EditSavings}
+                />
+                <Stack.Screen
+                  name="FinancialEdu"
+                  options={{ headerShown: false }}
+                  component={FinancialEdu}
                 />
               </Stack.Group>
             ) : (
