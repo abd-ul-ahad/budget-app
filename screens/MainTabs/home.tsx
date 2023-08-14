@@ -158,7 +158,7 @@ export default function Home(props: any) {
               data={plans}
               horizontal
               showsHorizontalScrollIndicator={false}
-              keyExtractor={(item) => `${item._data.createdAt.seconds}`}
+              keyExtractor={(item) => `${item._data.createdAt?.seconds}`}
               renderItem={(e: any) => {
                 return (
                   <TouchableOpacity
