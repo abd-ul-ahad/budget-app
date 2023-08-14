@@ -99,14 +99,19 @@ export const Single = ({
         </Text>
       </View>
       <View className="w-full">
-        <Text
+        <View
           style={{
             backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
           }}
-          className="w-full text-right text-base font-semibold tracking-widest"
+          className="w-full pb-1 flex flex-row justify-between items-center"
         >
-          £ {amount}
-        </Text>
+          <Text className="text-base font-semibold tracking-widest">
+            £ {currentAmount}
+          </Text>
+          <Text className="text-base font-semibold tracking-widest">
+            £ {amount}
+          </Text>
+        </View>
         <ProgressBar
           style={{ height: 10 }}
           progress={progress}

@@ -23,7 +23,8 @@ export default function EditSavings(props: any) {
   const params = props.route.params;
 
   // state
-  const [amount, setAmount] = useState<number>(params.currentAmount);
+  const [saveAmount, setSaveAmount] = useState<number>(params.currentAmount);
+  const [targetAmount, setTargetAmount] = useState<number>(params.amount);
   const [loading, setLoading] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<{
     open: boolean;
@@ -37,16 +38,24 @@ export default function EditSavings(props: any) {
   const onUpdate = async () => {
     try {
       setLoading(true);
-      if (amount >= 0) {
-        if (amount <= currentBalance) {
+      if (
+        saveAmount >= 0 &&
+        OnlyNumbers(`${saveAmount}`) &&
+        OnlyNumbers(`${targetAmount}`)
+      ) {
+        if (saveAmount <= currentBalance) {
           await updateDocument(
             {
-              currentAmount: amount,
+              currentAmount: saveAmount,
+              targetAmount: targetAmount,
             },
             params.id
           ).then(() => {
             props.navigation.goBack();
-            triggerNotifications(`Update ${amount} £ to Savings.`, null);
+            triggerNotifications(
+              `Savings`,
+              `Now ${saveAmount} £ to ${targetAmount} £ savings.`
+            );
             dispatch(reload());
           });
         } else {
@@ -66,7 +75,7 @@ export default function EditSavings(props: any) {
     setLoading(true);
     try {
       await deleteDocument(params.id).then(() => {
-        triggerNotifications(`Removed ${amount} £ from Savings.`, null);
+        triggerNotifications(`Savings`, `Removed ${saveAmount} £ from `);
         props.navigation.goBack();
       });
     } catch {
@@ -119,6 +128,20 @@ export default function EditSavings(props: any) {
 
         <View className="px-3 mt-10">
           <Text className="dark:text-white text-lg font-semibold">
+            Goal Amount
+          </Text>
+          <TextInput
+            className="py-2 mb-2 px-3 dark:text-white rounded-lg mt-1"
+            style={{ borderColor: "grey", borderWidth: 2 }}
+            placeholder="0"
+            placeholderTextColor="grey"
+            keyboardType="numeric"
+            value={targetAmount >= 0 ? `${targetAmount}` : ""}
+            onChangeText={(text) => {
+              setTargetAmount(+text);
+            }}
+          />
+          <Text className="dark:text-white text-lg font-semibold">
             Save Amount
           </Text>
           <TextInput
@@ -127,9 +150,9 @@ export default function EditSavings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
-            value={amount >= 0 ? `${amount}` : ""}
+            value={saveAmount >= 0 ? `${saveAmount}` : ""}
             onChangeText={(text) => {
-              if (OnlyNumbers(text)) setAmount(+text);
+              setSaveAmount(+text);
             }}
           />
           <TouchableOpacity

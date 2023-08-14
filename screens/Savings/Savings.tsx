@@ -35,7 +35,8 @@ export default function Savings(props: any) {
     open: boolean;
     msg: string;
   }>({ open: false, msg: "" });
-  const [amount, setAmount] = useState<number>(0);
+  const [targetAmount, setTargetAmount] = useState<number>(0);
+  const [saveAmount, setSaveAmount] = useState<number>(0);
   //
   const [allSavings, setAllSavings] = useState<Array<any>>([]);
   const [currentMonthSavings, setCurrentMonthSavings] = useState<{
@@ -51,14 +52,18 @@ export default function Savings(props: any) {
   const onSubmit = async () => {
     try {
       setLoading(true);
-      if (amount > 0) {
-        if (amount <= currentBalance) {
-          addDocument({ currentAmount: amount, targetAmount: amount }).then(
-            () => {
-              triggerNotifications(`${amount} £ to Savings.`, null);
-              dispatch(reload());
-            }
-          );
+      if (targetAmount > 0 && saveAmount >= 0) {
+        if (targetAmount <= currentBalance) {
+          addDocument({
+            currentAmount: saveAmount,
+            targetAmount: targetAmount,
+          }).then(() => {
+            triggerNotifications(
+              `Savings`,
+              `${saveAmount} £ to ${targetAmount} £`
+            );
+            dispatch(reload());
+          });
         } else {
           setOpenSnackbar({ open: true, msg: "Not enough balance." });
         }
@@ -132,7 +137,7 @@ export default function Savings(props: any) {
 
         <View className="px-3 mt-3 space-y-2">
           <Text className="dark:text-white text-lg font-semibold">
-            Save Amount
+            Target Amount
           </Text>
           <TextInput
             className="py-2 px-3 dark:text-white rounded-lg"
@@ -140,9 +145,21 @@ export default function Savings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
-            value={amount === 0 ? "" : `${amount}`}
+            value={targetAmount === 0 ? "" : `${targetAmount}`}
             onChangeText={(text) => {
-              if (OnlyNumbers(text)) setAmount(+text);
+              if (OnlyNumbers(text) && +text > 0) setTargetAmount(+text);
+            }}
+          />
+          <Text className="dark:text-white text-lg font-semibold">Save</Text>
+          <TextInput
+            className="py-2 px-3 dark:text-white rounded-lg"
+            style={{ borderColor: "grey", borderWidth: 2 }}
+            placeholder="0"
+            placeholderTextColor="grey"
+            keyboardType="numeric"
+            value={saveAmount > 0 ? "" : `${saveAmount}`}
+            onChangeText={(text) => {
+              if (OnlyNumbers(text)) setSaveAmount(+text);
             }}
           />
           <TouchableOpacity
