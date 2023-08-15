@@ -19,7 +19,6 @@ export default function FinancialEdu(props: any) {
   const onStateChange = useCallback((state: any) => {
     if (state === "ended") {
       setPlaying(false);
-      console.log("Video has finished playing!");
     }
   }, []);
 

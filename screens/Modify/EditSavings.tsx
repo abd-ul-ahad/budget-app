@@ -77,6 +77,7 @@ export default function EditSavings(props: any) {
       await deleteDocument(params.id).then(() => {
         triggerNotifications(`Savings`, `Removed ${saveAmount} £ from `);
         props.navigation.goBack();
+        dispatch(reload());
       });
     } catch {
       setOpenSnackbar({ open: true, msg: "Error please try again later." });

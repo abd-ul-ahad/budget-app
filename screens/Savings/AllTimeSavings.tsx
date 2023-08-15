@@ -68,19 +68,20 @@ export default function AllTimeSavings(props: any) {
 
           {savings.map((e, i) => {
             return (
-              <Single
-                currentAmount={e._data.currentAmount}
-                key={i}
-                navigation={props.navigation}
-                id={e.id}
-                month={timestampToMonthYear(e._data.createdAt)}
-                amount={e._data.targetAmount}
-                progress={
-                  e._data.currentAmount !== 0 || e._data.targetAmount !== 0
-                    ? e._data.currentAmount / e._data.targetAmount
-                    : 0
-                }
-              />
+              <View key={i} className="mb-2">
+                <Single
+                  currentAmount={e._data.currentAmount}
+                  navigation={props.navigation}
+                  id={e.id}
+                  month={timestampToMonthYear(e._data.createdAt)}
+                  amount={e._data.targetAmount}
+                  progress={
+                    e._data.currentAmount !== 0 || e._data.targetAmount !== 0
+                      ? e._data.currentAmount / e._data.targetAmount
+                      : 0
+                  }
+                />
+              </View>
             );
           })}
         </View>

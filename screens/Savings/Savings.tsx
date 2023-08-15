@@ -45,6 +45,8 @@ export default function Savings(props: any) {
     targetAmount: number;
     month: string;
   }>({ targetAmount: 0, currentAmount: 0, month: "", totalSavings: 0 });
+  //
+  const [isCurrentMonthData, setIsCurrentMonthData] = useState<boolean>(false);
 
   //
   const { addDocument, getDocument } = useFirestore("savings", user.uid!);
@@ -52,23 +54,31 @@ export default function Savings(props: any) {
   const onSubmit = async () => {
     try {
       setLoading(true);
-      if (targetAmount > 0 && saveAmount >= 0) {
-        if (targetAmount <= currentBalance) {
-          addDocument({
-            currentAmount: saveAmount,
-            targetAmount: targetAmount,
-          }).then(() => {
-            triggerNotifications(
-              `Savings`,
-              `${saveAmount} £ to ${targetAmount} £`
-            );
-            dispatch(reload());
-          });
-        } else {
-          setOpenSnackbar({ open: true, msg: "Not enough balance." });
-        }
+
+      if (isCurrentMonthData) {
+        setOpenSnackbar({
+          open: true,
+          msg: "This month savings already exist.",
+        });
       } else {
-        setOpenSnackbar({ open: true, msg: "Invalid amount." });
+        if (targetAmount > 0 && saveAmount >= 0) {
+          if (targetAmount <= currentBalance) {
+            addDocument({
+              currentAmount: saveAmount,
+              targetAmount: targetAmount,
+            }).then(() => {
+              triggerNotifications(
+                `Savings`,
+                `${saveAmount} £ to ${targetAmount} £`
+              );
+              dispatch(reload());
+            });
+          } else {
+            setOpenSnackbar({ open: true, msg: "Not enough balance." });
+          }
+        } else {
+          setOpenSnackbar({ open: true, msg: "Invalid amount." });
+        }
       }
     } catch {
       setOpenSnackbar({ open: true, msg: "Error please try again later." });
@@ -82,6 +92,8 @@ export default function Savings(props: any) {
     getDocument()
       .then((doc) => {
         doc?.docs !== undefined && setAllSavings(doc?.docs);
+        doc?.docs !== undefined &&
+          setIsCurrentMonthData(isDocumentAvailable(doc?.docs));
         setCurrentMonthSavings(calculateSavingsByMonth(doc?.docs));
       })
       .catch(() => {
@@ -147,7 +159,7 @@ export default function Savings(props: any) {
             keyboardType="numeric"
             value={targetAmount === 0 ? "" : `${targetAmount}`}
             onChangeText={(text) => {
-              if (OnlyNumbers(text) && +text > 0) setTargetAmount(+text);
+              setTargetAmount(+text);
             }}
           />
           <Text className="dark:text-white text-lg font-semibold">Save</Text>
@@ -157,9 +169,9 @@ export default function Savings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
-            value={saveAmount > 0 ? "" : `${saveAmount}`}
+            value={saveAmount >= 0 ? `${saveAmount}` : ""}
             onChangeText={(text) => {
-              if (OnlyNumbers(text)) setSaveAmount(+text);
+              setSaveAmount(+text);
             }}
           />
           <TouchableOpacity
@@ -223,4 +235,25 @@ export default function Savings(props: any) {
       </Snackbar>
     </SafeAreaView>
   );
+}
+
+function isDocumentAvailable(documents: any[]): boolean {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+
+  for (const doc of documents) {
+    const docDate = new Date(
+      doc._data.createdAt.seconds * 1000 +
+        doc._data.createdAt.nanoseconds / 1000000
+    );
+    const docYear = docDate.getFullYear();
+    const docMonth = docDate.getMonth();
+
+    if (docYear === currentYear && docMonth === currentMonth) {
+      return true;
+    }
+  }
+
+  return false;
 }
