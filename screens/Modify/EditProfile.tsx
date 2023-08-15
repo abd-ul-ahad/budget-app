@@ -59,6 +59,7 @@ export default function EditProfile(props: any) {
   }>({ open: false, msg: "" });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showEmail, setShowEmail] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -180,12 +181,32 @@ export default function EditProfile(props: any) {
             >
               {user.name}
             </Text>
-            <Text
-              className="tracking-wider text-base text-center font-semibold"
-              style={{ color: "#767676" }}
-            >
-              {user.email}
-            </Text>
+            <View className="flex flex-row justify-center items-center space-x-3">
+              <Text
+                className="tracking-wider text-base text-center font-semibold"
+                style={{ color: "#767676" }}
+              >
+                {showEmail ? user.email : hideUsername(user.email)}
+              </Text>
+              <Pressable
+                onPress={() => setShowEmail(!showEmail)}
+                className="py-2 px-2"
+              >
+                {showEmail ? (
+                  <FontAwesome5
+                    name="eye"
+                    size={18}
+                    color={Colors[colorScheme ?? "light"].text}
+                  />
+                ) : (
+                  <FontAwesome5
+                    name="eye-slash"
+                    size={18}
+                    color={Colors[colorScheme ?? "light"].text}
+                  />
+                )}
+              </Pressable>
+            </View>
           </View>
         </View>
         <View className="px-3">
@@ -384,4 +405,15 @@ export default function EditProfile(props: any) {
       </Snackbar>
     </SafeAreaView>
   );
+}
+
+function hideUsername(email: string): string {
+  const atIndex = email.indexOf("@");
+
+  if (atIndex !== -1) {
+    const hiddenUsername = "*".repeat(atIndex) + email.substring(atIndex);
+    return hiddenUsername;
+  }
+
+  return email;
 }

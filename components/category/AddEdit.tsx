@@ -4,7 +4,7 @@ import { Text, View } from "../Themed";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { useFirestore } from "../../firebase/useFirestore";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { set } from "../../store/slices/snackSlice";
@@ -25,23 +25,52 @@ export default function AddEdit({
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+
+  //
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { addDocument, updateDocument } = useFirestore("categories", user.uid!);
+  const { addDocument, updateDocument, getDocument } = useFirestore(
+    "categories",
+    user.uid!
+  );
+
+  // check of there is a duplicate
+  const checkName = async (code: string): Promise<boolean> => {
+    try {
+      const doc = await getDocument();
+      if (doc?.docs !== undefined && doc?.docs.length > 0) {
+        for (let i = 0; i < doc.docs.length; i++) {
+          if (doc?.docs[i].data().code === code) {
+            return false;
+          }
+        }
+      }
+      return true;
+    } catch (error) {
+      return true;
+    }
+  };
 
   const Submit = async () => {
     try {
       if (payload?.category!.length >= 1) {
-        setLoading(true);
-        addDocument({
-          code: payload.category,
-          description: payload.category,
-        }).then(() => {
-          setToggle(false);
-          setLoading(false);
-          triggerNotifications("Category", `#${payload?.category} is added`);
-          dispatch(reload());
-        });
+        if (await checkName(payload?.category)) {
+          setLoading(true);
+          addDocument({
+            code: payload.category,
+            description: payload.category,
+          }).then(() => {
+            setToggle(false);
+            setLoading(false);
+            triggerNotifications("Category", `#${payload?.category} is added`);
+            dispatch(reload());
+          });
+        } else {
+          triggerNotifications(
+            "Category",
+            `#${payload?.category} already exists.`
+          );
+        }
       } else {
         dispatch(set({ toggle: true, msg: "Field is empty" }));
       }
@@ -55,18 +84,28 @@ export default function AddEdit({
     try {
       if (payload.category.length >= 1) {
         setLoading(true);
-        updateDocument(
-          {
-            code: payload.category,
-            description: payload.category,
-          },
-          payload.id
-        ).then(() => {
-          setToggle(false);
-          setLoading(false);
-          triggerNotifications("Category", `#${payload?.category} is updated`);
-          dispatch(reload());
-        });
+        if (await checkName(payload?.category)) {
+          updateDocument(
+            {
+              code: payload.category,
+              description: payload.category,
+            },
+            payload.id
+          ).then(() => {
+            setToggle(false);
+            setLoading(false);
+            triggerNotifications(
+              "Category",
+              `#${payload?.category} is updated`
+            );
+            dispatch(reload());
+          });
+        } else {
+          triggerNotifications(
+            "Category",
+            `#${payload?.category} already exists.`
+          );
+        }
       } else {
         dispatch(set({ toggle: true, msg: "Field is empty" }));
       }

@@ -21,7 +21,6 @@ import { reload } from "../store/slices/reloadSlice";
 import {
   incomeByMonth,
   incomeByYear,
-  spendingByMonth,
 } from "../utils/GenChart";
 
 export default function Spending(props: any) {

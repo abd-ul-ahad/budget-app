@@ -30,7 +30,7 @@ export default function Notifications(props: any) {
 
   return (
     <SafeAreaView>
-      <ScrollView contentContainerStyle={{ height: "100%" }}>
+      <ScrollView>
         <View className="flex-1 justify-start items-center pt-2">
           <View className="w-full flex flex-row justify-between items-center">
             <TouchableOpacity

@@ -14,7 +14,7 @@ import { RefreshControl } from "react-native";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 
-// Define the Spending component
+
 export default function Category() {
   // Get the current color scheme
   const dispatch = useDispatch();

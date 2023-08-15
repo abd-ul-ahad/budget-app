@@ -12,13 +12,10 @@ import { Entypo, FontAwesome5 } from "@expo/vector-icons";
 import { useState } from "react";
 
 import { ValEmail, ValPassword } from "../constants/Validations";
-// import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useLogin } from "../firebase/useLogin";
 import { Snackbar } from "react-native-paper";
-import { set } from "../store/slices/snackSlice";
-import { useDispatch } from "react-redux";
 import { triggerNotifications } from "../utils/Notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

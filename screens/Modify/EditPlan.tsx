@@ -36,7 +36,11 @@ export default function EditPlan(props: any) {
   const { currentBalance } = useSelector((state: RootState) => state.balances);
 
   const { getDocument } = useFirestore("categories", user.uid!);
-  const { addDocument, updateDocument } = useFirestore("plans", user.uid!);
+  const {
+    addDocument,
+    updateDocument,
+    getDocument: getPlans,
+  } = useFirestore("plans", user.uid!);
 
   // Extract the title, amount, and category from local search parameters
   const { title, amount, category, id } = props.route.params;
@@ -54,6 +58,23 @@ export default function EditPlan(props: any) {
   const [categories, setCategories] = useState<Array<any>>();
   const [loading, setLoading] = useState<boolean>(false);
 
+  // function to check title duplication
+  const checkTitle = async (title: string): Promise<boolean> => {
+    try {
+      const doc = await getPlans();
+      if (doc?.docs !== undefined && doc?.docs.length > 0) {
+        for (let i = 0; i < doc.docs.length; i++) {
+          if (doc?.docs[i].data().title === title) {
+            return false;
+          }
+        }
+      }
+      return true;
+    } catch (error) {
+      return true;
+    }
+  };
+
   const load = async () => {
     setLoading(true);
     await getDocument().then((doc) => {
@@ -67,50 +88,63 @@ export default function EditPlan(props: any) {
   }, [toggle]);
 
   const onAddSubmit = async () => {
-    if (
-      payload.category.length >= 1 &&
-      payload.amount.length >= 1 &&
-      payload.title.length >= 1
-    ) {
-      setLoading(true);
-      addDocument({
-        category: payload?.code,
-        budgetAmount: payload?.amount,
-        title: payload?.title,
-        currentAmount: 0,
-      }).then(() => {
-        setToggle(false);
-        props.navigation.goBack();
-        setLoading(false);
-        triggerNotifications("Plan", `#${payload?.title} is added`);
-        dispatch(reload());
-      });
+    try {
+      if (await checkTitle(payload.title)) {
+        if (
+          payload.category.length >= 1 &&
+          +payload.amount >= 1 &&
+          payload.title.length >= 1
+        ) {
+          setLoading(true);
+          addDocument({
+            category: payload?.code,
+            budgetAmount: payload?.amount,
+            title: payload?.title,
+            currentAmount: 0,
+          }).then(() => {
+            setToggle(false);
+            props.navigation.goBack();
+            setLoading(false);
+            triggerNotifications("Plan", `#${payload?.title} is added.`);
+            dispatch(reload());
+          });
 
-      return;
-    }
+          return;
+        }
+      } else {
+        triggerNotifications("Plan", `#${payload?.title} already exist.`);
+      }
+    } catch {}
+
     setOpenSnackbar(true);
   };
 
   async function onEditSubmit() {
-    if (
-      payload.category.length >= 1 &&
-      payload.amount.length >= 1 &&
-      payload.title.length >= 1
-    ) {
-      await updateDocument(
-        {
-          budgetAmount: +payload?.amount!,
-          title: payload?.title,
-          category: payload.category,
-        },
-        id
-      ).then(() => {
-        props.navigation.goBack();
-        triggerNotifications("Plan", `#${payload?.title} is updated.`);
-        dispatch(reload());
-      });
-      return;
-    }
+    try {
+      if (await checkTitle(payload.title)) {
+        if (
+          payload.category.length >= 1 &&
+          +payload.amount >= 1 &&
+          payload.title.length >= 1
+        ) {
+          await updateDocument(
+            {
+              budgetAmount: +payload?.amount!,
+              title: payload?.title,
+              category: payload.category,
+            },
+            id
+          ).then(() => {
+            props.navigation.goBack();
+            triggerNotifications("Plan", `#${payload?.title} is updated.`);
+            dispatch(reload());
+          });
+          return;
+        }
+      } else {
+        triggerNotifications("Plan", `#${payload?.title} already exist.`);
+      }
+    } catch {}
     setOpenSnackbar(true);
   }
 
