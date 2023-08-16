@@ -3,6 +3,7 @@ import userSlice from "./slices/userSlice";
 import snackSlice from "./slices/snackSlice";
 import reloadSlice from "./slices/reloadSlice";
 import balanceSlice from "./slices/balanceSlice";
+import currencySlice from "./slices/currencySlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     snackbar: snackSlice.reducer,
     reload: reloadSlice.reducer,
     balances: balanceSlice.reducer,
+    currency: currencySlice.reducer,
   },
 });
 

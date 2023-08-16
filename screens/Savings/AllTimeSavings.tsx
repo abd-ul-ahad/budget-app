@@ -43,7 +43,6 @@ export default function AllTimeSavings(props: any) {
         }
         style={{
           backgroundColor: Colors[colorScheme ?? "light"].background,
-          height: "100%",
         }}
       >
         <View className="flex-row flex mt-2 justify-start items-center">

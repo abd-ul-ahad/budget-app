@@ -73,6 +73,14 @@ export default function Profile(props: any) {
             <View className="w-full">
               <TouchableOpacity
                 className="pl-6 py-3 flex w-full justify-start items-start"
+                onPress={() => props.navigation.navigate("Currency")}
+              >
+                <Text className="font-semibold tracking-wider text-base">
+                  Currency
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="pl-6 py-3 flex w-full justify-start items-start"
                 onPress={() => setToggleSnackbar(true)}
               >
                 <Text className="font-semibold tracking-wider text-base">

@@ -25,6 +25,8 @@ import { reload } from "../../store/slices/reloadSlice";
 import { setBalances } from "../../store/slices/balanceSlice";
 import Savings from "../../components/Savings";
 import calculateSavingsByMonth from "../../utils/Savings";
+import { Convert } from "easy-currencies";
+import { setCurrency } from "../../store/slices/currencySlice";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -45,6 +47,7 @@ export default function Home(props: any) {
   );
   const { getDocument: getSavings } = useFirestore("savings", user.uid!);
   const { getDocument: getPlanDocument } = useFirestore("plans", user.uid!);
+  const { getDocument: getCurrency } = useFirestore("currency", user.uid!);
 
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
   const [trans, setTrans] = useState<Array<any>>();
@@ -71,6 +74,9 @@ export default function Home(props: any) {
     try {
       await getTransactions().then((doc) => setTrans(doc?.docs));
       await getPlanDocument().then((doc) => setPlans(doc?.docs));
+      getCurrency().then((doc) => {
+        dispatch(setCurrency({ code: doc?.docs[0].data().code }));
+      });
 
       // loading savings
       await getSavings().then((doc) => {
@@ -89,6 +95,16 @@ export default function Home(props: any) {
 
   useEffect(() => {
     load();
+    (async () => {
+      // const convert = await Convert().from("PKR").fetch();
+      // // use the fetched rates: (does not use the current provider's API anymore)
+      // const value1 = await convert.amount(300).to("USD");
+      // await convert.from("USD").fetch(); // refresh rates
+      // // or await convert.from("GBP").fetch() to switch base currency
+      // const value2 = await convert.amount(100).to("USD");
+      // // console.log({ value1 });
+      // console.log(Object.keys(convert.rates));
+    })();
   }, [reloadState]);
 
   return (

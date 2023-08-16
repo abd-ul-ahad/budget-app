@@ -18,7 +18,7 @@ export const useFirestore = (collectionNew: string, id: string) => {
           .add({
             ...doc,
             createdAt,
-            user: user.uid,
+            user: Auth.currentUser?.uid,
           })
           .then(() => {});
       }

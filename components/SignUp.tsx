@@ -22,6 +22,8 @@ import { StatusBar } from "expo-status-bar";
 import { useSignUp } from "../firebase/useSignUp";
 import { Snackbar } from "react-native-paper";
 import { triggerNotifications } from "../utils/Notifications";
+import { useFirestore } from "../firebase/useFirestore";
+import { Auth } from "../firebase/init";
 
 export interface Payload {
   name?: string;
@@ -56,7 +58,9 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
     msg: string;
   }>({ open: false, msg: "" });
 
+  //
   const { signup } = useSignUp();
+  const { addDocument } = useFirestore("currency", "");
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -65,6 +69,9 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
     if (isName && isEmail && isPass && isPassMatched) {
       try {
         await signup(payload.email!, payload.password!, payload.name!);
+
+        await addDocument({ code: "GBP" });
+
         triggerNotifications("Sign Up Successful", null);
       } catch (error: any) {
         setToggleSnackbar({

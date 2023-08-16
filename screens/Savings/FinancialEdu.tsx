@@ -2,11 +2,10 @@ import React, { useCallback, useState } from "react";
 import {
   TouchableOpacity,
   ScrollView,
-  Alert,
   useColorScheme,
-} from "react-native"; // Importing TouchableOpacity and ScrollView
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import YoutubePlayer, { getYoutubeMeta } from "react-native-youtube-iframe";
+import YoutubePlayer from "react-native-youtube-iframe";
 import { Text, View } from "../../components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
