@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Colors from "../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
+
 const width = Dimensions.get("window").width;
 
 export default function Savings(props: any) {
@@ -42,7 +43,7 @@ export default function Savings(props: any) {
 
             return (
               <Single
-                id={e.id}
+                id={e.item.id}
                 navigation={props.navigation}
                 currentAmount={`${currentAmount}`}
                 month={monthYear}
@@ -108,7 +109,7 @@ export const Single = ({
           style={{ color: "#767676" }}
           className="text-start text-base font-semibold tracking-widest"
         >
-          {(Number(currentAmount) / amount) * 100 || 0} %
+          {((Number(currentAmount) / amount) * 100).toFixed(1) || 0} %
         </Text>
       </View>
       <View className="w-full">
