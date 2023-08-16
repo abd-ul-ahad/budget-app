@@ -1,18 +1,17 @@
 import { ProgressBar } from "react-native-paper";
 import { Text, View } from "./Themed";
-import { TouchableOpacity, useColorScheme, TextInput } from "react-native";
+import {
+  TouchableOpacity,
+  useColorScheme,
+  FlatList,
+  Dimensions,
+} from "react-native";
 import Colors from "../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
-import calculateSavingsByMonth from "../utils/Savings";
-import { useFirestore } from "../firebase/useFirestore";
-import { RootState } from "../store";
-import { useSelector } from "react-redux";
+const width = Dimensions.get("window").width;
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
-  const user = useSelector((state: RootState) => state.user);
-
   return (
     <View className="px-2 mb-5">
       <View className="flex flex-row justify-between items-center mb-3">
@@ -31,18 +30,31 @@ export default function Savings(props: any) {
       {props.savings?.length === 0 ? (
         <Text className="w-full text-center pb-2 mt-2">No savings</Text>
       ) : (
-        <Single
-          id={""}
-          navigation={null}
-          currentAmount={`${props.balances.currentAmount}`}
-          month={props.balances.month}
-          amount={props.balances.targetAmount}
-          progress={
-            props.balances.currentAmount !== 0 ||
-            props.balances.targetAmount !== 0
-              ? props.balances.currentAmount / props.balances.targetAmount
-              : 0
-          }
+        <FlatList
+          className="mt-2 px-1"
+          data={props?.savings}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => `${item._data.createdAt?.seconds}`}
+          renderItem={(e: any) => {
+            const { currentAmount, monthYear, targetAmount } =
+              formatDateAndAmounts(e.item._data);
+
+            return (
+              <Single
+                id={e.id}
+                navigation={props.navigation}
+                currentAmount={`${currentAmount}`}
+                month={monthYear}
+                amount={targetAmount}
+                progress={
+                  currentAmount !== 0 || targetAmount !== 0
+                    ? currentAmount / targetAmount
+                    : 0
+                }
+              />
+            );
+          }}
         />
       )}
     </View>
@@ -77,8 +89,9 @@ export const Single = ({
           currentAmount,
         })
       }
-      className="w-full px-3 rounded-xl mr-10 py-4"
+      className="px-3 rounded-xl mr-10 py-4"
       style={{
+        width: width - 30,
         backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
       }}
     >
@@ -126,3 +139,29 @@ export const Single = ({
     </TouchableOpacity>
   );
 };
+
+function formatDateAndAmounts(data: any) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const createdAt = new Date(data.createdAt.seconds * 1000);
+  const monthYear = `${
+    months[createdAt.getMonth()]
+  } ${createdAt.getFullYear()}`;
+  const targetAmount = data.targetAmount;
+  const currentAmount = data.currentAmount;
+
+  return { monthYear, targetAmount, currentAmount };
+}
