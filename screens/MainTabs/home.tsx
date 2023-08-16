@@ -27,6 +27,7 @@ import Savings from "../../components/Savings";
 import calculateSavingsByMonth from "../../utils/Savings";
 import { Convert } from "easy-currencies";
 import { setCurrency } from "../../store/slices/currencySlice";
+import RenderAmount from "../../components/RenderAmount";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -75,7 +76,7 @@ export default function Home(props: any) {
       await getTransactions().then((doc) => setTrans(doc?.docs));
       await getPlanDocument().then((doc) => setPlans(doc?.docs));
       getCurrency().then((doc) => {
-        dispatch(setCurrency({ code: doc?.docs[0].data().code }));
+        dispatch(setCurrency({ code: doc?.docs[0]?.data().code }));
       });
 
       // loading savings
@@ -95,16 +96,6 @@ export default function Home(props: any) {
 
   useEffect(() => {
     load();
-    (async () => {
-      // const convert = await Convert().from("PKR").fetch();
-      // // use the fetched rates: (does not use the current provider's API anymore)
-      // const value1 = await convert.amount(300).to("USD");
-      // await convert.from("USD").fetch(); // refresh rates
-      // // or await convert.from("GBP").fetch() to switch base currency
-      // const value2 = await convert.amount(100).to("USD");
-      // // console.log({ value1 });
-      // console.log(Object.keys(convert.rates));
-    })();
   }, [reloadState]);
 
   return (
@@ -248,7 +239,9 @@ const Income = ({
         <Text className="text-xl font-bold tracking-widest">Income</Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text className="">£ {incomeBalance}</Text>
+        <Text className="">
+          <RenderAmount amount={incomeBalance || 0} />
+        </Text>
         {/* <Text className="font-bold tracking-widest text-green-600">+ 12%</Text> */}
       </View>
     </TouchableOpacity>
@@ -279,7 +272,9 @@ const Outcome = ({
         <Text className="text-xl font-bold tracking-widest">Spending</Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text className="">£ {outcomeBalance}</Text>
+        <Text className="">
+          <RenderAmount amount={outcomeBalance || 0} />
+        </Text>
         {/* <Text className="text-red-700 font-bold tracking-widest">- 12%</Text> */}
       </View>
     </TouchableOpacity>

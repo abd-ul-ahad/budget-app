@@ -2,6 +2,10 @@ import Colors from "../constants/Colors";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Text, View, TouchableOpacity, useColorScheme } from "react-native";
 import formattedDate from "../utils/FormatDate";
+import getCurrencySymbol from "../utils/CurrencySymbols";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import RenderAmount from "./RenderAmount";
 
 const Transaction = (props: any) => {
   return (
@@ -61,6 +65,7 @@ export const Single = ({
   navigation: any;
 }) => {
   const colorScheme = useColorScheme();
+  const code = useSelector((state: RootState) => state.currency.code);
 
   return (
     <View>
@@ -105,8 +110,8 @@ export const Single = ({
             isIncome ? "text-green-900" : "text-red-700"
           } text-end font-semibold tracking-widest overflow-hidden`}
         >
-          {isIncome ? "+" : "-"}
-          {amount} £
+          {isIncome ? "+  " : "-  "}
+          <RenderAmount amount={+amount || 0} />
         </Text>
 
         <Entypo

@@ -39,8 +39,9 @@ export default function Currency(props: any) {
     setRefresh(true);
     const convert = await Convert().from("GBP").fetch();
     setCurrenciesCodes(Object.keys(convert.rates));
+
     getDocument().then((doc) => {
-      setSelectedCode(doc?.docs[0].data().code);
+      setSelectedCode(doc?.docs[0]?.data().code);
       setId(doc?.docs[0].id);
     });
     setRefresh(false);
@@ -68,8 +69,9 @@ export default function Currency(props: any) {
           dispatch(reload());
           setLoading(false);
         });
-    } catch (error: any) {}
-    setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,7 +82,7 @@ export default function Currency(props: any) {
           <RefreshControl refreshing={refresh} onRefresh={load} />
         }
       >
-        <View className="flex-row flex mt-2 justify-start items-center">
+        <View className="flex-row flex mt-7 justify-start items-center">
           <TouchableOpacity
             className="py-4 px-3"
             onPress={() => props.navigation.goBack()}

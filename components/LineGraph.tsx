@@ -1,6 +1,8 @@
-import { Dimensions, useColorScheme } from "react-native";
+import { Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import getCurrencySymbol from "../utils/CurrencySymbols";
 
 export const LineGraph = ({
   _labels,
@@ -9,6 +11,7 @@ export const LineGraph = ({
   _labels: string[];
   _data: number[];
 }) => {
+  const code = useSelector((state: RootState) => state.currency.code);
   return (
     <LineChart
       data={{
@@ -21,7 +24,7 @@ export const LineGraph = ({
       }}
       width={Dimensions.get("window").width} // from react-native
       height={220}
-      yAxisLabel="£"
+      yAxisLabel={getCurrencySymbol(code)}
       yAxisSuffix=""
       yAxisInterval={1} // optional, defaults to 1
       chartConfig={{

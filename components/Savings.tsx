@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Colors from "../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
+import RenderAmount from "./RenderAmount";
 
 const width = Dimensions.get("window").width;
 
@@ -120,10 +121,14 @@ export const Single = ({
           className="w-full pb-1 flex flex-row justify-between items-center"
         >
           <Text className="text-base font-semibold tracking-widest">
-            £ {currentAmount}
+            {currentAmount !== undefined ? (
+              <RenderAmount amount={+currentAmount} />
+            ) : (
+              0
+            )}
           </Text>
           <Text className="text-base font-semibold tracking-widest">
-            £ {amount}
+            <RenderAmount amount={+amount.toFixed(1)! || 0} />
           </Text>
         </View>
         <ProgressBar

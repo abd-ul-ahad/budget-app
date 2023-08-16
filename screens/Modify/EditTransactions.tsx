@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Octicons, Ionicons } from "@expo/vector-icons";
-import { ToWords } from "to-words";
 import Colors from "../../constants/Colors";
 import { useEffect, useRef, useState } from "react";
 import { Snackbar } from "react-native-paper";
@@ -23,6 +22,7 @@ import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
 import { CalculateBalance } from "../../utils/CalculateBalance";
 import { OnlyNumbers } from "../../constants/Validations";
+import RenderAmount from "../../components/RenderAmount";
 
 const image = require("../../assets/images/banner.png");
 
@@ -44,7 +44,6 @@ export default function EditTransactions(props: any) {
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
-  const toWords = new ToWords();
 
   // refs for category and plans
   const refC = useRef<TextInput>(null); // ref for categories
@@ -193,10 +192,7 @@ export default function EditTransactions(props: any) {
                       {payload.description}
                     </Text>
                     <Text className="text-white text-3xl font-bold">
-                      £ {item}
-                    </Text>
-                    <Text className="text-white text-sm">
-                      {toWords.convert(+item!)} Pounds
+                      <RenderAmount amount={+item!} />
                     </Text>
                     <Text className="text-white text-sm">{payload.date}</Text>
                   </View>

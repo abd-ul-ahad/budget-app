@@ -12,12 +12,15 @@ import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
 import { OnlyNumbers } from "../../constants/Validations";
+import RenderAmount from "../../components/RenderAmount";
+import getCurrencySymbol from "../../utils/CurrencySymbols";
 
 export default function EditSavings(props: any) {
   const colorScheme = useColorScheme();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
   const { currentBalance } = useSelector((state: RootState) => state.balances);
+  const code = useSelector((state: RootState) => state.currency.code);
 
   //
   const params = props.route.params;
@@ -54,7 +57,9 @@ export default function EditSavings(props: any) {
             props.navigation.goBack();
             triggerNotifications(
               `Savings`,
-              `Now ${saveAmount} £ to ${targetAmount} £ savings.`
+              `Now ${saveAmount} ${getCurrencySymbol(
+                code
+              )} to ${targetAmount} ${getCurrencySymbol(code)} savings.`
             );
             dispatch(reload());
           });
@@ -75,7 +80,10 @@ export default function EditSavings(props: any) {
     setLoading(true);
     try {
       await deleteDocument(params.id).then(() => {
-        triggerNotifications(`Savings`, `Removed ${saveAmount} £ from `);
+        triggerNotifications(
+          `Savings`,
+          `Removed ${saveAmount} ${getCurrencySymbol(code)} from `
+        );
         props.navigation.goBack();
         dispatch(reload());
       });
@@ -117,13 +125,13 @@ export default function EditSavings(props: any) {
             style={{ color: "#767676" }}
             className="w-full text-center font-semibold tracking-wider"
           >
-            Target: {params.amount} £
+            <RenderAmount amount={params.amount} />
           </Text>
           <Text
             style={{ color: "#767676" }}
             className="w-full text-center font-semibold tracking-wider"
           >
-            Saving: {params.currentAmount} £
+            <RenderAmount amount={params.currentAmount} />
           </Text>
         </View>
 

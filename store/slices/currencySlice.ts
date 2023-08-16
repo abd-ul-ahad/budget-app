@@ -6,7 +6,7 @@ export interface CurrencyCode {
 }
 
 const initialState: CurrencyCode = {
-  code: "",
+  code: "GBP",
 };
 
 export const currencySlice = createSlice({

@@ -10,7 +10,6 @@ import {
   useColorScheme,
 } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { ToWords } from "to-words";
 import { FadeInView } from "./animations";
 import { useEffect, useRef, useState } from "react";
 import Colors from "../constants/Colors";
@@ -22,11 +21,12 @@ import { set } from "../store/slices/snackSlice";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
 import { OnlyNumbers } from "../constants/Validations";
+import RenderAmount from "./RenderAmount";
+import getCurrencySymbol from "../utils/CurrencySymbols";
 
 const image = require("../assets/images/banner.png");
 
 const Hero = ({ currentBalance, navigation }: any) => {
-  const toWords = new ToWords();
   const [incomeOrSpend, setIncomeOrSpend] = useState<number | null>(null);
 
   return (
@@ -55,10 +55,7 @@ const Hero = ({ currentBalance, navigation }: any) => {
                 renderItem={(item) => (
                   <View>
                     <Text className="text-white text-3xl font-bold">
-                      £ {item.item}
-                    </Text>
-                    <Text className="text-white text-sm">
-                      {toWords.convert(item.item! || 0)} Pounds
+                      <RenderAmount amount={item.item} />
                     </Text>
                   </View>
                 )}
@@ -107,6 +104,7 @@ const AddIncome = ({
 }: {
   setIncomeOrSpend: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
+  const code = useSelector((state: RootState) => state.currency.code);
   const colorScheme = useColorScheme();
   const dispatch = useDispatch();
 
@@ -129,7 +127,10 @@ const AddIncome = ({
         "transaction added";
         setLoading(false);
         setIncomeOrSpend(null);
-        triggerNotifications("Deposit", `${amount} £ is Deposit`);
+        triggerNotifications(
+          "Deposit",
+          `${amount} ${getCurrencySymbol(code)} is Deposit`
+        );
         dispatch(reload());
       });
       return;
@@ -216,6 +217,7 @@ const AddSpending = ({
   const colorScheme = useColorScheme();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
+  const code = useSelector((state: RootState) => state.currency.code);
 
   const refC = useRef<TextInput>(null); // ref for categories
   const refP = useRef<TextInput>(null); // ref for categories
@@ -295,7 +297,10 @@ const AddSpending = ({
             });
           setIncomeOrSpend(null);
           setLoading(false);
-          triggerNotifications("Credit", `${payload?.amount} £ is Credit`);
+          triggerNotifications(
+            "Credit",
+            `${payload?.amount} ${getCurrencySymbol(code)} is Credit`
+          );
           dispatch(reload());
         });
         return;

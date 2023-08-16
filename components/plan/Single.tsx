@@ -2,6 +2,7 @@ import { View, useColorScheme } from "react-native";
 import { Text } from "../Themed";
 import Colors from "../../constants/Colors";
 import { ProgressBar } from "react-native-paper";
+import RenderAmount from "../RenderAmount";
 
 export default function Single({
   progress = 0,
@@ -41,10 +42,10 @@ export default function Single({
       </Text>
       <View className="pb-2 flex flex-row justify-between items-center">
         <Text className="text-base font-semibold tracking-widest">
-          £ {currentAmount}
+          <RenderAmount amount={currentAmount || 0} />
         </Text>
         <Text className="text-base font-semibold tracking-widest">
-          £ {amount}
+          <RenderAmount amount={amount || 0} />
         </Text>
       </View>
       <ProgressBar

@@ -19,12 +19,15 @@ import { triggerNotifications } from "../../utils/Notifications";
 import calculateSavingsByMonth from "../../utils/Savings";
 import { reload } from "../../store/slices/reloadSlice";
 import { OnlyNumbers } from "../../constants/Validations";
+import RenderAmount from "../../components/RenderAmount";
+import getCurrencySymbol from "../../utils/CurrencySymbols";
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
   const dispatch = useDispatch();
 
   // from redux
+  const code = useSelector((state: RootState) => state.currency.code);
   const user = useSelector((state: RootState) => state.user);
   const reloadState = useSelector((state: RootState) => state.reload);
   const { currentBalance } = useSelector((state: RootState) => state.balances);
@@ -69,7 +72,9 @@ export default function Savings(props: any) {
             }).then(() => {
               triggerNotifications(
                 `Savings`,
-                `${saveAmount} £ to ${targetAmount} £`
+                `${saveAmount} ${getCurrencySymbol(
+                  code
+                )} to ${targetAmount} ${getCurrencySymbol(code)}`
               );
               dispatch(reload());
             });
@@ -136,7 +141,7 @@ export default function Savings(props: any) {
         {/*  */}
         <View className="w-full py-8 space-y-1">
           <Text className="px-4 font-bold text-3xl w-full text-center tracking-widest">
-            {currentMonthSavings.totalSavings || 0} £
+            <RenderAmount amount={currentMonthSavings.totalSavings || 0} />
           </Text>
           <Text
             style={{ color: "#767676" }}
