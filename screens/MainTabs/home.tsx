@@ -25,9 +25,7 @@ import { reload } from "../../store/slices/reloadSlice";
 import { setBalances } from "../../store/slices/balanceSlice";
 import Savings from "../../components/Savings";
 import calculateSavingsByMonth from "../../utils/Savings";
-import { Convert } from "easy-currencies";
 import { setCurrency } from "../../store/slices/currencySlice";
-import RenderAmount from "../../components/RenderAmount";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
 
 // Getting the width of the window
@@ -66,21 +64,8 @@ export default function Home(props: any) {
   }>({ targetAmount: 0, currentAmount: 0, month: "" });
 
   (async () => {
-    let { incomeBalance, outcomeBalance, currentBalance } =
+    const { incomeBalance, outcomeBalance, currentBalance } =
       await CalculateBalance();
-
-    if (code != "GBP") {
-      const convert = await Convert().from("GBP").fetch();
-      if (incomeBalance != 0) {
-        incomeBalance = await convert.amount(incomeBalance).to(code);
-      }
-      if (outcomeBalance != 0) {
-        outcomeBalance = await convert.amount(outcomeBalance).to(code);
-      }
-      if (currentBalance != 0) {
-        currentBalance = await convert.amount(currentBalance).to(code);
-      }
-    }
 
     dispatch(
       setBalances({
@@ -293,9 +278,7 @@ const Outcome = ({
         <Text className="text-xl font-bold tracking-widest">Spending</Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text>
-          {`${outcomeBalance} ${getCurrencySymbol(code)}`}
-        </Text>
+        <Text>{`${outcomeBalance} ${getCurrencySymbol(code)}`}</Text>
         {/* <Text className="text-red-700 font-bold tracking-widest">- 12%</Text> */}
       </View>
     </TouchableOpacity>

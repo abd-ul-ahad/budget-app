@@ -9,7 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import { View, Text } from "../components/Themed";
-import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { Convert } from "easy-currencies";
 import { useDispatch, useSelector } from "react-redux";

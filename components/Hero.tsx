@@ -21,8 +21,8 @@ import { set } from "../store/slices/snackSlice";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
 import { OnlyNumbers } from "../constants/Validations";
-import RenderAmount from "./RenderAmount";
 import getCurrencySymbol from "../utils/CurrencySymbols";
+import RenderAmount from "./RenderAmount";
 
 const image = require("../assets/images/banner.png");
 
@@ -56,7 +56,7 @@ const Hero = ({ currentBalance, navigation }: any) => {
                 renderItem={(item) => (
                   <View>
                     <Text className="text-white text-3xl font-bold">
-                      {`${item.item} ${getCurrencySymbol(code)}`}
+                      <RenderAmount amount={item.item} />
                     </Text>
                   </View>
                 )}
@@ -452,6 +452,14 @@ const AddSpending = ({
             className="py-2 space-y-1"
             style={{ display: whichOne === 2 ? "flex" : "none" }}
           >
+            {plans?.length === 0 && (
+              <Text
+                className="text-base text-center font-semibold"
+                style={{ color: Colors[colorScheme ?? "light"].text }}
+              >
+                No plan.
+              </Text>
+            )}
             {plans?.map((e, i) => (
               <TouchableOpacity
                 onPress={() => {

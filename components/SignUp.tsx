@@ -10,7 +10,6 @@ import { Text, View } from "../components/Themed";
 import Colors from "../constants/Colors";
 import { Entypo, FontAwesome5 } from "@expo/vector-icons";
 import { useState } from "react";
-// import { useRouter } from "expo-router";
 import {
   ValEmail,
   ValName,
