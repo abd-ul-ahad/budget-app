@@ -28,6 +28,7 @@ const image = require("../assets/images/banner.png");
 
 const Hero = ({ currentBalance, navigation }: any) => {
   const [incomeOrSpend, setIncomeOrSpend] = useState<number | null>(null);
+  const code = useSelector((state: RootState) => state.currency.code);
 
   return (
     <>
@@ -55,7 +56,7 @@ const Hero = ({ currentBalance, navigation }: any) => {
                 renderItem={(item) => (
                   <View>
                     <Text className="text-white text-3xl font-bold">
-                      <RenderAmount amount={item.item} />
+                      {`${item.item} ${getCurrencySymbol(code)}`}
                     </Text>
                   </View>
                 )}
@@ -272,39 +273,50 @@ const AddSpending = ({
 
   const Submit = async () => {
     try {
-      if (
-        +payload?.amount >= 1 &&
-        payload.description.length >= 1 &&
-        (payload.category?.length! >= 1 || payload?.plan?.length! >= 1)
-      ) {
-        setLoading(true);
-        addDocument({
-          amount: +payload?.amount!,
-          description: payload?.description,
-          category:
-            payload?.category !== undefined ? `${payload?.category}` : "",
-          plan:
-            payload?.plan !== undefined && payload?.plan?.trim() !== ""
-              ? `${payload?.plan}`
-              : "no-plan",
-        }).then(async () => {
-          if (payload?.plan !== undefined && payload?.plan?.trim() !== "")
-            await updateDocument(
-              { currentAmount: +payload?.currentAmount! + +payload?.amount! },
-              payload?.id!
-            ).then(() => {
-              // setIncomeOrSpend(null);
+      if (OnlyNumbers(payload?.amount)) {
+        if (
+          +payload?.amount >= 1 &&
+          payload.description.length >= 1 &&
+          (payload.category?.length! >= 1 || payload?.plan?.length! >= 1)
+        ) {
+          if (+payload.amount <= currentBalance) {
+            setLoading(true);
+            addDocument({
+              amount: +payload?.amount!,
+              description: payload?.description,
+              category:
+                payload?.category !== undefined ? `${payload?.category}` : "",
+              plan:
+                payload?.plan !== undefined && payload?.plan?.trim() !== ""
+                  ? `${payload?.plan}`
+                  : "no-plan",
+            }).then(async () => {
+              if (payload?.plan !== undefined && payload?.plan?.trim() !== "")
+                await updateDocument(
+                  {
+                    currentAmount: +payload?.currentAmount! + +payload?.amount!,
+                  },
+                  payload?.id!
+                ).then(() => {
+                  // setIncomeOrSpend(null);
+                });
+              setIncomeOrSpend(null);
+              setLoading(false);
+              triggerNotifications(
+                "Credit",
+                `${payload?.amount} ${getCurrencySymbol(code)} is Credit`
+              );
+              dispatch(reload());
             });
-          setIncomeOrSpend(null);
-          setLoading(false);
-          triggerNotifications(
-            "Credit",
-            `${payload?.amount} ${getCurrencySymbol(code)} is Credit`
-          );
-          dispatch(reload());
-        });
-        return;
+            return;
+          } else {
+            dispatch(set({ toggle: true, msg: "Limit exceed." }));
+          }
+        }
+      } else {
+        dispatch(set({ toggle: true, msg: "Invalid amount." }));
       }
+
       setIsEmpty(true);
     } catch {}
   };
@@ -350,12 +362,7 @@ const AddSpending = ({
           </Text>
           <TextInput
             onChangeText={(amount) => {
-              if (OnlyNumbers(amount))
-                if (+amount <= currentBalance)
-                  setPayload({ ...payload, amount });
-                else {
-                  dispatch(set({ toggle: true, msg: "Limit exceed" }));
-                }
+              setPayload({ ...payload, amount });
             }}
             className="py-2 px-3 dark:text-white rounded-lg"
             value={payload?.amount}

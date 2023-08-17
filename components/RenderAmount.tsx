@@ -19,5 +19,5 @@ export default function RenderAmount({ amount }: { amount: number }) {
 
   return text === undefined
     ? "0"
-    : `${Number(text).toFixed(1)} ${getCurrencySymbol(code)}`;
+    : `${text} ${getCurrencySymbol(code)}`;
 }

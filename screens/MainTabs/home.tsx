@@ -28,6 +28,7 @@ import calculateSavingsByMonth from "../../utils/Savings";
 import { Convert } from "easy-currencies";
 import { setCurrency } from "../../store/slices/currencySlice";
 import RenderAmount from "../../components/RenderAmount";
+import getCurrencySymbol from "../../utils/CurrencySymbols";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -37,6 +38,7 @@ export default function Home(props: any) {
   const user = useSelector((state: RootState) => state.user);
   const balances = useSelector((state: RootState) => state.balances);
   const reloadState = useSelector((state: RootState) => state.reload);
+  const code = useSelector((state: RootState) => state.currency.code);
 
   const dispatch = useDispatch();
   // Getting the color scheme of the device (light or dark)
@@ -64,10 +66,29 @@ export default function Home(props: any) {
   }>({ targetAmount: 0, currentAmount: 0, month: "" });
 
   (async () => {
-    const { incomeBalance, outcomeBalance, currentBalance } =
+    let { incomeBalance, outcomeBalance, currentBalance } =
       await CalculateBalance();
 
-    dispatch(setBalances({ incomeBalance, outcomeBalance, currentBalance }));
+    if (code != "GBP") {
+      const convert = await Convert().from("GBP").fetch();
+      if (incomeBalance != 0) {
+        incomeBalance = await convert.amount(incomeBalance).to(code);
+      }
+      if (outcomeBalance != 0) {
+        outcomeBalance = await convert.amount(outcomeBalance).to(code);
+      }
+      if (currentBalance != 0) {
+        currentBalance = await convert.amount(currentBalance).to(code);
+      }
+    }
+
+    dispatch(
+      setBalances({
+        incomeBalance,
+        outcomeBalance,
+        currentBalance,
+      })
+    );
   })();
 
   const load = async () => {
@@ -225,6 +246,7 @@ const Income = ({
 }) => {
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
+  const code = useSelector((state: RootState) => state.currency.code);
 
   return (
     <TouchableOpacity
@@ -239,9 +261,7 @@ const Income = ({
         <Text className="text-xl font-bold tracking-widest">Income</Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text className="">
-          <RenderAmount amount={incomeBalance || 0} />
-        </Text>
+        <Text>{`${incomeBalance} ${getCurrencySymbol(code)}`}</Text>
         {/* <Text className="font-bold tracking-widest text-green-600">+ 12%</Text> */}
       </View>
     </TouchableOpacity>
@@ -258,6 +278,7 @@ const Outcome = ({
 }) => {
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
+  const code = useSelector((state: RootState) => state.currency.code);
 
   return (
     <TouchableOpacity
@@ -272,8 +293,8 @@ const Outcome = ({
         <Text className="text-xl font-bold tracking-widest">Spending</Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text className="">
-          <RenderAmount amount={outcomeBalance || 0} />
+        <Text>
+          {`${outcomeBalance} ${getCurrencySymbol(code)}`}
         </Text>
         {/* <Text className="text-red-700 font-bold tracking-widest">- 12%</Text> */}
       </View>
