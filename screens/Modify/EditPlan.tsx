@@ -17,7 +17,6 @@ import { set } from "../../store/slices/snackSlice";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
-import { OnlyNumbers } from "../../constants/Validations";
 
 interface Payload {
   title: string;
@@ -110,6 +109,8 @@ export default function EditPlan(props: any) {
           });
 
           return;
+        } else {
+          dispatch(set({ toggle: true, msg: "Fill all the fields correctly" }));
         }
       } else {
         triggerNotifications("Plan", `#${payload?.title} already exist.`);
@@ -228,12 +229,7 @@ export default function EditPlan(props: any) {
                   placeholderTextColor="grey"
                   keyboardType="default"
                   onChangeText={(amount) => {
-                    if (OnlyNumbers(amount))
-                      if (+amount <= currentBalance)
-                        setPayload({ ...payload, amount });
-                      else {
-                        dispatch(set({ toggle: true, msg: "Limit exceed" }));
-                      }
+                    setPayload({ ...payload, amount });
                   }}
                 />
               </View>

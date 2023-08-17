@@ -68,6 +68,7 @@ export default function Currency(props: any) {
           dispatch(setCurrency({ code: selectedCode }));
           dispatch(reload());
           setLoading(false);
+          props.navigation.goBack();
         });
     } catch (error: any) {
       setLoading(false);
@@ -111,7 +112,7 @@ export default function Currency(props: any) {
         <View>
           {filteredCurrencyCodes.length === 0 && (
             <Text className="text-lg font-semibold tracking-wider w-full text-center pl-2">
-              No currencies available
+              Unavailable
             </Text>
           )}
           <View className="px-3">

@@ -110,14 +110,14 @@ const AddIncome = ({
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>("-1");
   const [description, setDescription] = useState<string>("");
   const [isEmpty, setIsEmpty] = useState<boolean>(false);
 
   const { addDocument } = useFirestore("transactions", Auth.currentUser?.uid!);
 
   const Submit = async () => {
-    if (amount >= 1 && description.length >= 1) {
+    if (amount != undefined && +amount >= 1 && description.length >= 1) {
       setLoading(true);
       addDocument({
         amount: amount,
@@ -135,6 +135,8 @@ const AddIncome = ({
         dispatch(reload());
       });
       return;
+    } else {
+      
     }
     setIsEmpty(true);
   };
@@ -173,10 +175,10 @@ const AddIncome = ({
           <Text className="dark:text-white text-lg font-semibold">Amount</Text>
           <TextInput
             onChangeText={(text) => {
-              if (OnlyNumbers(text)) setAmount(+text);
+              setAmount(text);
             }}
             className="py-2 px-3 dark:text-white rounded-lg"
-            value={amount === 0 ? "" : `${amount}`}
+            value={+amount < 0 ? "" : `${amount}`}
             style={{ borderColor: "grey", borderWidth: 2 }}
             placeholder="0"
             placeholderTextColor="grey"
