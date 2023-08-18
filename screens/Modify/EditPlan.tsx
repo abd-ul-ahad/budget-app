@@ -60,17 +60,21 @@ export default function EditPlan(props: any) {
   // function to check title duplication
   const checkTitle = async (title: string): Promise<boolean> => {
     try {
-      const doc = await getPlans();
+      const doc = await getPlans(); // Assuming getPlans() is a valid function that fetches documents
+
       if (doc?.docs !== undefined && doc?.docs.length > 0) {
         for (let i = 0; i < doc.docs.length; i++) {
-          if (doc?.docs[i].data().title === title) {
-            return false;
+          if (doc.docs[i].data().title == title) {
+            if (id === doc.docs[i].id) return true;
+            else return false;
           }
         }
+        return true; // No matching title found
+      } else {
+        return true; // No documents found
       }
-      return true;
     } catch (error) {
-      return true;
+      return true; // Error occurred
     }
   };
 

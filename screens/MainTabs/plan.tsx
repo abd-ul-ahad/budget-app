@@ -101,12 +101,12 @@ export default function PlanScreen(props: any) {
                       {/* Plan Item */}
                       <TouchableOpacity
                         className="py-3"
-                        onPress={() => {
+                        onPress={() => {                          
                           props.navigation.navigate("EditPlan", {
                             title: e._data.title,
                             category: e._data.category,
                             amount: `${e._data.budgetAmount}`,
-                            id: e._data.id,
+                            id: e.id,
                           });
                         }}
                       >
