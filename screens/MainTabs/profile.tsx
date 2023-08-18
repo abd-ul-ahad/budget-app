@@ -13,6 +13,7 @@ import { Feather } from "@expo/vector-icons";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { hideUsername } from "../Modify/EditProfile";
 
 export default function Profile(props: any) {
   const user = useSelector((state: RootState) => state.user);
@@ -66,7 +67,7 @@ export default function Profile(props: any) {
                   className="tracking-wider text-base text-center font-semibold"
                   style={{ color: "#767676" }}
                 >
-                  {user?.email}
+                  {hideUsername(user.email)}
                 </Text>
               </View>
             </TouchableOpacity>

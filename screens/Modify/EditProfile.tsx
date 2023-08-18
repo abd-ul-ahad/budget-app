@@ -407,7 +407,7 @@ export default function EditProfile(props: any) {
   );
 }
 
-function hideUsername(email: string): string {
+export function hideUsername(email: string): string {
   const atIndex = email.indexOf("@");
 
   if (atIndex !== -1) {
