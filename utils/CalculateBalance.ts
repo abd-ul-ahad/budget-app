@@ -23,10 +23,10 @@ export const CalculateBalance = async () => {
 
   d?.forEach((doc: any) => {
     if (doc._data.category === "#income") {
-      incomeBalance += parseInt(doc._data.amount);
+      incomeBalance += parseFloat(doc._data.amount);
     } else {
       if (doc._data.plan === "no-plan") {
-        outcomeBalance += parseInt(doc._data.amount);
+        outcomeBalance += parseFloat(doc._data.amount);
       }
     }
   });
@@ -35,11 +35,15 @@ export const CalculateBalance = async () => {
   currentBalance -= currentAmount;
 
   plans?.forEach((plan: any) => {
-    currentBalance -= parseInt(plan._data.budgetAmount);
-    outcomeBalance += parseInt(plan._data.budgetAmount);
+    currentBalance -= parseFloat(plan._data.budgetAmount);
+    outcomeBalance += parseFloat(plan._data.budgetAmount);
   });
 
-  return { incomeBalance, outcomeBalance, currentBalance };
+  return {
+    incomeBalance: incomeBalance.toFixed(2),
+    outcomeBalance: outcomeBalance.toFixed(2),
+    currentBalance: currentBalance.toFixed(2),
+  };
 };
 
 export function calculatePercentageIncrease(

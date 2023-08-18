@@ -55,9 +55,9 @@ export default function calculateSavingsByMonth(
 
     return {
       month: monthWithYear,
-      currentAmount,
-      totalSavings,
-      targetAmount,
+      currentAmount: removeLeadingZeros(currentAmount),
+      totalSavings: removeLeadingZeros(totalSavings),
+      targetAmount: removeLeadingZeros(targetAmount),
     };
   } else {
     return {
@@ -66,5 +66,13 @@ export default function calculateSavingsByMonth(
       currentAmount: 0,
       targetAmount: 0,
     };
+  }
+}
+
+function removeLeadingZeros(inputNumber: any): number {
+  try {
+    return inputNumber.replace(/^0+/, "");
+  } catch {
+    return inputNumber;
   }
 }

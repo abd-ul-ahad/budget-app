@@ -18,7 +18,7 @@ const ConPassword = (password: string, cPassword: string) => {
 };
 
 const OnlyNumbers = (number: string): boolean => {
-  var numberRegex = /^\d+$/;
+  var numberRegex = /^\d+(\.\d+)?$/;
   return numberRegex.test(number);
 };
 

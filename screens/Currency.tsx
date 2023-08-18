@@ -33,17 +33,25 @@ export default function Currency(props: any) {
   const [id, setId] = useState<string>();
 
   //
-  const { updateDocument, getDocument } = useFirestore("currency", user.uid!);
+  const { updateDocument, getDocument, addDocument } = useFirestore(
+    "currency",
+    user.uid!
+  );
 
   const load = async () => {
     setRefresh(true);
-    const convert = await Convert().from("GBP").fetch();
-    setCurrenciesCodes(Object.keys(convert.rates));
+    try {
+      const convert = await Convert().from("GBP").fetch();
+      setCurrenciesCodes(Object.keys(convert.rates));
 
-    getDocument().then((doc) => {
-      setSelectedCode(doc?.docs[0]?.data().code);
-      setId(doc?.docs[0].id);
-    });
+      getDocument().then((doc) => {
+        setSelectedCode(doc?.docs[0]?.data().code);
+        setId(doc?.docs[0].id);
+      });
+    } catch {
+      await addDocument({ code: "GBP" });
+    }
+
     setRefresh(false);
   };
 

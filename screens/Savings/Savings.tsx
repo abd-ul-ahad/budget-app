@@ -38,8 +38,8 @@ export default function Savings(props: any) {
     open: boolean;
     msg: string;
   }>({ open: false, msg: "" });
-  const [targetAmount, setTargetAmount] = useState<number>(0);
-  const [saveAmount, setSaveAmount] = useState<number>(0);
+  const [targetAmount, setTargetAmount] = useState<string>("0");
+  const [saveAmount, setSaveAmount] = useState<string>("0");
   //
   const [allSavings, setAllSavings] = useState<Array<any>>([]);
   const [currentMonthSavings, setCurrentMonthSavings] = useState<{
@@ -64,8 +64,8 @@ export default function Savings(props: any) {
           msg: "This month savings already exist.",
         });
       } else {
-        if (targetAmount > 0 && saveAmount >= 0) {
-          if (targetAmount <= currentBalance) {
+        if (+targetAmount > 0 && +saveAmount >= 0) {
+          if (+targetAmount <= +currentBalance) {
             addDocument({
               currentAmount: saveAmount,
               targetAmount: targetAmount,
@@ -162,9 +162,9 @@ export default function Savings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
-            value={targetAmount === 0 ? "" : `${targetAmount}`}
+            value={targetAmount === "0" ? "" : `${targetAmount}`}
             onChangeText={(text) => {
-              setTargetAmount(+text);
+              setTargetAmount(text);
             }}
           />
           <Text className="dark:text-white text-lg font-semibold">Save</Text>
@@ -174,9 +174,9 @@ export default function Savings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
-            value={saveAmount >= 0 ? `${saveAmount}` : ""}
+            value={saveAmount >= "0" ? `${saveAmount}` : ""}
             onChangeText={(text) => {
-              setSaveAmount(+text);
+              setSaveAmount(text);
             }}
           />
           <TouchableOpacity

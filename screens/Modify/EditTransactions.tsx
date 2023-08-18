@@ -85,7 +85,10 @@ export default function EditTransactions(props: any) {
 
   // update function
   async function onUpdate() {
-    if (payload.planId !== undefined && payload.planId.trim() !== "") {
+    if (
+      (payload.planId !== undefined && payload.planId.trim() !== "") ||
+      payload.category?.trim() !== ""
+    ) {
       if (+payload?.amount! >= 1 && payload?.description!.length >= 1) {
         await updateDocument(
           {
@@ -97,8 +100,6 @@ export default function EditTransactions(props: any) {
           params.id
         ).then(async () => {
           if (payload?.plan !== undefined && payload?.plan?.trim() !== "") {
-            let diff = +params?.amount - +payload?.amount!;
-
             await updatePlan(
               {
                 currentAmount:
@@ -134,13 +135,6 @@ export default function EditTransactions(props: any) {
   useEffect(() => {
     load();
   }, []);
-
-  // loading current balance
-  const [currentBalance, setCurrentBalance] = useState<number>(0);
-  (async () => {
-    const { currentBalance } = await CalculateBalance();
-    setCurrentBalance(currentBalance);
-  })();
 
   return (
     <SafeAreaView>
@@ -331,9 +325,7 @@ export default function EditTransactions(props: any) {
             {/* Selection */}
             {isEditMode &&
               payload?.plan !== undefined &&
-              payload?.plan.trim() !== "" &&
-              payload?.plan !== "no-plan" &&
-              payload?.plan !== "Deposit" && (
+              payload?.plan.trim() !== "" && (
                 <View
                   className="py-2 space-y-1"
                   style={{ display: whichOne === 2 ? "flex" : "none" }}

@@ -136,7 +136,6 @@ const AddIncome = ({
       });
       return;
     } else {
-      
     }
     setIsEmpty(true);
   };

@@ -128,7 +128,11 @@ export const Single = ({
             )}
           </Text>
           <Text className="text-base font-semibold tracking-widest">
-            <RenderAmount amount={+amount.toFixed(1)! || 0} />
+            {currentAmount !== undefined ? (
+              <RenderAmount amount={+amount} />
+            ) : (
+              0
+            )}
           </Text>
         </View>
         <ProgressBar
