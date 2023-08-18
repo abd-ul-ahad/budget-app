@@ -14,29 +14,38 @@ import { TextInput } from "react-native";
 import { isValidOrFutureDate } from "../../utils/FormatDate";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { OnlyNumbers } from "../../constants/Validations";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import getCurrencySymbol from "../../utils/CurrencySymbols";
 
 export default function Notifications(props: any) {
   const colorScheme = useColorScheme();
+  const code = useSelector((state: RootState) => state.currency.code);
+
+  //
   const [date, setDate] = useState<string>("");
-  const [amount, setAmount] = useState<number>(0);
-  const [income, setIncome] = useState<number>(0);
+  const [amount, setAmount] = useState<string>("0");
+  const [income, setIncome] = useState<string>("0");
   const [isValidAmount, setIsValidAmount] = useState<boolean | null>(null);
   const [isValidDate, setIsValidDate] = useState<boolean | null>(null);
   const [isValidIncome, setIsValidIncome] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<string>("");
+  const [result, setResult] = useState<{ percentage: string; daily: string }>({
+    percentage: "",
+    daily: "",
+  });
 
   const onSubmit = async () => {
     setLoading(true);
 
     try {
-      if (amount < 1) {
+      if (+amount < 1) {
         setIsValidAmount(false);
         return;
       }
       setIsValidAmount(true);
 
-      if (income <= 0) {
+      if (+income <= 1) {
         setIsValidIncome(false);
         return;
       }
@@ -49,9 +58,11 @@ export default function Notifications(props: any) {
       setIsValidDate(true);
 
       // calculating.
-      let r = suggestSavingsPercentage(date, amount, income);
-      setResult(r);
-      triggerNotifications("Strategies", r);
+      let percentage = suggestSavingsPercentage(date, +amount, +income);
+      let daily = suggestDailySavings(date, +amount, +income, code);
+
+      setResult({ daily, percentage });
+      triggerNotifications("Strategies", daily);
     } catch (error) {
       console.error("An error occurred:", error);
     } finally {
@@ -92,9 +103,9 @@ export default function Notifications(props: any) {
               placeholder="Amount"
               placeholderTextColor="grey"
               keyboardType="numeric"
-              value={`${amount === 0 ? "" : amount}`}
+              value={+amount < 0 ? "" : amount}
               onChangeText={(text) => {
-                if (OnlyNumbers(text)) setAmount(+text);
+                setAmount(text);
               }}
             />
             <Text
@@ -116,9 +127,9 @@ export default function Notifications(props: any) {
               placeholder="Amount"
               placeholderTextColor="grey"
               keyboardType="numeric"
-              value={`${income === 0 ? "" : income}`}
+              value={+income < 0 ? "" : income}
               onChangeText={(text) => {
-                if (OnlyNumbers(text)) setIncome(+text);
+                setIncome(text);
               }}
             />
             <Text
@@ -162,7 +173,21 @@ export default function Notifications(props: any) {
               className="tracking-wider mb-1 mt-1 text-base text-center font-semibold"
               style={{ color: "#767676" }}
             >
-              {result}
+              {result.percentage}
+            </Text>
+            {result.daily !== "" && (
+              <Text
+                className="tracking-wider mb-1 mt-1 text-base text-center font-semibold"
+                style={{ color: "#767676" }}
+              >
+                (OR)
+              </Text>
+            )}
+            <Text
+              className="tracking-wider mb-1 mt-1 text-base text-center font-semibold"
+              style={{ color: "#767676" }}
+            >
+              {result.daily}
             </Text>
             <TouchableOpacity
               disabled={loading}
@@ -182,6 +207,36 @@ export default function Notifications(props: any) {
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+function suggestDailySavings(
+  targetDate: string,
+  amount: number,
+  monthlyIncome: number,
+  code: string
+): string {
+  const target = new Date(targetDate);
+  const currentDate = new Date();
+
+  const daysRemaining = Math.ceil(
+    (Number(target) - Number(currentDate)) / (1000 * 60 * 60 * 24)
+  );
+
+  if (daysRemaining <= 0) {
+    return "You've already saved enough for this goal!";
+  }
+
+  const monthsRemaining =
+    (target.getFullYear() - currentDate.getFullYear()) * 12 +
+    target.getMonth() -
+    currentDate.getMonth();
+
+  const totalSavingsRequired = amount - monthlyIncome * monthsRemaining;
+  const dailySavingsRequired = totalSavingsRequired / daysRemaining;
+
+  return `You should aim to save ${dailySavingsRequired.toFixed(
+    2
+  )} ${getCurrencySymbol(code)} every day.`;
 }
 
 function suggestSavingsPercentage(

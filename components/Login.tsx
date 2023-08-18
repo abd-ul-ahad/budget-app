@@ -84,12 +84,12 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
         <View className="flex justify-center items-center">
           {colorScheme === "light" ? (
             <Image
-              style={{ resizeMode: "contain", width: 200, height: 200 }}
+              style={{ resizeMode: "contain", width: 300, height: 300 }}
               source={require("../assets/images/logo.png")}
             />
           ) : (
             <Image
-              style={{ resizeMode: "contain", width: 200, height: 200 }}
+              style={{ resizeMode: "contain", width: 300, height: 300 }}
               source={require("../assets/images/logo-dark.png")}
             />
           )}

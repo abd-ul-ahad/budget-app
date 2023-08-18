@@ -96,16 +96,16 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
   return (
     <SafeAreaView>
       <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
-      <View className="space-y-4">
+      <View className="space-y-2">
         <View className="flex justify-center items-center">
           {colorScheme === "light" ? (
             <Image
-              style={{ resizeMode: "contain", width: 200, height: 200 }}
+              style={{ resizeMode: "contain", width: 300, height: 300 }}
               source={require("../assets/images/logo.png")}
             />
           ) : (
             <Image
-              style={{ resizeMode: "contain", width: 200, height: 200 }}
+              style={{ resizeMode: "contain", width: 300, height: 300 }}
               source={require("../assets/images/logo-dark.png")}
             />
           )}
