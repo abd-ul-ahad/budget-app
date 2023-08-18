@@ -18,10 +18,7 @@ import { useFirestore } from "../firebase/useFirestore";
 import formattedDate from "../utils/FormatDate";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
-import {
-  incomeByMonth,
-  incomeByYear,
-} from "../utils/GenChart";
+import { incomeByMonth, spendingByYear } from "../utils/GenChart";
 
 export default function Spending(props: any) {
   // Using hooks to manage state and get color scheme
@@ -47,8 +44,17 @@ export default function Spending(props: any) {
       d?.forEach((e: any) => {
         if (e._data.category !== "#income") r.push(e);
       });
-      setChartDataByMonth(incomeByMonth(d?.docs));
-      setChartDataByYear(incomeByYear(d?.docs));
+      setChartDataByMonth(incomeByMonth(r));
+      let result = spendingByYear(r);
+
+      if (result.years.length === 0) {
+        setChartDataByYear([
+          { year: [new Date().getFullYear().toString()], data: [0] },
+        ]);
+      } else {
+        setChartDataByYear(result);
+      }
+
       setResp(r);
     } catch {
       setToggleSnack(true);
@@ -123,7 +129,7 @@ export default function Spending(props: any) {
                     0,
                     chartDataByMonth.length === 0 ? 1 : chartDataByMonth.length
                   )
-                : chartDataByYear.years || [""]
+                : chartDataByYear.years || [new Date().getFullYear().toString()]
             }
             _data={
               labelI === 0 ? chartDataByMonth : chartDataByYear.data || [0]

@@ -10,7 +10,6 @@ import {
   useComputedValue,
   useClockValue,
   useValue,
-  useTouchHandler,
   LinearGradient,
   Text,
   useFont,

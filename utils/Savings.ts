@@ -69,7 +69,7 @@ export default function calculateSavingsByMonth(
   }
 }
 
-function removeLeadingZeros(inputNumber: any): number {
+export function removeLeadingZeros(inputNumber: any): number {
   try {
     return inputNumber.replace(/^0+/, "");
   } catch {

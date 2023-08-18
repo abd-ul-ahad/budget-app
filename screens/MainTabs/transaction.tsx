@@ -17,7 +17,7 @@ import { RootState } from "../../store";
 import formattedDate from "../../utils/FormatDate";
 import { reload } from "../../store/slices/reloadSlice";
 import { Snackbar } from "react-native-paper";
-import { incomeByMonth, incomeByYear } from "../../utils/GenChart";
+import { spendingByMonth, spendingByYear } from "../../utils/GenChart";
 
 export default function Transaction(props: any) {
   const colorScheme = useColorScheme();
@@ -42,8 +42,16 @@ export default function Transaction(props: any) {
     try {
       getDocument().then((doc) => {
         setResp(doc?.docs);
-        setChartDataByMonth(incomeByMonth(doc?.docs));
-        setChartDataByYear(incomeByYear(doc?.docs));
+        setChartDataByMonth(spendingByMonth(doc?.docs));
+        let result = spendingByYear(doc?.docs);
+
+        if (result.years.length === 0) {
+          setChartDataByYear([
+            { year: [new Date().getFullYear().toString()], data: [0] },
+          ]);
+        } else {
+          setChartDataByYear(result);
+        }
       });
     } catch {
       setToggleSnack(true);
@@ -51,13 +59,12 @@ export default function Transaction(props: any) {
       setRefreshing(false);
     }
   };
-
   useEffect(() => {
     load();
   }, [reloadState]);
 
   useEffect(() => {
-    setChartDataByMonth(incomeByMonth(resp));
+    setChartDataByMonth(spendingByMonth(resp));
   }, [labelI]);
 
   // JSX code starts here
@@ -75,7 +82,7 @@ export default function Transaction(props: any) {
         {/* Section for displaying the "Savings" data */}
         <View className="pt-2 flex justify-center items-center">
           <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">
-            Income
+            Spednings
           </Text>
           {/* Rendering the LineGraph component with random data */}
           <LineGraph
@@ -98,7 +105,7 @@ export default function Transaction(props: any) {
                     0,
                     chartDataByMonth.length === 0 ? 1 : chartDataByMonth.length
                   )
-                : chartDataByYear.years || [""]
+                : chartDataByYear.years || [new Date().getFullYear().toString()]
             }
             _data={
               labelI === 0 ? chartDataByMonth : chartDataByYear.data || [0]
@@ -109,7 +116,7 @@ export default function Transaction(props: any) {
         {/* Section for displaying the "Spending" data */}
         <View className="pt-2 flex justify-center items-center">
           <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">
-            Spending
+            Categories
           </Text>
           {/* Rendering the PieGraph component */}
           <PieGraph transactions={resp} />
