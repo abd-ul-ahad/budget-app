@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { set } from "../../store/slices/snackSlice";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
+import LinearGradient from "react-native-linear-gradient";
 
 export default function AddEdit({
   setToggle,
@@ -170,23 +171,39 @@ export default function AddEdit({
             />
           </View>
           {isNew ? (
-            <TouchableOpacity
-              disabled={loading}
-              onPress={() => Submit()}
-              className="flex justify-center items-center rounded-lg"
-              style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+            <LinearGradient
+              start={{ x: 0.0, y: 0.15 }}
+              end={{ x: 0.5, y: 1.0 }}
+              colors={["#ffbf79", "#adfbd6"]}
+              className="rounded-lg"
             >
-              <Text className="text-white py-3">Add Category</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                disabled={loading}
+                onPress={() => Submit()}
+                className="flex justify-center items-center"
+              >
+                <Text className="text-black font-semibold tracking-wider py-3">
+                  Add Category
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
           ) : (
-            <TouchableOpacity
-              disabled={loading}
-              onPress={() => Update()}
-              className="flex justify-center items-center rounded-lg"
-              style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+            <LinearGradient
+              start={{ x: 0.0, y: 0.15 }}
+              end={{ x: 0.5, y: 1.0 }}
+              colors={["#ffbf79", "#adfbd6"]}
+              className="rounded-lg"
             >
-              <Text className="text-white py-3">Edit Category</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                disabled={loading}
+                onPress={() => Update()}
+                className="flex justify-center items-center"
+              >
+                <Text className="text-black font-semibold tracking-wider py-3">
+                  Edit Category
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
           )}
         </View>
       </View>

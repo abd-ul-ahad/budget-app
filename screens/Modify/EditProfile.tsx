@@ -19,6 +19,7 @@ import { Snackbar } from "react-native-paper";
 import { Auth } from "../../firebase/init";
 import { login as LoginState } from "../../store/slices/userSlice";
 import { firebase } from "@react-native-firebase/auth";
+import LinearGradient from "react-native-linear-gradient";
 
 export interface Payload {
   name?: string;
@@ -381,15 +382,21 @@ export default function EditProfile(props: any) {
           </View>
         </View>
         <View className="px-3 pb-10">
-          <TouchableOpacity
-            className="flex justify-center items-center flex-row py-4 rounded-full"
-            style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
-            onPress={() => handleSubmit()}
+          <LinearGradient
+            start={{ x: 0.0, y: 0.15 }}
+            end={{ x: 0.5, y: 1.0 }}
+            colors={["#ffbf79", "#adfbd6"]}
+            className="rounded-lg"
           >
-            <Text style={{ color: "white" }} className="text-sm tracking-wide ">
-              {isLoading ? "Loading..." : "Update"}
-            </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              className="flex justify-center items-center flex-row"
+              onPress={() => handleSubmit()}
+            >
+              <Text className="text-black font-semibold tracking-wider py-3">
+                {isLoading ? "Loading..." : "Update"}
+              </Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
       </ScrollView>
       <Snackbar

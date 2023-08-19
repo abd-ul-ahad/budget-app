@@ -18,6 +18,7 @@ import { useFirestore } from "../firebase/useFirestore";
 import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
 import { setCurrency } from "../store/slices/currencySlice";
+import LinearGradient from "react-native-linear-gradient";
 
 export default function Currency(props: any) {
   const dispatch = useDispatch();
@@ -162,15 +163,21 @@ export default function Currency(props: any) {
         </View>
       </ScrollView>
       <View className="px-3 my-2">
-        <TouchableOpacity
-          onPress={() => handleSubmit()}
-          className="flex justify-center items-center flex-row py-4 rounded-full mt-3"
-          style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+        <LinearGradient
+          start={{ x: 0.0, y: 0.15 }}
+          end={{ x: 0.5, y: 1.0 }}
+          colors={["#ffbf79", "#adfbd6"]}
+          className="rounded-lg"
         >
-          <Text style={{ color: "white" }} className="text-sm tracking-wide ">
-            {loading ? "Loading..." : "Select"}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleSubmit()}
+            className="flex justify-center items-center flex-row"
+          >
+            <Text className="text-black font-semibold tracking-wider py-3">
+              {loading ? "Loading..." : "Select"}
+            </Text>
+          </TouchableOpacity>
+        </LinearGradient>
       </View>
     </SafeAreaView>
   );

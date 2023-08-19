@@ -21,6 +21,7 @@ import { reload } from "../../store/slices/reloadSlice";
 import { OnlyNumbers } from "../../constants/Validations";
 import RenderAmount from "../../components/RenderAmount";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
+import LinearGradient from "react-native-linear-gradient";
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
@@ -179,16 +180,22 @@ export default function Savings(props: any) {
               setSaveAmount(text);
             }}
           />
-          <TouchableOpacity
-            disabled={loading}
-            onPress={() => onSubmit()}
-            className="flex justify-center items-center rounded-lg mt-5"
-            style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+          <LinearGradient
+            start={{ x: 0.0, y: 0.15 }}
+            end={{ x: 0.5, y: 1.0 }}
+            colors={["#ffbf79", "#adfbd6"]}
+            className="rounded-lg"
           >
-            <Text className="text-white py-3">
-              {loading ? "Loading..." : "Save"}
-            </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() => onSubmit()}
+              className="flex justify-center items-center"
+            >
+              <Text className="text-black font-semibold tracking-wider py-3">
+                {loading ? "Loading..." : "Save"}
+              </Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
         {allSavings?.length !== 0 ? (
           <>

@@ -1,7 +1,6 @@
 import {
   View,
   Dimensions,
-  ImageBackground,
   ScrollView,
   TouchableOpacity,
   Text,
@@ -20,11 +19,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
-import { CalculateBalance } from "../../utils/CalculateBalance";
 import { OnlyNumbers } from "../../constants/Validations";
 import RenderAmount from "../../components/RenderAmount";
-
-const image = require("../../assets/images/banner.png");
+import LinearGradient from "react-native-linear-gradient";
 
 const height = Dimensions.get("window").height;
 
@@ -146,9 +143,10 @@ export default function EditTransactions(props: any) {
       >
         {/* Banner image */}
         <View style={{ width: "100%", height: height / 3 }}>
-          <ImageBackground
-            source={image}
-            resizeMode="cover"
+          <LinearGradient
+            start={{ x: 0.0, y: 0.15 }}
+            end={{ x: 0.5, y: 1.0 }}
+            colors={["#ffbf79", "#adfbd6"]}
             className="flex-1 justify-start items-start flex-col"
           >
             <View className="justify-between w-full items-center flex-row px-3 pt-3">
@@ -161,17 +159,19 @@ export default function EditTransactions(props: any) {
                     : props.navigation.goBack();
                 }}
               >
-                <Ionicons name="chevron-back-sharp" size={26} color="white" />
+                <Ionicons name="chevron-back-sharp" size={26} color="black" />
               </TouchableOpacity>
               {/* Edit button */}
               <TouchableOpacity
                 style={{
-                  backgroundColor: isEditMode ? "#3c7250" : "transparent",
+                  backgroundColor: isEditMode
+                    ? "rgba(0, 0, 0, 0.17)"
+                    : "transparent",
                 }}
                 className="py-3 px-4 rounded-full"
                 onPress={() => setIsEditMode(!isEditMode)}
               >
-                <Octicons name="pencil" size={24} color="white" />
+                <Octicons name="pencil" size={24} color="black" />
               </TouchableOpacity>
             </View>
             {/* Transaction details */}
@@ -182,19 +182,19 @@ export default function EditTransactions(props: any) {
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item }) => (
                   <View>
-                    <Text className="text-white text-xl flex justify-start item">
+                    <Text className="text-black text-xl flex justify-start item">
                       {payload.description}
                     </Text>
-                    <Text className="text-white text-3xl font-bold">
+                    <Text className="text-black text-3xl font-bold">
                       <RenderAmount amount={+item!} />
                     </Text>
-                    <Text className="text-white text-sm">{payload.date}</Text>
+                    <Text className="text-black text-sm">{payload.date}</Text>
                   </View>
                 )}
                 keyExtractor={() => `1`}
               />
             </View>
-          </ImageBackground>
+          </LinearGradient>
         </View>
         {/* Editable fields */}
         <View className="px-3 space-y-3 py-5 pb-10">

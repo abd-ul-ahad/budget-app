@@ -1,5 +1,4 @@
 import {
-  ImageBackground,
   Dimensions,
   Text,
   TouchableOpacity,
@@ -23,8 +22,7 @@ import { triggerNotifications } from "../utils/Notifications";
 import { OnlyNumbers } from "../constants/Validations";
 import getCurrencySymbol from "../utils/CurrencySymbols";
 import RenderAmount from "./RenderAmount";
-
-const image = require("../assets/images/banner.png");
+import LinearGradient from "react-native-linear-gradient";
 
 const Hero = ({ currentBalance, navigation }: any) => {
   const [incomeOrSpend, setIncomeOrSpend] = useState<number | null>(null);
@@ -35,9 +33,10 @@ const Hero = ({ currentBalance, navigation }: any) => {
       <View
         style={{ width: "100%", height: Dimensions.get("window").height / 2.8 }}
       >
-        <ImageBackground
-          source={image}
-          resizeMode="cover"
+        <LinearGradient
+          start={{ x: 0.0, y: 0.15 }}
+          end={{ x: 0.5, y: 1.0 }}
+          colors={["#ffbf79", "#adfbd6"]}
           className="flex-1 justify-between items-start flex-col px-3 pb-3"
         >
           <View className="flex justify-end items-end w-full">
@@ -45,17 +44,19 @@ const Hero = ({ currentBalance, navigation }: any) => {
               className="py-4 px-4"
               onPress={() => navigation.navigate("Notifications")}
             >
-              <Feather name="bell" size={24} color="white" />
+              <Feather name="bell" size={24} color="black" />
             </TouchableOpacity>
             <View className="flex justify-start items-start w-full space-y-2">
-              <Text className="text-white text-xl">My Balance</Text>
+              <Text className="text-black font-semibold text-xl tracking-wider">
+                My Balance
+              </Text>
               <FlatList
                 data={[currentBalance || 0]}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 renderItem={(item) => (
                   <View>
-                    <Text className="text-white text-3xl font-bold">
+                    <Text className="text-3xl font-bold text-black">
                       <RenderAmount amount={item.item} />
                     </Text>
                   </View>
@@ -73,7 +74,9 @@ const Hero = ({ currentBalance, navigation }: any) => {
                 setIncomeOrSpend((prev) => (prev === 0 ? null : 0))
               }
             >
-              <Text className="text-white">Add Income</Text>
+              <Text className="text-black font-semibold tracking-wider">
+                Add Income
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               className="px-10 py-3 rounded-xl"
@@ -82,10 +85,12 @@ const Hero = ({ currentBalance, navigation }: any) => {
                 setIncomeOrSpend((prev) => (prev === 1 ? null : 1))
               }
             >
-              <Text className="text-white">Add Spending</Text>
+              <Text className="text-black font-semibold tracking-wider">
+                Add Spending
+              </Text>
             </TouchableOpacity>
           </View>
-        </ImageBackground>
+        </LinearGradient>
       </View>
 
       {incomeOrSpend === 0 ? (
@@ -190,14 +195,22 @@ const AddIncome = ({
         >
           Fields are empty
         </Text>
-        <TouchableOpacity
-          disabled={loading}
-          onPress={() => Submit()}
-          className="flex justify-center items-center rounded-lg"
-          style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+        <LinearGradient
+          start={{ x: 0.0, y: 0.15 }}
+          end={{ x: 0.5, y: 1.0 }}
+          colors={["#ffbf79", "#adfbd6"]}
+          className="rounded-lg"
         >
-          <Text className="text-white py-3">Deposit</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            disabled={loading}
+            onPress={() => Submit()}
+            className="flex justify-center items-center"
+          >
+            <Text className="text-black font-semibold tracking-wider py-3">
+              Deposit
+            </Text>
+          </TouchableOpacity>
+        </LinearGradient>
 
         {/* divider */}
         <View
@@ -492,16 +505,22 @@ const AddSpending = ({
         >
           Fields are empty
         </Text>
-        <TouchableOpacity
-          disabled={loading}
-          onPress={() => Submit()}
-          className="flex justify-center items-center rounded-lg"
-          style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+        <LinearGradient
+          start={{ x: 0.0, y: 0.15 }}
+          end={{ x: 0.5, y: 1.0 }}
+          colors={["#ffbf79", "#adfbd6"]}
+          className="rounded-lg"
         >
-          <Text className="text-white py-3">
-            {loading ? "Loading..." : "Credit"}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            disabled={loading}
+            onPress={() => Submit()}
+            className="flex justify-center items-center"
+          >
+            <Text className="text-black font-semibold tracking-wider py-3">
+              {loading ? "Loading..." : "Credit"}
+            </Text>
+          </TouchableOpacity>
+        </LinearGradient>
         {/* divider */}
         <View
           style={{ height: 1, backgroundColor: "gray" }}
@@ -514,7 +533,7 @@ const AddSpending = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "rgba(255, 255, 255, 0.07)",
+    backgroundColor: "rgba(0, 0, 0, 0.17)",
   },
 });
 

@@ -17,6 +17,7 @@ import { set } from "../../store/slices/snackSlice";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
+import LinearGradient from "react-native-linear-gradient";
 
 interface Payload {
   title: string;
@@ -288,16 +289,22 @@ export default function EditPlan(props: any) {
 
               {/* Button to submit the form (Add or Edit) */}
               {+title !== 0 ? (
-                <TouchableOpacity
-                  onPress={() => onEditSubmit()}
-                  disabled={loading}
-                  className="flex justify-center items-center rounded-lg"
-                  style={{
-                    backgroundColor: Colors[colorScheme ?? "light"].tint,
-                  }}
+                <LinearGradient
+                  start={{ x: 0.0, y: 0.15 }}
+                  end={{ x: 0.5, y: 1.0 }}
+                  colors={["#ffbf79", "#adfbd6"]}
+                  className="rounded-lg"
                 >
-                  <Text className="text-white py-3">Edit Plan</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => onEditSubmit()}
+                    disabled={loading}
+                    className="flex justify-center items-center"
+                  >
+                    <Text className="text-black font-semibold tracking-wider py-3">
+                      Edit Plan
+                    </Text>
+                  </TouchableOpacity>
+                </LinearGradient>
               ) : (
                 <TouchableOpacity
                   onPress={() => onAddSubmit()}

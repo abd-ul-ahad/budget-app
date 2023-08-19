@@ -15,6 +15,7 @@ import { RootState } from "../../store";
 import { useFirestore } from "../../firebase/useFirestore";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
+import LinearGradient from "react-native-linear-gradient";
 
 export default function PlanScreen(props: any) {
   const colorScheme = useColorScheme();
@@ -70,19 +71,27 @@ export default function PlanScreen(props: any) {
 
             {/* New Plan Button */}
             <View className="px-3 space-y-2">
-              <TouchableOpacity
-                onPress={() => {
-                  props.navigation.navigate("EditPlan", {
-                    title: 0,
-                    category: "",
-                    amount: "",
-                  });
-                }}
-                className="flex justify-center items-center rounded-lg"
-                style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+              <LinearGradient
+                start={{ x: 0.0, y: 0.15 }}
+                end={{ x: 0.5, y: 1.0 }}
+                colors={["#ffbf79", "#adfbd6"]}
+                className="rounded-lg"
               >
-                <Text className="text-white py-3">New Plan</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    props.navigation.navigate("EditPlan", {
+                      title: 0,
+                      category: "",
+                      amount: "",
+                    });
+                  }}
+                  className="flex justify-center items-center"
+                >
+                  <Text className="text-black font-semibold tracking-wider py-3">
+                    New Plan
+                  </Text>
+                </TouchableOpacity>
+              </LinearGradient>
 
               {/* List of Existing Plans */}
               <View className="pt-3 pb-28">
@@ -101,7 +110,7 @@ export default function PlanScreen(props: any) {
                       {/* Plan Item */}
                       <TouchableOpacity
                         className="py-3"
-                        onPress={() => {                          
+                        onPress={() => {
                           props.navigation.navigate("EditPlan", {
                             title: e._data.title,
                             category: e._data.category,
