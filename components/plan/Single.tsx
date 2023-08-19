@@ -1,8 +1,8 @@
 import { View, useColorScheme } from "react-native";
 import { Text } from "../Themed";
 import Colors from "../../constants/Colors";
-import { ProgressBar } from "react-native-paper";
 import RenderAmount from "../RenderAmount";
+import ProgressBar from "../ProgressBar";
 
 export default function Single({
   progress = 0,
@@ -48,16 +48,8 @@ export default function Single({
           <RenderAmount amount={amount || 0} />
         </Text>
       </View>
-      <ProgressBar
-        style={{ height: 10 }}
-        progress={calculatePercentage()}
-        className="rounded-full"
-        theme={{
-          colors: {
-            primary: "#fdd300",
-          },
-        }}
-      />
+
+      <ProgressBar progress={calculatePercentage()} />
     </>
   );
 }

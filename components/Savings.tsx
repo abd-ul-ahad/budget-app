@@ -1,4 +1,3 @@
-import { ProgressBar } from "react-native-paper";
 import { Text, View } from "./Themed";
 import {
   TouchableOpacity,
@@ -9,6 +8,7 @@ import {
 import Colors from "../constants/Colors";
 import { Entypo } from "@expo/vector-icons";
 import RenderAmount from "./RenderAmount";
+import ProgressBar from "./ProgressBar";
 
 const width = Dimensions.get("window").width;
 
@@ -135,16 +135,8 @@ export const Single = ({
             )}
           </Text>
         </View>
-        <ProgressBar
-          style={{ height: 10 }}
-          progress={progress}
-          className="rounded-full"
-          theme={{
-            colors: {
-              primary: "#fdd300",
-            },
-          }}
-        />
+
+        <ProgressBar progress={progress} />
       </View>
     </TouchableOpacity>
   );
