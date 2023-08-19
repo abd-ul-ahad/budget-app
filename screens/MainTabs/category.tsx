@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RefreshControl } from "react-native";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
-import LinearGradient from "react-native-linear-gradient";
+
 
 export default function Category() {
   // Get the current color scheme
@@ -87,23 +87,18 @@ export default function Category() {
             {/* Container for categories */}
             <View className="pt-3 mb-10 space-y-2 px-3">
               {/* Button to add a new category */}
-              <LinearGradient
-                start={{ x: 0.0, y: 0.15 }}
-                end={{ x: 0.5, y: 1.0 }}
-                colors={["#ffbf79", "#adfbd6"]}
-                className="rounded-lg"
+              <TouchableOpacity
+                onPress={() => {
+                  setPayload({ id: "", category: "" });
+                  setToggle(true);
+                  setIsNew(true);
+                }}
+                className="flex justify-center items-center rounded-lg"
+                style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    setPayload({ id: "", category: "" });
-                    setToggle(true);
-                    setIsNew(true);
-                  }}
-                  className="flex justify-center items-center"
-                >
-                  <Text className="text-black font-semibold tracking-wider py-3">New Category</Text>
-                </TouchableOpacity>
-              </LinearGradient>
+                <Text className="text-white py-3">New Category</Text>
+              </TouchableOpacity>
+
               {/* Container for existing categories */}
               <View className="py-3">
                 {resp?.length === 0 && (

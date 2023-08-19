@@ -31,7 +31,6 @@ import AllTimeSavings from "../screens/Savings/AllTimeSavings";
 import EditSavings from "../screens/Modify/EditSavings";
 import FinancialEdu from "../screens/Savings/FinancialEdu";
 import Currency from "../screens/Currency";
-import { FinancialHome } from "../screens/FinancialEducation/Home";
 
 const Stack = createNativeStackNavigator();
 
@@ -133,7 +132,7 @@ export default function CheckAuth() {
                 <Stack.Screen
                   name="FinancialEdu"
                   options={{ headerShown: false }}
-                  component={FinancialHome}
+                  component={FinancialEdu}
                 />
                 <Stack.Screen
                   name="Currency"

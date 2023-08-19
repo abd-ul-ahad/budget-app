@@ -17,7 +17,6 @@ import { OnlyNumbers } from "../../constants/Validations";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
-import LinearGradient from "react-native-linear-gradient";
 
 export default function Notifications(props: any) {
   const colorScheme = useColorScheme();
@@ -190,22 +189,19 @@ export default function Notifications(props: any) {
             >
               {result.daily}
             </Text>
-            <LinearGradient
-              start={{ x: 0.0, y: 0.15 }}
-              end={{ x: 0.5, y: 1.0 }}
-              colors={["#ffbf79", "#adfbd6"]}
-              className="rounded-lg"
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() => onSubmit()}
+              className="flex justify-center items-center mt-5 w-full flex-row py-4 rounded-full"
+              style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
             >
-              <TouchableOpacity
-                disabled={loading}
-                onPress={() => onSubmit()}
-                className="flex justify-center items-center w-full flex-row"
+              <Text
+                style={{ color: "white" }}
+                className="text-sm tracking-wide "
               >
-                <Text className="text-black font-semibold tracking-wider py-3">
-                  {loading ? "Calculating..." : "Calculate"}
-                </Text>
-              </TouchableOpacity>
-            </LinearGradient>
+                {loading ? "Calculating..." : "Calculate"}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

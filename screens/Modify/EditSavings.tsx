@@ -14,7 +14,6 @@ import { triggerNotifications } from "../../utils/Notifications";
 import { OnlyNumbers } from "../../constants/Validations";
 import RenderAmount from "../../components/RenderAmount";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
-import LinearGradient from "react-native-linear-gradient";
 
 export default function EditSavings(props: any) {
   const colorScheme = useColorScheme();
@@ -165,22 +164,16 @@ export default function EditSavings(props: any) {
               setSaveAmount(+text);
             }}
           />
-          <LinearGradient
-            start={{ x: 0.0, y: 0.15 }}
-            end={{ x: 0.5, y: 1.0 }}
-            colors={["#ffbf79", "#adfbd6"]}
-            className="rounded-lg mt-3"
+          <TouchableOpacity
+            disabled={loading}
+            onPress={() => onUpdate()}
+            className="flex justify-center items-center rounded-lg mt-5"
+            style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
           >
-            <TouchableOpacity
-              disabled={loading}
-              onPress={() => onUpdate()}
-              className="flex justify-center items-center"
-            >
-              <Text className="text-black font-semibold tracking-wider py-3">
-                {loading ? "Loading..." : "Update"}
-              </Text>
-            </TouchableOpacity>
-          </LinearGradient>
+            <Text className="text-white py-3">
+              {loading ? "Loading..." : "Update"}
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity
             disabled={loading}
             onPress={() => onDelete()}
