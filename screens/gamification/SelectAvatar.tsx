@@ -14,26 +14,40 @@ import { RootState } from "../../store";
 import { useState } from "react";
 import { setAvatar } from "../../store/slices/avatarSlice";
 import { FadeInView } from "../../components/animations";
+import { useFirestore } from "../../firebase/useFirestore";
 
 export default function SelectAvatar(props: any) {
   const colorScheme = useColorScheme();
-  const avatar = useSelector((state: RootState) => state.avatar.path);
+  const user = useSelector((state: RootState) => state.user);
+  const { id, path } = useSelector((state: RootState) => state.avatar);
   const dispatch = useDispatch();
 
   //
   const [loading, setLoading] = useState<boolean>(false);
-  const [ready, setReady] = useState<boolean>(false);
 
-  const handleSubmit = async (e: any) => {
+  //
+  const { updateDocument } = useFirestore("gamification", user.uid!);
+
+  const handleSubmit = async (e: { title: string; uri: string }) => {
     setLoading(true);
-    dispatch(setAvatar({ path: e }));
+
+    updateDocument({ avatar: e.title }, id!).then(() => {
+      console.log("Avatar updated successfully");
+    });
+    dispatch(setAvatar({ path: e.uri, id }));
+
     setLoading(false);
   };
 
   return (
     <SafeAreaView>
       <FadeInView _duration={500}>
-        <ScrollView>
+        <ScrollView
+          style={{
+            height: "100%",
+            backgroundColor: Colors[colorScheme ?? "light"].background,
+          }}
+        >
           <View className="w-full flex flex-row justify-start items-center pt-4">
             <TouchableOpacity
               className="py-4 px-3"
@@ -75,7 +89,7 @@ export default function SelectAvatar(props: any) {
                         height: 120,
                         resizeMode: "stretch",
                       }}
-                      source={avatar}
+                      source={path}
                     />
                   </TouchableOpacity>
                 )}
@@ -96,7 +110,7 @@ export default function SelectAvatar(props: any) {
                       key={i}
                       onLongPress={() =>
                         props.navigation.navigate("FullScreenAvatar", {
-                          avatar: e,
+                          avatar: e.uri,
                         })
                       }
                       onPress={() => handleSubmit(e)}
@@ -109,7 +123,7 @@ export default function SelectAvatar(props: any) {
                           height: 70,
                           resizeMode: "stretch",
                         }}
-                        source={e}
+                        source={e.uri}
                       />
                     </TouchableOpacity>
                   );

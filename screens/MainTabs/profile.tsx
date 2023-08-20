@@ -17,6 +17,8 @@ import { hideUsername } from "../Modify/EditProfile";
 import { useFirestore } from "../../firebase/useFirestore";
 import getLevelInfo, { calculateTotalAmount } from "../../gamification/utils";
 import { setLevel } from "../../store/slices/levelSlice";
+import { setAvatar } from "../../store/slices/avatarSlice";
+import { Avatars } from "../../gamification/Avatars/_Paths";
 
 export default function Profile(props: any) {
   const user = useSelector((state: RootState) => state.user);
@@ -31,6 +33,10 @@ export default function Profile(props: any) {
 
   //
   const { getDocument } = useFirestore("savings", user.uid!);
+  const { getDocument: getGamification, addDocument } = useFirestore(
+    "gamification",
+    user.uid!
+  );
 
   //
   const [levelInfo, setLevelInfo] = useState<{
@@ -46,6 +52,19 @@ export default function Profile(props: any) {
 
   //
   const load = () => {
+    try {
+      getGamification().then((doc) => {
+        const a = doc?.docs[0].data().avatar;
+        Avatars.forEach((e) => {
+          if (e.title == a) {
+            dispatch(setAvatar({ path: e.uri, id: doc?.docs[0].id }));
+          }
+        });
+      });
+    } catch {
+      addDocument({ avatar: "1" });
+    }
+
     getDocument()
       .then((doc) => {
         if (doc?.docs !== undefined) {

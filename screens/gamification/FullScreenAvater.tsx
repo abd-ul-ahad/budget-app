@@ -24,7 +24,12 @@ export default function FullScreenAvatar(props: any) {
   return (
     <SafeAreaView>
       <FadeInView _duration={500}>
-        <ScrollView>
+        <ScrollView
+          style={{
+            height,
+            backgroundColor: Colors[colorScheme ?? "light"].background,
+          }}
+        >
           <View className="w-full flex flex-row justify-between items-center pt-4">
             <TouchableOpacity
               className="py-4 px-3"

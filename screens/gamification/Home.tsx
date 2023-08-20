@@ -2,7 +2,6 @@ import {
   Image,
   Pressable,
   ScrollView,
-  TextInput,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
@@ -11,15 +10,9 @@ import { Text, View } from "../../components/Themed";
 import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { RootState } from "../../store";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useState } from "react";
-import { ConPassword, ValName, ValPassword } from "../../constants/Validations";
-import { triggerNotifications } from "../../utils/Notifications";
 import { Snackbar } from "react-native-paper";
-import { Auth } from "../../firebase/init";
-import { login as LoginState } from "../../store/slices/userSlice";
-import { firebase } from "@react-native-firebase/auth";
-import { ImageProps } from "react-native-svg";
 import RenderAmount from "../../components/RenderAmount";
 
 export interface Payload {
@@ -47,17 +40,12 @@ export const initialPayload: Payload = {
 };
 
 export default function Gamification(props: any) {
-  const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
   const levelInfo = useSelector((state: RootState) => state.levels);
   const avatar = useSelector((state: RootState) => state.avatar.path);
   const balances = useSelector((state: RootState) => state.balances);
 
-  const [payload, setPayload] = useState<Payload>({
-    ...initialPayload,
-    name: user.name,
-  });
   const [toggleSnackbar, setToggleSnackbar] = useState<{
     open: boolean;
     msg: string;
@@ -66,7 +54,12 @@ export default function Gamification(props: any) {
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView
+        style={{
+          height: "100%",
+          backgroundColor: Colors[colorScheme ?? "light"].background,
+        }}
+      >
         {/* header */}
         <View className="w-full flex flex-row justify-start items-center pt-4">
           <TouchableOpacity

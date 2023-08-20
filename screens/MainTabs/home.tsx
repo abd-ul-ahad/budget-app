@@ -37,7 +37,7 @@ export default function Home(props: any) {
   const balances = useSelector((state: RootState) => state.balances);
   const reloadState = useSelector((state: RootState) => state.reload);
   const code = useSelector((state: RootState) => state.currency.code);
-
+  
   const dispatch = useDispatch();
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
