@@ -23,7 +23,6 @@ export default function Profile(props: any) {
   const reloadState = useSelector((state: RootState) => state.reload);
   const dispatch = useDispatch();
 
-
   //
   const { logout } = useLogout();
   const colorScheme = useColorScheme();
@@ -56,14 +55,16 @@ export default function Profile(props: any) {
             level: info?.level || 0,
             target: info?.target || 0,
             title: info?.title || "",
-          });         
+          });
 
-          dispatch(setLevel({
-            current: calculate,
-            level: info?.level || 0,
-            target: info?.target || 0,
-            title: info?.title || "",
-          }));
+          dispatch(
+            setLevel({
+              current: calculate,
+              level: info?.level || 0,
+              target: info?.target || 0,
+              title: info?.title || "",
+            })
+          );
         }
       })
       .catch(() => {
@@ -104,7 +105,7 @@ export default function Profile(props: any) {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("EditProfile")}
+              onPress={() => props.navigation.navigate("Gamification")}
               className="flex pl-6 space-x-6 mb-5 flex-row justify-start items-center"
             >
               <View className="relative">

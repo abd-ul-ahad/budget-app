@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,10 +44,11 @@ export const initialPayload: Payload = {
   isOldPass: null,
 };
 
-export default function EditProfile(props: any) {
+export default function Gamification(props: any) {
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+  const levelInfo = useSelector((state: RootState) => state.levels);
 
   const [payload, setPayload] = useState<Payload>({
     ...initialPayload,
@@ -165,15 +166,28 @@ export default function EditProfile(props: any) {
           </Text>
         </View>
         <View className="flex justify-center items-center space-y-3 pt-3 pb-5">
-          <Image
-            className="rounded-full"
-            style={{
-              width: 100,
-              height: 100,
-              resizeMode: "stretch",
-            }}
-            source={require("../../assets/images/fff.webp")}
-          />
+          <View className="relative">
+            <Image
+              className="rounded-full"
+              style={{
+                width: 120,
+                height: 120,
+                resizeMode: "stretch",
+              }}
+              source={require("../../assets/images/fff.webp")}
+            />
+            <TouchableOpacity
+              className="absolute rounded-full py-2 px-2"
+              style={{
+                top: -12,
+                right: -12,
+                zIndex: 10000,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <FontAwesome name="pencil" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
           <View className="px-3">
             <Text
               className="text-xl text-center font-semibold"
@@ -208,186 +222,59 @@ export default function EditProfile(props: any) {
               </Pressable>
             </View>
           </View>
-        </View>
-        <View className="px-3">
-          <View className="space-y-1">
-            <Text className="dark:text-white text-base font-semibold">
-              Username
-            </Text>
-            <TextInput
-              className="border-2 py-2 px-3 dark:text-white rounded-full"
-              style={{ borderColor: "grey", borderWidth: 2 }}
-              placeholderTextColor="grey"
-              placeholder="e.g john"
-              keyboardType="default"
-              value={payload.name}
-              onChangeText={(text) =>
-                setPayload({ ...payload, name: text, isName: ValName(text) })
-              }
-            />
-            <Text
-              className="text-right text-red-700 opacity-1 mr-2"
-              style={{ opacity: payload.isName === false ? 1 : 0 }}
-            >
-              Invalid Name
-            </Text>
-          </View>
 
-          <View>
-            <Text className="dark:text-white text-lg font-semibold mb-1">
-              Password
-            </Text>
-            <View className="flex flex-row">
-              <TextInput
-                className="py-2 px-3 dark:text-white rounded-l-full w-11/12"
+          <View className="flex flex-row justify-start items-center w-full pl-3">
+            <View className="flex-1 relative">
+              <View
                 style={{
-                  borderColor: "grey",
-                  borderLeftWidth: 2,
-                  borderBottomWidth: 2,
-                  borderTopWidth: 2,
+                  height: 25,
+                  width: "100%",
+                  backgroundColor: "rgba(59, 114, 80, 0.2)",
                 }}
-                placeholder="*****"
-                secureTextEntry={!showPassword}
-                placeholderTextColor="grey"
-                keyboardType="default"
-                value={payload.oldPassword}
-                onChangeText={(text) =>
-                  setPayload({
-                    ...payload,
-                    oldPassword: text,
-                    isOldPass: ValPassword(text),
-                  })
-                }
-              />
-              <Pressable
-                className="rounded-r-full h-full flex justify-between items-center py-3 pr-2"
-                onPress={() => setShowPassword(!showPassword)}
-                style={{
-                  borderColor: "grey",
-                  borderRightWidth: 2,
-                  borderBottomWidth: 2,
-                  borderTopWidth: 2,
-                }}
+                className="rounded-full"
               >
-                {showPassword ? (
-                  <FontAwesome5
-                    name="eye"
-                    size={18}
-                    color={Colors[colorScheme ?? "light"].text}
-                  />
-                ) : (
-                  <FontAwesome5
-                    name="eye-slash"
-                    size={16}
-                    color={Colors[colorScheme ?? "light"].text}
-                  />
-                )}
-              </Pressable>
+                <View
+                  style={{
+                    width: `${(levelInfo.current / levelInfo.target) * 100}%`,
+                    height: "100%",
+                    backgroundColor: "#fdd300",
+                  }}
+                  className="rounded-full"
+                />
+                <Text className="absolute text-sm w-full text-center pt-1 font-semibold tracking-wider">
+                  {`${levelInfo.current} / ${levelInfo.target}`}
+                </Text>
+              </View>
             </View>
-            <Text
-              className="text-right text-red-700 mt-1 mr-2"
-              style={{ opacity: payload.isOldPass === false ? 1 : 0 }}
-            >
-              Minimum 6 characters
-            </Text>
-          </View>
-
-          <Text className="dark:text-white text-lg font-semibold mb-1 mt-1">
-            New password
-          </Text>
-          <View className="flex flex-row">
-            <TextInput
-              className="py-2 px-3 dark:text-white rounded-l-full w-11/12"
+            <View
               style={{
-                borderColor: "grey",
-                borderLeftWidth: 2,
-                borderBottomWidth: 2,
-                borderTopWidth: 2,
-              }}
-              placeholder="*****"
-              secureTextEntry={!showPassword}
-              placeholderTextColor="grey"
-              keyboardType="default"
-              value={payload.newPassword}
-              onChangeText={(text) =>
-                setPayload({
-                  ...payload,
-                  newPassword: text,
-                  isNewPass: ValPassword(text),
-                  isPassMatched: ConPassword(text, payload.cPassword!),
-                })
-              }
-            />
-            <Pressable
-              className="rounded-r-full h-full flex justify-between items-center py-3 pr-2"
-              onPress={() => setShowPassword(!showPassword)}
-              style={{
-                borderColor: "grey",
-                borderRightWidth: 2,
-                borderBottomWidth: 2,
-                borderTopWidth: 2,
+                backgroundColor: "transparent",
+                zIndex: 100,
+                left: -30,
               }}
             >
-              {showPassword ? (
-                <FontAwesome5
-                  name="eye"
-                  size={18}
-                  color={Colors[colorScheme ?? "light"].text}
-                />
-              ) : (
-                <FontAwesome5
-                  name="eye-slash"
-                  size={16}
-                  color={Colors[colorScheme ?? "light"].text}
-                />
-              )}
-            </Pressable>
-          </View>
-          <Text
-            className="text-right text-red-700 mt-1 mr-2"
-            style={{ opacity: payload.isNewPass === false ? 1 : 0 }}
-          >
-            Minimum 6 characters
-          </Text>
-          <View className="space-y-1">
-            <Text className="dark:text-white text-base font-semibold">
-              Confirm Password
-            </Text>
-            <TextInput
-              className="py-2 px-3 dark:text-white rounded-full"
-              style={{
-                borderColor: "grey",
-                borderWidth: 2,
-              }}
-              placeholder="*****"
-              secureTextEntry={!showPassword}
-              placeholderTextColor="grey"
-              keyboardType="default"
-              value={payload.cPassword}
-              onChangeText={(text) =>
-                setPayload({
-                  ...payload,
-                  cPassword: text,
-                  isPassMatched: ConPassword(payload.newPassword!, text),
-                })
-              }
-            />
-            <Text
-              className="text-right text-red-700 mt-1 py-2 mr-2"
-              style={{ opacity: payload.isPassMatched === false ? 1 : 0 }}
-            >
-              Password does not matched
-            </Text>
+              <Image
+                className="rounded-full"
+                style={{ width: 60, height: 60, resizeMode: "stretch" }}
+                source={require("../../assets/images/star.png")}
+              />
+              <Text
+                className="absolute tracking-widest w-5 text-center"
+                style={{ top: 24, right: 20, fontWeight: "900" }}
+              >
+                {levelInfo.level}
+              </Text>
+            </View>
           </View>
         </View>
-        <View className="px-3 pb-10">
+
+        <View>
           <TouchableOpacity
-            className="flex justify-center items-center flex-row py-4 rounded-full"
-            style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
-            onPress={() => handleSubmit()}
+            className="pl-4 py-4 flex w-full justify-start items-start"
+            onPress={() => props.navigation.navigate("EditProfile")}
           >
-            <Text style={{ color: "white" }} className="text-sm tracking-wide ">
-              {isLoading ? "Loading..." : "Update"}
+            <Text className="font-semibold tracking-wider text-base">
+              Name / Password
             </Text>
           </TouchableOpacity>
         </View>

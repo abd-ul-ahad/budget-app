@@ -31,6 +31,7 @@ import AllTimeSavings from "../screens/Savings/AllTimeSavings";
 import EditSavings from "../screens/Modify/EditSavings";
 import FinancialEdu from "../screens/Savings/FinancialEdu";
 import Currency from "../screens/Currency";
+import Gamification from "../screens/gamification/Home";
 
 const Stack = createNativeStackNavigator();
 
@@ -113,6 +114,11 @@ export default function CheckAuth() {
                   name="EditProfile"
                   options={{ headerShown: false }}
                   component={EditProfile}
+                />
+                <Stack.Screen
+                  name="Gamification"
+                  options={{ headerShown: false }}
+                  component={Gamification}
                 />
                 <Stack.Screen
                   name="Savings"
