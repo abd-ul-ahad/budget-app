@@ -21,6 +21,7 @@ import { setLevel } from "../../store/slices/levelSlice";
 export default function Profile(props: any) {
   const user = useSelector((state: RootState) => state.user);
   const reloadState = useSelector((state: RootState) => state.reload);
+  const avatar = useSelector((state: RootState) => state.avatar.path);
   const dispatch = useDispatch();
 
   //
@@ -112,7 +113,7 @@ export default function Profile(props: any) {
                 <Image
                   className="rounded-full"
                   style={{ width: 60, height: 60, resizeMode: "stretch" }}
-                  source={require("../../assets/images/fff.webp")}
+                  source={avatar}
                 />
                 <View
                   className="absolute"

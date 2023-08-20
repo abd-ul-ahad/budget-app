@@ -19,6 +19,7 @@ import { Snackbar } from "react-native-paper";
 import { Auth } from "../../firebase/init";
 import { login as LoginState } from "../../store/slices/userSlice";
 import { firebase } from "@react-native-firebase/auth";
+import { ImageProps } from "react-native-svg";
 
 export interface Payload {
   name?: string;
@@ -49,6 +50,7 @@ export default function Gamification(props: any) {
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
   const levelInfo = useSelector((state: RootState) => state.levels);
+  const avatar = useSelector((state: RootState) => state.avatar.path);
 
   const [payload, setPayload] = useState<Payload>({
     ...initialPayload,
@@ -166,7 +168,7 @@ export default function Gamification(props: any) {
           </Text>
         </View>
         <View className="flex justify-center items-center space-y-3 pt-3 pb-5">
-          <View className="relative">
+          <View className="rounded-full relative">
             <Image
               className="rounded-full"
               style={{
@@ -174,7 +176,7 @@ export default function Gamification(props: any) {
                 height: 120,
                 resizeMode: "stretch",
               }}
-              source={require("../../assets/images/fff.webp")}
+              source={avatar}
             />
             <TouchableOpacity
               className="absolute rounded-full py-2 px-2"
@@ -232,7 +234,7 @@ export default function Gamification(props: any) {
                   width: "100%",
                   backgroundColor: "rgba(59, 114, 80, 0.2)",
                 }}
-                className="rounded-full"
+                className="rounded-lg"
               >
                 <View
                   style={{
@@ -240,7 +242,7 @@ export default function Gamification(props: any) {
                     height: "100%",
                     backgroundColor: "#fdd300",
                   }}
-                  className="rounded-full"
+                  className="rounded-lg"
                 />
                 <Text className="absolute text-sm w-full text-center pt-1 font-semibold tracking-wider">
                   {`${levelInfo.current} / ${levelInfo.target}`}
