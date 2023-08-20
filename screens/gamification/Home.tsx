@@ -20,6 +20,7 @@ import { Auth } from "../../firebase/init";
 import { login as LoginState } from "../../store/slices/userSlice";
 import { firebase } from "@react-native-firebase/auth";
 import { ImageProps } from "react-native-svg";
+import RenderAmount from "../../components/RenderAmount";
 
 export interface Payload {
   name?: string;
@@ -51,6 +52,7 @@ export default function Gamification(props: any) {
   const user = useSelector((state: RootState) => state.user);
   const levelInfo = useSelector((state: RootState) => state.levels);
   const avatar = useSelector((state: RootState) => state.avatar.path);
+  const balances = useSelector((state: RootState) => state.balances);
 
   const [payload, setPayload] = useState<Payload>({
     ...initialPayload,
@@ -60,98 +62,12 @@ export default function Gamification(props: any) {
     open: boolean;
     msg: string;
   }>({ open: false, msg: "" });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showEmail, setShowEmail] = useState<boolean>(false);
-
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    const { isName, isNewPass, isPassMatched, isOldPass } = payload;
-
-    if (
-      isName !== false &&
-      ((isNewPass && isPassMatched && isOldPass) || payload.newPassword === "")
-    ) {
-      try {
-        const update = {
-          displayName: payload.name,
-        };
-
-        payload.name !== user.name &&
-          (async function () {
-            await Auth.currentUser?.updateProfile(update);
-            setToggleSnackbar({
-              open: true,
-              msg: "Name updated.",
-            });
-
-            // updating state variables
-            dispatch(
-              LoginState({
-                name: Auth.currentUser?.displayName!,
-                email: Auth.currentUser?.email!,
-                uid: Auth.currentUser?.uid!,
-              })
-            );
-          })();
-
-        // changing password
-        const provider = firebase.auth.EmailAuthProvider;
-        const authCredential = provider.credential(
-          user.email,
-          payload.oldPassword!
-        );
-
-        payload.isOldPass === true &&
-          Auth.currentUser
-            ?.reauthenticateWithCredential(authCredential)
-            .then(() => {
-              var user = firebase.auth().currentUser;
-              user!
-                .updatePassword(payload.newPassword!)
-                .then(() => {
-                  triggerNotifications("Profile updated.", null);
-                  return;
-                })
-                .catch(() => {
-                  setToggleSnackbar({
-                    open: true,
-                    msg: "Please try again later",
-                  });
-                  return;
-                });
-            })
-            .catch(() => {
-              setToggleSnackbar({
-                open: true,
-                msg: "Please try again later",
-              });
-              return;
-            });
-
-        payload.name !== user.name &&
-          triggerNotifications("Profile updated.", null);
-      } catch (error: any) {
-        setToggleSnackbar({
-          open: true,
-          msg:
-            error.code === "auth/email-already-in-use"
-              ? "Email already in use"
-              : "Invalid Credentials",
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(false);
-  };
 
   return (
     <SafeAreaView>
       <ScrollView>
+        {/* header */}
         <View className="w-full flex flex-row justify-start items-center pt-4">
           <TouchableOpacity
             className="py-4 px-3"
@@ -168,7 +84,11 @@ export default function Gamification(props: any) {
           </Text>
         </View>
         <View className="flex justify-center items-center space-y-3 pt-3 pb-5">
-          <View className="rounded-full relative">
+          {/* Profile picture */}
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate("FullScreenAvatar")}
+            className="rounded-full relative"
+          >
             <Image
               className="rounded-full"
               style={{
@@ -190,7 +110,7 @@ export default function Gamification(props: any) {
             >
               <FontAwesome name="pencil" size={24} color="black" />
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
           <View className="px-3">
             <Text
               className="text-xl text-center font-semibold"
@@ -269,9 +189,47 @@ export default function Gamification(props: any) {
               </Text>
             </View>
           </View>
+          <View className="relative -top-4">
+            <Text className="font-semibold tracking-wider w-full text-start text-base">
+              {levelInfo.title}
+            </Text>
+          </View>
         </View>
 
-        <View>
+        {/* Stats */}
+        <View className="px-3 space-y-4">
+          {/* Current  */}
+          <View className="flex flex-row justify-between items-center">
+            <Text className="font-semibold tracking-wider text-lg">
+              Current balance:{" "}
+            </Text>
+            <Text className="font-semibold tracking-wider text-lg">
+              <RenderAmount amount={balances.currentBalance} />
+            </Text>
+          </View>
+
+          {/* Total Earned */}
+          <View className="flex flex-row justify-between items-center">
+            <Text className="font-semibold tracking-wider text-lg">
+              Total earned:{" "}
+            </Text>
+            <Text className="font-semibold tracking-wider text-lg">
+              <RenderAmount amount={balances.incomeBalance} />
+            </Text>
+          </View>
+
+          {/* Total Expense */}
+          <View className="flex flex-row justify-between items-center">
+            <Text className="font-semibold tracking-wider text-lg">
+              Total expend:{" "}
+            </Text>
+            <Text className="font-semibold tracking-wider text-lg">
+              <RenderAmount amount={balances.outcomeBalance} />
+            </Text>
+          </View>
+        </View>
+        {/* name / passwrod */}
+        <View className="pt-10">
           <TouchableOpacity
             className="pl-4 py-4 flex w-full justify-start items-start"
             onPress={() => props.navigation.navigate("EditProfile")}

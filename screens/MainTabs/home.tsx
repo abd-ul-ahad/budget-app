@@ -69,9 +69,9 @@ export default function Home(props: any) {
 
     dispatch(
       setBalances({
-        incomeBalance,
-        outcomeBalance,
-        currentBalance,
+        incomeBalance: +incomeBalance,
+        outcomeBalance: +outcomeBalance,
+        currentBalance: +currentBalance,
       })
     );
   })();

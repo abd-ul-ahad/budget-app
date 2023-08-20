@@ -63,15 +63,21 @@ export default function SelectAvatar(props: any) {
                     source={require("../../assets/loading.gif")}
                   />
                 ) : (
-                  <Image
-                    className="rounded-full"
-                    style={{
-                      width: 120,
-                      height: 120,
-                      resizeMode: "stretch",
-                    }}
-                    source={avatar}
-                  />
+                  <TouchableOpacity
+                    onPress={() =>
+                      props.navigation.navigate("FullScreenAvatar")
+                    }
+                  >
+                    <Image
+                      className="rounded-full"
+                      style={{
+                        width: 120,
+                        height: 120,
+                        resizeMode: "stretch",
+                      }}
+                      source={avatar}
+                    />
+                  </TouchableOpacity>
                 )}
                 {/*  */}
               </View>
@@ -88,6 +94,11 @@ export default function SelectAvatar(props: any) {
                     <TouchableOpacity
                       disabled={loading}
                       key={i}
+                      onLongPress={() =>
+                        props.navigation.navigate("FullScreenAvatar", {
+                          avatar: e,
+                        })
+                      }
                       onPress={() => handleSubmit(e)}
                       className="mx-4 my-5"
                     >
