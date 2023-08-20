@@ -178,6 +178,7 @@ export default function Gamification(props: any) {
             />
             <TouchableOpacity
               className="absolute rounded-full py-2 px-2"
+              onPress={() => props.navigation.navigate("SelectAvatar")}
               style={{
                 top: -12,
                 right: -12,

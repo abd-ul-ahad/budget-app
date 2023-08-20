@@ -91,7 +91,7 @@ export default function Currency(props: any) {
           <RefreshControl refreshing={refresh} onRefresh={load} />
         }
       >
-        <View className="flex-row flex mt-7 justify-start items-center">
+        <View className="flex-row flex pt-7 justify-start items-center">
           <TouchableOpacity
             className="py-4 px-3"
             onPress={() => props.navigation.goBack()}
@@ -164,7 +164,7 @@ export default function Currency(props: any) {
       <View className="px-3 my-2">
         <TouchableOpacity
           onPress={() => handleSubmit()}
-          className="flex justify-center items-center flex-row py-4 rounded-full mt-3"
+          className="flex justify-center items-center flex-row py-4 rounded-full pt-3"
           style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
         >
           <Text style={{ color: "white" }} className="text-sm tracking-wide ">

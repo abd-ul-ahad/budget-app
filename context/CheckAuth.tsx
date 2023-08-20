@@ -32,6 +32,7 @@ import EditSavings from "../screens/Modify/EditSavings";
 import FinancialEdu from "../screens/Savings/FinancialEdu";
 import Currency from "../screens/Currency";
 import Gamification from "../screens/gamification/Home";
+import SelectAvatar from "../screens/gamification/SelectAvatar";
 
 const Stack = createNativeStackNavigator();
 
@@ -144,6 +145,11 @@ export default function CheckAuth() {
                   name="Currency"
                   options={{ headerShown: false }}
                   component={Currency}
+                />
+                <Stack.Screen
+                  name="SelectAvatar"
+                  options={{ headerShown: false }}
+                  component={SelectAvatar}
                 />
               </Stack.Group>
             ) : (
