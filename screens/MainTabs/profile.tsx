@@ -7,19 +7,72 @@ import {
 import { Text, View } from "../../components/Themed";
 import { useLogout } from "../../firebase/useLogout";
 import { Snackbar } from "react-native-paper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Colors from "../../constants/Colors";
 import { Feather } from "@expo/vector-icons";
 import { RootState } from "../../store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { hideUsername } from "../Modify/EditProfile";
+import { useFirestore } from "../../firebase/useFirestore";
+import getLevelInfo, { calculateTotalAmount } from "../../gamification/utils";
+import { setLevel } from "../../store/slices/levelSlice";
 
 export default function Profile(props: any) {
   const user = useSelector((state: RootState) => state.user);
+  const reloadState = useSelector((state: RootState) => state.reload);
+  const dispatch = useDispatch();
+
+
+  //
   const { logout } = useLogout();
   const colorScheme = useColorScheme();
   const [toggleSnackbar, setToggleSnackbar] = useState<boolean>(false);
+
+  //
+  const { getDocument } = useFirestore("savings", user.uid!);
+
+  //
+  const [levelInfo, setLevelInfo] = useState<{
+    level: number;
+    target: number;
+    title: string;
+    current: number;
+  } | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState<{
+    open: boolean;
+    msg: string;
+  }>({ open: false, msg: "" });
+
+  //
+  const load = () => {
+    getDocument()
+      .then((doc) => {
+        if (doc?.docs !== undefined) {
+          const calculate = calculateTotalAmount(doc?.docs);
+          const info = getLevelInfo(calculate);
+          setLevelInfo({
+            current: calculate,
+            level: info?.level || 0,
+            target: info?.target || 0,
+            title: info?.title || "",
+          });         
+
+          dispatch(setLevel({
+            current: calculate,
+            level: info?.level || 0,
+            target: info?.target || 0,
+            title: info?.title || "",
+          }));
+        }
+      })
+      .catch(() => {
+        setOpenSnackbar({ open: true, msg: "Error please start app." });
+      });
+  };
+
+  // loading savings
+  useEffect(() => load(), [reloadState]);
 
   return (
     <SafeAreaView>
@@ -54,11 +107,33 @@ export default function Profile(props: any) {
               onPress={() => props.navigation.navigate("EditProfile")}
               className="flex pl-6 space-x-6 mb-5 flex-row justify-start items-center"
             >
-              <Image
-                className="rounded-full"
-                style={{ width: 50, height: 50, resizeMode: "stretch" }}
-                source={require("../../assets/images/fff.webp")}
-              />
+              <View className="relative">
+                <Image
+                  className="rounded-full"
+                  style={{ width: 60, height: 60, resizeMode: "stretch" }}
+                  source={require("../../assets/images/fff.webp")}
+                />
+                <View
+                  className="absolute"
+                  style={{
+                    backgroundColor: "transparent",
+                    bottom: -18,
+                    right: -18,
+                  }}
+                >
+                  <Image
+                    className="rounded-full"
+                    style={{ width: 45, height: 45, resizeMode: "stretch" }}
+                    source={require("../../assets/images/star.png")}
+                  />
+                  <Text
+                    className="absolute tracking-widest text-center w-5"
+                    style={{ top: 16, right: 13, fontWeight: "900" }}
+                  >
+                    {levelInfo?.level}
+                  </Text>
+                </View>
+              </View>
               <View>
                 <Text className="font-semibold tracking-wider text-xl">
                   {user?.name || "New user"}
@@ -146,6 +221,13 @@ export default function Profile(props: any) {
         }}
       >
         Are you sure?
+      </Snackbar>
+      <Snackbar
+        style={{ marginBottom: "1%" }}
+        visible={openSnackbar.open}
+        onDismiss={() => setOpenSnackbar({ ...openSnackbar, open: false })}
+      >
+        {openSnackbar.msg}
       </Snackbar>
     </SafeAreaView>
   );

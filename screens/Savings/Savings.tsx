@@ -18,7 +18,6 @@ import { RootState } from "../../store";
 import { triggerNotifications } from "../../utils/Notifications";
 import calculateSavingsByMonth from "../../utils/Savings";
 import { reload } from "../../store/slices/reloadSlice";
-import { OnlyNumbers } from "../../constants/Validations";
 import RenderAmount from "../../components/RenderAmount";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
 

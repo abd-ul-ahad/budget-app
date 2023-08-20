@@ -4,6 +4,7 @@ import snackSlice from "./slices/snackSlice";
 import reloadSlice from "./slices/reloadSlice";
 import balanceSlice from "./slices/balanceSlice";
 import currencySlice from "./slices/currencySlice";
+import levelSlice from "./slices/levelSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     reload: reloadSlice.reducer,
     balances: balanceSlice.reducer,
     currency: currencySlice.reducer,
+    levels: levelSlice.reducer,
   },
 });
 

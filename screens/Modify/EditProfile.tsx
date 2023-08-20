@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
@@ -48,6 +48,7 @@ export default function EditProfile(props: any) {
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+  const levelInfo = useSelector((state: RootState) => state.levels);
 
   const [payload, setPayload] = useState<Payload>({
     ...initialPayload,
@@ -165,15 +166,28 @@ export default function EditProfile(props: any) {
           </Text>
         </View>
         <View className="flex justify-center items-center space-y-3 pt-3 pb-5">
-          <Image
-            className="rounded-full"
-            style={{
-              width: 100,
-              height: 100,
-              resizeMode: "stretch",
-            }}
-            source={require("../../assets/images/fff.webp")}
-          />
+          <View className="relative">
+            <Image
+              className="rounded-full"
+              style={{
+                width: 100,
+                height: 100,
+                resizeMode: "stretch",
+              }}
+              source={require("../../assets/images/fff.webp")}
+            />
+            <TouchableOpacity
+              className="absolute rounded-full py-2 px-2"
+              style={{
+                top: -15,
+                right: -15,
+                zIndex: 10000,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <FontAwesome name="pencil" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
           <View className="px-3">
             <Text
               className="text-xl text-center font-semibold"
@@ -206,6 +220,50 @@ export default function EditProfile(props: any) {
                   />
                 )}
               </Pressable>
+            </View>
+          </View>
+
+          <View className="flex flex-row justify-start items-center w-full pl-3">
+            <View className="flex-1 relative">
+              <View
+                style={{
+                  height: 25,
+                  width: "100%",
+                  backgroundColor: "rgba(59, 114, 80, 0.2)",
+                }}
+                className="rounded-full"
+              >
+                <View
+                  style={{
+                    width: `${(levelInfo.current / levelInfo.target) * 100}%`,
+                    height: "100%",
+                    backgroundColor: "#fdd300",
+                  }}
+                  className="rounded-full"
+                />
+                <Text className="absolute text-sm w-full text-center pt-1 font-semibold tracking-wider">
+                  {`${levelInfo.current} / ${levelInfo.target}`}
+                </Text>
+              </View>
+            </View>
+            <View
+              style={{
+                backgroundColor: "transparent",
+                zIndex: 100,
+                left: -30,
+              }}
+            >
+              <Image
+                className="rounded-full"
+                style={{ width: 60, height: 60, resizeMode: "stretch" }}
+                source={require("../../assets/images/star.png")}
+              />
+              <Text
+                className="absolute tracking-widest w-5 text-center"
+                style={{ top: 24, right: 20, fontWeight: "900" }}
+              >
+                {levelInfo.level}
+              </Text>
             </View>
           </View>
         </View>

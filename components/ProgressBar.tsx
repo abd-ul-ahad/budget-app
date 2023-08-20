@@ -1,6 +1,4 @@
-import Colors from "../constants/Colors";
 import { View } from "./Themed";
-import { useColorScheme } from "react-native";
 
 export default function ProgressBar({progress}: {progress: number}) {
   return (
@@ -9,7 +7,7 @@ export default function ProgressBar({progress}: {progress: number}) {
         style={{
           height: 10,
           width: "100%",
-          backgroundColor: "rgba(59, 114, 80, 0.1)" 
+          backgroundColor: "rgba(59, 114, 80, 0.2)" 
           ,
           borderRadius: 5,
         }}
