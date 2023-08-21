@@ -95,39 +95,43 @@ export default function SelectAvatar(props: any) {
                 )}
                 {/*  */}
               </View>
-              <View
-                className="justify-between pt-7"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                }}
-              >
-                {Avatars.map((e, i) => {
-                  return (
-                    <TouchableOpacity
-                      disabled={loading}
-                      key={i}
-                      onLongPress={() =>
-                        props.navigation.navigate("FullScreenAvatar", {
-                          avatar: e.uri,
-                        })
-                      }
-                      onPress={() => handleSubmit(e)}
-                      className="mx-4 my-5"
-                    >
-                      <Image
-                        className="rounded-full"
-                        style={{
-                          width: 70,
-                          height: 70,
-                          resizeMode: "stretch",
-                        }}
-                        source={e.uri}
-                      />
-                    </TouchableOpacity>
-                  );
-                })}
+              <View className="px-2 pt-5 pb-5">
+                <View
+                  className="justify-between rounded-2xl"
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    backgroundColor:
+                      Colors[colorScheme ?? "light"].secondaryBackground,
+                  }}
+                >
+                  {Avatars.map((e, i) => {
+                    return (
+                      <TouchableOpacity
+                        disabled={loading}
+                        key={i}
+                        onLongPress={() =>
+                          props.navigation.navigate("FullScreenAvatar", {
+                            avatar: e.uri,
+                          })
+                        }
+                        onPress={() => handleSubmit(e)}
+                        className="mx-4 my-5"
+                      >
+                        <Image
+                          className="rounded-full"
+                          style={{
+                            width: 70,
+                            height: 70,
+                            resizeMode: "stretch",
+                          }}
+                          source={e.uri}
+                        />
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
               </View>
             </>
           }

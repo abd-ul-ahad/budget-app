@@ -10,4 +10,5 @@ export const Avatars = [
   { title: "10", uri: require("../../assets/avatars/10.png") },
   { title: "11", uri: require("../../assets/avatars/11.png") },
   { title: "15", uri: require("../../assets/avatars/15.png") },
+  { title: "16", uri: require("../../assets/avatars/16.png") },
 ];
