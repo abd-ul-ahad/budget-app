@@ -106,7 +106,7 @@ export default function Currency(props: any) {
             Currency
           </Text>
         </View>
-        <View className="px-2 my-3">
+        <View className="px-2 py-3">
           <TextInput
             className="py-2 px-3 dark:text-white rounded-lg"
             style={{ borderColor: "grey", borderWidth: 2 }}
@@ -161,7 +161,7 @@ export default function Currency(props: any) {
           </View>
         </View>
       </ScrollView>
-      <View className="px-3 my-2">
+      <View className="px-3 py-2">
         <TouchableOpacity
           onPress={() => handleSubmit()}
           className="flex justify-center items-center flex-row py-4 rounded-full pt-3"

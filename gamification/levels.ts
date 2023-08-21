@@ -1,6 +1,5 @@
 import type { LevelInfo } from "./types";
 
-
 export const levels: Array<LevelInfo> = [
   { level: 1, title: "Financial Luminary", target: 118 },
   { level: 2, title: "Savings Virtuoso", target: 139 },

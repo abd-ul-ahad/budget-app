@@ -48,6 +48,7 @@ export default function EditProfile(props: any) {
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+  const avatar = useSelector((state: RootState) => state.avatar.path);
 
   const [payload, setPayload] = useState<Payload>({
     ...initialPayload,
@@ -165,15 +166,19 @@ export default function EditProfile(props: any) {
           </Text>
         </View>
         <View className="flex justify-center items-center space-y-3 pt-3 pb-5">
-          <Image
-            className="rounded-full"
-            style={{
-              width: 100,
-              height: 100,
-              resizeMode: "stretch",
-            }}
-            source={require("../../assets/images/fff.webp")}
-          />
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate("FullScreenAvatar")}
+          >
+            <Image
+              className="rounded-full"
+              style={{
+                width: 100,
+                height: 100,
+                resizeMode: "stretch",
+              }}
+              source={avatar}
+            />
+          </TouchableOpacity>
           <View className="px-3">
             <Text
               className="text-xl text-center font-semibold"
