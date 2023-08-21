@@ -25,6 +25,8 @@ export default function DailySavings(props: any) {
   const [loading, setLoading] = useState<boolean>(false);
   const [dailySaving, setDailySaving] = useState<number>();
   const [daily, setDaily] = useState<number>();
+  const [weekly, setWeekly] = useState<number>();
+  const [weeklySaving, setWeeklySaving] = useState<number>();
   const [openSnackbar, setOpenSnackbar] = useState<{
     open: boolean;
     msg: string;
@@ -39,17 +41,22 @@ export default function DailySavings(props: any) {
         const { saveAmount } = JSON.parse(value);
         const per = ((balances.currentBalance / 30) * +saveAmount) / 100;
 
-        setDaily((balances.currentBalance / 30) - per);
-
+        setDaily(balances.currentBalance / 30 - per);
+        setWeekly((balances.currentBalance / 30 - per) * 7);
         setDailySaving(per);
         setSaveAmount(saveAmount);
+        setWeeklySaving(per * 7);
       } else {
         setDailySaving(0);
         setDaily(balances.currentBalance / 30);
+        setWeekly(balances.currentBalance / 4);
+        setWeeklySaving(0);
       }
     } catch (e) {
       setDailySaving(0);
       setDaily(balances.currentBalance / 30);
+      setWeekly(balances.currentBalance / 4);
+      setWeeklySaving(0);
     }
   };
 
@@ -63,7 +70,9 @@ export default function DailySavings(props: any) {
       if (+saveAmount >= 0 && +saveAmount <= 100) {
         const per = ((balances.currentBalance / 30) * +saveAmount) / 100;
         setDailySaving(per);
+        setWeekly((balances.currentBalance / 30 - per) * 7);
         daily != undefined && setDaily(daily - per);
+        setWeeklySaving(per * 7);
 
         if (daily != undefined) {
           const jsonValue = JSON.stringify({
@@ -139,22 +148,31 @@ export default function DailySavings(props: any) {
                 Weekly
               </Text>
               <Text className="px-4 font-bold text-xl text-center tracking-widest">
-                <RenderAmount
-                  amount={+(balances.currentBalance / 4).toFixed(2) || 0}
-                />
+                <RenderAmount amount={+(weekly || 0).toFixed(2) || 0} />
               </Text>
             </View>
           </View>
-          <View className="pt-6 px-5 space-y-3">
+          <View className="pt-3 px-5 space-y-3">
             <View className="flex flex-row justify-between items-center">
               <Text
                 style={{ color: "#767676" }}
                 className="dark:text-white text-start text-xl font-semibold"
               >
-                Saving
+                Daily saving
               </Text>
               <Text className="px-4 font-bold text-xl text-center tracking-widest">
                 <RenderAmount amount={+(dailySaving || 0).toFixed(3) || 0} />
+              </Text>
+            </View>
+            <View className="flex flex-row justify-between items-center">
+              <Text
+                style={{ color: "#767676" }}
+                className="dark:text-white text-start text-xl font-semibold"
+              >
+                Weekly saving
+              </Text>
+              <Text className="px-4 font-bold text-xl text-center tracking-widest">
+                <RenderAmount amount={+(weeklySaving || 0).toFixed(3) || 0} />
               </Text>
             </View>
           </View>

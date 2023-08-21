@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import Colors from "../../constants/Colors";
 import {
   Feather,
+  FontAwesome5,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
@@ -58,19 +59,6 @@ export default function Profile(props: any) {
 
   //
   const load = () => {
-    try {
-      getGamification().then((doc) => {
-        const a = doc?.docs[0].data().avatar;
-        Avatars.forEach((e) => {
-          if (e.title == a) {
-            dispatch(setAvatar({ path: e.uri, id: doc?.docs[0].id }));
-          }
-        });
-      });
-    } catch {
-      addDocument({ avatar: "1" });
-    }
-
     getDocument()
       .then((doc) => {
         if (doc?.docs !== undefined) {
@@ -273,6 +261,15 @@ export default function Profile(props: any) {
               </Text>
             </TouchableOpacity>
           </View>
+        </View>
+        <View className="pt-8 flex flex-row justify-center items-center">
+          <Text
+            className="font-semibold tracking-wider pr-1"
+            style={{ color: "#767676" }}
+          >
+            Budget app
+          </Text>
+          <FontAwesome5 name="copyright" size={13} color="black" />
         </View>
       </ScrollView>
       <Snackbar
