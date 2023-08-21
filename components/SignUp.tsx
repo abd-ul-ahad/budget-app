@@ -23,6 +23,8 @@ import { Snackbar } from "react-native-paper";
 import { triggerNotifications } from "../utils/Notifications";
 import { useFirestore } from "../firebase/useFirestore";
 import { Auth } from "../firebase/init";
+import { useDispatch } from "react-redux";
+import { login } from "../store/slices/userSlice";
 
 export interface Payload {
   name?: string;
@@ -48,7 +50,9 @@ export const initialPayload: Payload = {
 
 export default function SignUp({ flatListRef }: { flatListRef: any }) {
   const colorScheme = useColorScheme();
+  const dispatch = useDispatch();
 
+  //
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState<Payload>(initialPayload);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,6 +64,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
   //
   const { signup } = useSignUp();
   const { addDocument } = useFirestore("currency", "");
+  const { addDocument: addGamification } = useFirestore("gamification", "");
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -70,6 +75,15 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
         await signup(payload.email!, payload.password!, payload.name!);
 
         await addDocument({ code: "GBP" });
+        await addGamification({ avatar: "1" });
+
+        dispatch(
+          login({
+            name: Auth.currentUser?.displayName!,
+            email: Auth.currentUser?.email!,
+            uid: Auth.currentUser?.uid!,
+          })
+        );
 
         triggerNotifications("Sign Up Successful", null);
       } catch (error: any) {
@@ -261,7 +275,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
           </Text>
           <Entypo name="chevron-right" size={20} color={"white"} />
         </TouchableOpacity>
-        <View className="flex flex-row justify-center items-center">
+        <View className="flex flex-row justify-center items-center pb-7">
           <Text>Already registered?</Text>
           <TouchableOpacity
             className="py-2 px-3"

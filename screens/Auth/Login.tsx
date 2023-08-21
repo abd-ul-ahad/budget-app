@@ -44,7 +44,15 @@ export default function LoginScreen(props: any) {
             showsHorizontalScrollIndicator={false}
             ref={flatListRef}
             data={[
-              { id: 1, e: <Login flatListRef={flatListRef} /> },
+              {
+                id: 1,
+                e: (
+                  <Login
+                    navigation={props.navigation}
+                    flatListRef={flatListRef}
+                  />
+                ),
+              },
               { id: 2, e: <SignUp flatListRef={flatListRef} /> },
             ]}
             // Render each item in the FlatList

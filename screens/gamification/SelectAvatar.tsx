@@ -31,9 +31,7 @@ export default function SelectAvatar(props: any) {
   const handleSubmit = async (e: { title: string; uri: string }) => {
     setLoading(true);
 
-    updateDocument({ avatar: e.title }, id!).then(() => {
-      console.log("Avatar updated successfully");
-    });
+    await updateDocument({ avatar: e.title }, id!);
     dispatch(setAvatar({ path: e.uri, id }));
 
     setLoading(false);

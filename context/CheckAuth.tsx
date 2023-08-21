@@ -36,6 +36,7 @@ import SelectAvatar from "../screens/gamification/SelectAvatar";
 import FullScreenAvatar from "../screens/gamification/FullScreenAvater";
 import DailySavings from "../screens/Savings/DailySavings";
 import ChatHome from "../screens/Chat/Home";
+import ForgetPassword from "../screens/Auth/ForgetPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -169,6 +170,11 @@ export default function CheckAuth() {
                   options={{ headerShown: false }}
                   component={ChatHome}
                 />
+                <Stack.Screen
+                  name="ForgetPassword"
+                  options={{ headerShown: false }}
+                  component={ForgetPassword}
+                />
               </Stack.Group>
             ) : (
               <Stack.Group>
@@ -183,9 +189,9 @@ export default function CheckAuth() {
                   component={LoginScreen}
                 />
                 <Stack.Screen
-                  name="Currency"
+                  name="ForgetPassword"
                   options={{ headerShown: false }}
-                  component={Currency}
+                  component={ForgetPassword}
                 />
               </Stack.Group>
             )}

@@ -395,6 +395,19 @@ export default function EditProfile(props: any) {
               {isLoading ? "Loading..." : "Update"}
             </Text>
           </TouchableOpacity>
+          <View className="flex flex-row justify-center items-center pt-2">
+            <TouchableOpacity
+              className="px-3 py-2"
+              onPress={() => props.navigation.navigate("ForgetPassword")}
+            >
+              <Text
+                style={{ color: Colors[colorScheme ?? "light"].tint }}
+                className="font-bold tracking-wider"
+              >
+                Forget password
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
       <Snackbar

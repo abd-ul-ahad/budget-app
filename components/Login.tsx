@@ -33,7 +33,13 @@ const initialPayload: Payload = {
   isPass: null,
 };
 
-export default function Login({ flatListRef }: { flatListRef: any }) {
+export default function Login({
+  flatListRef,
+  navigation,
+}: {
+  flatListRef: any;
+  navigation: any;
+}) {
   const colorScheme = useColorScheme();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState<Payload>(initialPayload);
@@ -192,21 +198,36 @@ export default function Login({ flatListRef }: { flatListRef: any }) {
           <Entypo name="chevron-right" size={20} color={"white"} />
         </TouchableOpacity>
 
-        <View className="flex flex-row justify-center items-center">
-          <Text>New here?</Text>
-          <TouchableOpacity
-            className="py-2 px-3"
-            onPress={() =>
-              flatListRef.current?.scrollToIndex({ animated: true, index: 1 })
-            }
-          >
-            <Text
-              style={{ color: Colors[colorScheme ?? "light"].tint }}
-              className="font-bold tracking-wider"
+        <View>
+          <View className="flex flex-row justify-center items-center">
+            <Text>New here?</Text>
+            <TouchableOpacity
+              className="px-3 py-1"
+              onPress={() =>
+                flatListRef.current?.scrollToIndex({ animated: true, index: 1 })
+              }
             >
-              Register
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{ color: Colors[colorScheme ?? "light"].tint }}
+                className="font-bold tracking-wider"
+              >
+                Register
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View className="flex flex-row justify-center items-center pt-1">
+            <TouchableOpacity
+              className="px-3 py-1"
+              onPress={() => navigation.navigate("ForgetPassword")}
+            >
+              <Text
+                style={{ color: Colors[colorScheme ?? "light"].tint }}
+                className="font-bold tracking-wider"
+              >
+                Forget password
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       <Snackbar
