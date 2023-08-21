@@ -9,7 +9,11 @@ import { useLogout } from "../../firebase/useLogout";
 import { Snackbar } from "react-native-paper";
 import { useState, useEffect } from "react";
 import Colors from "../../constants/Colors";
-import { Feather } from "@expo/vector-icons";
+import {
+  Feather,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,10 +23,12 @@ import getLevelInfo, { calculateTotalAmount } from "../../gamification/utils";
 import { setLevel } from "../../store/slices/levelSlice";
 import { setAvatar } from "../../store/slices/avatarSlice";
 import { Avatars } from "../../gamification/Avatars/_Paths";
+import getCurrencySymbol from "../../utils/CurrencySymbols";
 
 export default function Profile(props: any) {
   const user = useSelector((state: RootState) => state.user);
   const reloadState = useSelector((state: RootState) => state.reload);
+  const code = useSelector((state: RootState) => state.currency.code);
   const avatar = useSelector((state: RootState) => state.avatar.path);
   const dispatch = useDispatch();
 
@@ -169,18 +175,22 @@ export default function Profile(props: any) {
             </TouchableOpacity>
             <View className="w-full">
               <TouchableOpacity
-                className="pl-6 py-3 flex w-full justify-start items-start"
+                className="pl-6 py-3 flex flex-row w-full justify-start items-center"
                 onPress={() => props.navigation.navigate("Currency")}
               >
-                <Text className="font-semibold tracking-wider text-base">
+                <Text className="font-semibold pr-3 tracking-wider text-base">
                   Currency
+                </Text>
+                <Text className="font-semibold tracking-wider text-base">
+                  {getCurrencySymbol(code)}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="pl-6 py-3 flex w-full justify-start items-start"
+                className="pl-6 py-3 flex flex-row w-full justify-start items-center"
                 onPress={() => setToggleSnackbar(true)}
               >
-                <Text className="font-semibold tracking-wider text-base">
+                <MaterialCommunityIcons name="logout" size={17} color="black" />
+                <Text className="pl-5 font-semibold tracking-wider text-base">
                   Logout
                 </Text>
               </TouchableOpacity>
@@ -235,6 +245,33 @@ export default function Profile(props: any) {
                 </Text>
               </TouchableOpacity>
             </View>
+
+            {/* Divider */}
+            <View
+              style={{
+                borderTopWidth: 6,
+                borderTopColor: colorScheme === "light" ? "#f5f5f5" : "#767676",
+              }}
+            />
+
+            {/* Assistance */}
+            <View className="pl-6 py-3 flex w-full justify-start items-start">
+              <Text
+                className="font-semibold tracking-wider"
+                style={{ color: "#767676" }}
+              >
+                Assistance
+              </Text>
+            </View>
+            <TouchableOpacity
+              className="pl-6 py-3 flex flex-row justify-start items-center"
+              onPress={() => props.navigation.navigate("ChatHome")}
+            >
+              <MaterialIcons name="chat" size={17} color="black" />
+              <Text className="font-semibold pl-5 tracking-wider text-base">
+                Chat
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
