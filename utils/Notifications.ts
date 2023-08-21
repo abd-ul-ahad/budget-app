@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
+import { Auth } from "../firebase/init";
 
 export interface NotificationData {
   title: string;
@@ -41,7 +42,10 @@ export const storeNotification = async (notification: NotificationData) => {
 
     const jsonValue = JSON.stringify(updatedNotifications);
 
-    await AsyncStorage.setItem("notifications-budget-app", jsonValue);
+    await AsyncStorage.setItem(
+      `${Auth.currentUser?.uid.slice(0, 7)}-notifications-budget-app`,
+      jsonValue
+    );
   } catch (error) {
     console.error("Error storing notification:", error);
   }
@@ -50,7 +54,7 @@ export const storeNotification = async (notification: NotificationData) => {
 export const getNotifications = async (): Promise<string | null> => {
   try {
     const notifications = await AsyncStorage.getItem(
-      "notifications-budget-app"
+      `${Auth.currentUser?.uid.slice(0, 7)}-notifications-budget-app`
     );
 
     return notifications;
@@ -72,7 +76,10 @@ export const deleteNotification = async (index: number) => {
 
         const jsonValue = JSON.stringify(parsedNotifications);
 
-        await AsyncStorage.setItem("notifications-budget-app", jsonValue);
+        await AsyncStorage.setItem(
+          `${Auth.currentUser?.uid.slice(0, 7)}-notifications-budget-app`,
+          jsonValue
+        );
       }
     }
   } catch (error) {

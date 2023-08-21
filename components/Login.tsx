@@ -57,8 +57,6 @@ export default function Login({
       try {
         await login(payload.email!, payload.password!);
         triggerNotifications("Login Successful", null);
-
-        await AsyncStorage.clear();
       } catch (error: any) {
         setToggleSnackbar({
           open: true,

@@ -32,10 +32,6 @@ export const useSignUp = () => {
       displayName: displayName,
     };
 
-    try {
-      await AsyncStorage.clear();
-    } catch {}
-
     await Auth.currentUser?.updateProfile(update);
   };
 
