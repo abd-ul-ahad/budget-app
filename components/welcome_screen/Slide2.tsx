@@ -10,21 +10,22 @@ export default function Slide2() {
     <>
       <View className="flex justify-start items-center">
         <Image
-          style={{ width, height: height / 1.7, resizeMode: "stretch" }}
-          source={require("../../assets/images/fff.webp")}
+          style={{ width, height: height / 1.7, resizeMode: "cover" }}
+          source={require("../../assets/images/slide2.jpg")}
         />
         <View className="space-y-2 mt-4 px-3">
           <Text
             className="text-xl text-center font-semibold"
             style={{ color: Colors[colorScheme ?? "light"].text }}
           >
-            Welcome to Budget app.
+           Your Financial Companion.
           </Text>
           <Text
             className="tracking-wider text-base text-center font-semibold"
             style={{ color: "#767676" }}
           >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Take control of your finances, empowers you to save wisely, budget
+            effectively.
           </Text>
         </View>
       </View>

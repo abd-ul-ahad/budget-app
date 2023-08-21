@@ -17,7 +17,7 @@ export default function Slide3({ navigation }: any) {
       <View className="flex justify-start items-center">
         <Image
           style={{ width, height: height / 1.7, resizeMode: "stretch" }}
-          source={require("../../assets/images/fff.webp")}
+          source={require("../../assets/images/slide3.jpg")}
         />
         <View className="mt-4 space-y-2 px-3">
           <Text
@@ -27,10 +27,12 @@ export default function Slide3({ navigation }: any) {
             Sign in to get started.
           </Text>
           <Text
-            className="tracking-wider text-base text-center font-semibold"
+            className="tracking-wider text-base text-center font-semibold pb-4"
             style={{ color: "#767676" }}
           >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Discover the Budget app, your passport to financial
+            freedom. Make saving a lifestyle, and turn your dreams into
+            reality.
           </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate("Login")}

@@ -10,8 +10,8 @@ export default function Slide1() {
     <>
       <View className="flex justify-start items-center">
         <Image
-          style={{ width, height: height / 1.7, resizeMode: "stretch" }}
-          source={require("../../assets/images/fff.webp")}
+          style={{ width, height: height / 1.7, resizeMode: "cover" }}
+          source={require("../../assets/images/slide1.jpg")}
         />
         <View className="space-y-2 mt-4 px-3">
           <Text
@@ -24,7 +24,8 @@ export default function Slide1() {
             className="tracking-wider text-base text-center font-semibold"
             style={{ color: "#767676" }}
           >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Welcome to Budget app. Track your expenses, create budgets, and watch your
+            savings grow, all in one intuitive app.
           </Text>
         </View>
       </View>
