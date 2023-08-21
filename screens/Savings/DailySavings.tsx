@@ -36,9 +36,12 @@ export default function DailySavings(props: any) {
         "savings-budget-app" + user.uid?.slice(0, 7)
       );
       if (value != null) {
-        const { daily, dailySaving, saveAmount } = JSON.parse(value);
-        setDailySaving(dailySaving);
-        setDaily(daily);
+        const { saveAmount } = JSON.parse(value);
+        const per = ((balances.currentBalance / 30) * +saveAmount) / 100;
+
+        setDaily((balances.currentBalance / 30) - per);
+
+        setDailySaving(per);
         setSaveAmount(saveAmount);
       } else {
         setDailySaving(0);
@@ -64,8 +67,6 @@ export default function DailySavings(props: any) {
 
         if (daily != undefined) {
           const jsonValue = JSON.stringify({
-            daily: daily - per,
-            dailySaving: per,
             saveAmount: saveAmount,
           });
 
