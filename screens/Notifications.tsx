@@ -29,7 +29,10 @@ export default function Notifications(props: any) {
   useEffect(() => {}, [reload]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
+      className="flex-1"
+    >
       <ScrollView>
         <View className="flex-1 justify-start items-center pt-2">
           <View className="w-full flex flex-row justify-between items-center">

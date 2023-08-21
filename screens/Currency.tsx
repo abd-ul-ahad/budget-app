@@ -84,7 +84,10 @@ export default function Currency(props: any) {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{ backgroundColor: Colors[colorScheme ?? "light"].background }}
+      className="flex-1"
+    >
       <ScrollView
         style={{ height: "90%" }}
         refreshControl={

@@ -51,7 +51,13 @@ export default function ForgetPassword(props: any) {
 
   return (
     <SafeAreaView>
-      <ScrollView className="h-full">
+      <ScrollView
+        style={{
+          height: "100%",
+          backgroundColor: Colors[colorScheme ?? "light"].background,
+        }}
+        className="h-full"
+      >
         <View className="flex-row flex pt-2 justify-start items-center">
           <TouchableOpacity
             className="py-4 px-3"
@@ -69,12 +75,12 @@ export default function ForgetPassword(props: any) {
             <>
               {colorScheme === "light" ? (
                 <Image
-                  style={{ resizeMode: "contain", width: 300, height: 300 }}
+                  style={{ resizeMode: "contain", width: 280, height: 280 }}
                   source={require("../../assets/images/logo.png")}
                 />
               ) : (
                 <Image
-                  style={{ resizeMode: "contain", width: 300, height: 300 }}
+                  style={{ resizeMode: "contain", width: 280, height: 280 }}
                   source={require("../../assets/images/logo-dark.png")}
                 />
               )}
