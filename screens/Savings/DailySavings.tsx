@@ -161,7 +161,7 @@ export default function DailySavings(props: any) {
                 Daily saving
               </Text>
               <Text className="px-4 font-bold text-xl text-center tracking-widest">
-                <RenderAmount amount={+(dailySaving || 0).toFixed(3) || 0} />
+                <RenderAmount amount={+(dailySaving || 0).toFixed(2) || 0} />
               </Text>
             </View>
             <View className="flex flex-row justify-between items-center">
@@ -172,7 +172,7 @@ export default function DailySavings(props: any) {
                 Weekly saving
               </Text>
               <Text className="px-4 font-bold text-xl text-center tracking-widest">
-                <RenderAmount amount={+(weeklySaving || 0).toFixed(3) || 0} />
+                <RenderAmount amount={+(weeklySaving || 0).toFixed(2) || 0} />
               </Text>
             </View>
           </View>

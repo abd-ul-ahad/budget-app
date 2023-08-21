@@ -82,7 +82,7 @@ export default function Transaction(props: any) {
         {/* Section for displaying the "Savings" data */}
         <View className="pt-2 flex justify-center items-center">
           <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">
-            Spednings
+            Spending
           </Text>
           {/* Rendering the LineGraph component with random data */}
           <LineGraph
