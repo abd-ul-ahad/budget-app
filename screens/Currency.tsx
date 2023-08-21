@@ -161,7 +161,7 @@ export default function Currency(props: any) {
           </View>
         </View>
       </ScrollView>
-      <View className="px-3 py-2">
+      <View className="px-3 pt-2 pb-7">
         <TouchableOpacity
           onPress={() => handleSubmit()}
           className="flex justify-center items-center flex-row py-4 rounded-full pt-3"

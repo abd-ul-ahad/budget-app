@@ -34,6 +34,7 @@ import Currency from "../screens/Currency";
 import Gamification from "../screens/gamification/Home";
 import SelectAvatar from "../screens/gamification/SelectAvatar";
 import FullScreenAvatar from "../screens/gamification/FullScreenAvater";
+import DailySavings from "../screens/Savings/DailySavings";
 
 const Stack = createNativeStackNavigator();
 
@@ -156,6 +157,11 @@ export default function CheckAuth() {
                   name="FullScreenAvatar"
                   options={{ headerShown: false }}
                   component={FullScreenAvatar}
+                />
+                <Stack.Screen
+                  name="DailySavings"
+                  options={{ headerShown: false }}
+                  component={DailySavings}
                 />
               </Stack.Group>
             ) : (

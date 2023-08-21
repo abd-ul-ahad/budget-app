@@ -207,7 +207,7 @@ export default function Profile(props: any) {
                 onPress={() => props.navigation.navigate("Savings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
-                  Saving Goals
+                  Saving goals
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -216,6 +216,14 @@ export default function Profile(props: any) {
               >
                 <Text className="font-semibold tracking-wider text-base">
                   Goal based saving strategies
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="pl-6 py-3 flex w-full justify-start items-start"
+                onPress={() => props.navigation.navigate("DailySavings")}
+              >
+                <Text className="font-semibold tracking-wider text-base">
+                  Daily savings
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
