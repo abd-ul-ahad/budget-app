@@ -27,6 +27,8 @@ import Savings from "../../components/Savings";
 import calculateSavingsByMonth from "../../utils/Savings";
 import { setCurrency } from "../../store/slices/currencySlice";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
+import { Avatars } from "../../gamification/Avatars/_Paths";
+import { setAvatar } from "../../store/slices/avatarSlice";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -37,7 +39,7 @@ export default function Home(props: any) {
   const balances = useSelector((state: RootState) => state.balances);
   const reloadState = useSelector((state: RootState) => state.reload);
   const code = useSelector((state: RootState) => state.currency.code);
-  
+
   const dispatch = useDispatch();
   // Getting the color scheme of the device (light or dark)
   const colorScheme = useColorScheme();
@@ -103,6 +105,29 @@ export default function Home(props: any) {
   useEffect(() => {
     load();
   }, [reloadState]);
+
+  // loading avatar
+  const { getDocument: getGamification, addDocument } = useFirestore(
+    "gamification",
+    user.uid!
+  );
+
+  useEffect(() => {
+    (async () => {
+      try {
+        getGamification().then((doc) => {
+          const a = doc?.docs[0].data().avatar;
+          Avatars.forEach((e) => {
+            if (e.title == a) {
+              dispatch(setAvatar({ path: e.uri, id: doc?.docs[0].id }));
+            }
+          });
+        });
+      } catch {
+        addDocument({ avatar: "1" });
+      }
+    })();
+  }, []);
 
   return (
     <SafeAreaView>

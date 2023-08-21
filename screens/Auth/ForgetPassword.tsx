@@ -13,9 +13,14 @@ import { useState } from "react";
 import { ValEmail } from "../../constants/Validations";
 import { Auth } from "../../firebase/init";
 import { Snackbar } from "react-native-paper";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 export default function ForgetPassword(props: any) {
   const colorScheme = useColorScheme();
+  const avatar = useSelector((state: RootState) => state.avatar.path);
+  const user = useSelector((state: RootState) => state.user);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [payload, setPayload] = useState<{
     email: string;
@@ -60,16 +65,35 @@ export default function ForgetPassword(props: any) {
           </TouchableOpacity>
         </View>
         <View className="flex justify-center items-center">
-          {colorScheme === "light" ? (
-            <Image
-              style={{ resizeMode: "contain", width: 300, height: 300 }}
-              source={require("../../assets/images/logo.png")}
-            />
+          {!Auth.currentUser?.uid ? (
+            <>
+              {colorScheme === "light" ? (
+                <Image
+                  style={{ resizeMode: "contain", width: 300, height: 300 }}
+                  source={require("../../assets/images/logo.png")}
+                />
+              ) : (
+                <Image
+                  style={{ resizeMode: "contain", width: 300, height: 300 }}
+                  source={require("../../assets/images/logo-dark.png")}
+                />
+              )}
+            </>
           ) : (
-            <Image
-              style={{ resizeMode: "contain", width: 300, height: 300 }}
-              source={require("../../assets/images/logo-dark.png")}
-            />
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("FullScreenAvatar")}
+              className="py-7"
+            >
+              <Image
+                className="rounded-full"
+                style={{
+                  width: 130,
+                  height: 130,
+                  resizeMode: "stretch",
+                }}
+                source={avatar}
+              />
+            </TouchableOpacity>
           )}
         </View>
         <View className="pt-7 px-3">
