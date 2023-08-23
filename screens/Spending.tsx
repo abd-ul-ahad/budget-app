@@ -36,8 +36,6 @@ export default function Spending(props: any) {
   const [chartDataByMonth, setChartDataByMonth] = useState<Array<number>>([0]);
   const [chartDataByYear, setChartDataByYear] = useState<any>([0]);
 
-  console.log(chartDataByMonth);
-
   const load = async () => {
     setRefreshing(true);
     try {
