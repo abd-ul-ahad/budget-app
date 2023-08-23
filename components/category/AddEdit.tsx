@@ -161,7 +161,7 @@ export default function AddEdit({
                     <MaterialCommunityIcons
                       name="delete-empty"
                       size={27}
-                      color={Colors[colorScheme ?? "light"].text}
+                      color={"rgb(185 28 28)"}
                     />
                   </TouchableOpacity>
                 </View>

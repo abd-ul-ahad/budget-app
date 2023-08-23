@@ -1,6 +1,10 @@
 import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
 import { Text, View } from "../components/Themed";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import { deleteNotification, getNotifications } from "../utils/Notifications";
 import { useEffect, useState } from "react";
@@ -60,10 +64,10 @@ export default function Notifications(props: any) {
                 setDeleteToggle(true);
               }}
             >
-              <MaterialIcons
-                name="delete-outline"
-                size={26}
-                color={Colors[colorScheme ?? "light"].text}
+              <MaterialCommunityIcons
+                name="delete-empty"
+                size={27}
+                color={"rgb(185 28 28)"}
               />
             </TouchableOpacity>
           </View>

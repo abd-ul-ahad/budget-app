@@ -204,7 +204,7 @@ export default function EditPlan(props: any) {
                         <MaterialCommunityIcons
                           name="delete-empty"
                           size={27}
-                          color={Colors[colorScheme ?? "light"].text}
+                          color={"rgb(185 28 28)"}
                         />
                       </TouchableOpacity>
                     </View>

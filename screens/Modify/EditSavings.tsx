@@ -2,7 +2,7 @@ import { ScrollView, TextInput, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { useState } from "react";
 import { useFirestore } from "../../firebase/useFirestore";
@@ -26,6 +26,7 @@ export default function EditSavings(props: any) {
   const params = props.route.params;
 
   // state
+  const [toggleDelete, setToggleDelete] = useState<boolean>(false);
   const [saveAmount, setSaveAmount] = useState<string>(params.currentAmount);
   const [targetAmount, setTargetAmount] = useState<string>(params.amount);
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,21 +42,19 @@ export default function EditSavings(props: any) {
   const onUpdate = async () => {
     try {
       setLoading(true);
-      if (
-        +saveAmount >= 0
-      ) {
-        if (+saveAmount <= +currentBalance && saveAmount <= targetAmount ) {
+      if (+saveAmount >= 0 && +targetAmount > 0) {
+        if (+saveAmount <= +currentBalance && saveAmount <= targetAmount) {
           await updateDocument(
             {
-              currentAmount: saveAmount,
-              targetAmount: targetAmount,
+              currentAmount: saveAmount || 0,
+              targetAmount: targetAmount || 0,
             },
             params.id
           ).then(() => {
             props.navigation.goBack();
             triggerNotifications(
               `Savings`,
-              `Now ${saveAmount} ${getCurrencySymbol(
+              `Now ${saveAmount || 0} ${getCurrencySymbol(
                 code
               )} to ${targetAmount} ${getCurrencySymbol(code)} savings.`
             );
@@ -99,20 +98,33 @@ export default function EditSavings(props: any) {
           height: "100%",
         }}
       >
-        <View className="flex-row flex mt-2 justify-start items-center">
+        <View className="flex flex-row justify-between items-center">
+          <View className="flex-row flex mt-2 justify-start items-center">
+            <TouchableOpacity
+              className="py-3 px-3"
+              onPress={() => props.navigation.goBack()}
+            >
+              <Ionicons
+                name="chevron-back-sharp"
+                size={26}
+                color={Colors[colorScheme ?? "light"].text}
+              />
+            </TouchableOpacity>
+            <Text className="text-xl pl-3 font-bold tracking-wider text-start py-4">
+              Update saving
+            </Text>
+          </View>
           <TouchableOpacity
-            className="py-3 px-3"
-            onPress={() => props.navigation.goBack()}
+            disabled={loading}
+            onPress={() => setToggleDelete(!toggleDelete)}
+            className="px-3 py-2"
           >
-            <Ionicons
-              name="chevron-back-sharp"
-              size={26}
-              color={Colors[colorScheme ?? "light"].text}
+            <MaterialCommunityIcons
+              name="delete-empty"
+              size={27}
+              color={"rgb(185 28 28)"}
             />
           </TouchableOpacity>
-          <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
-            Update saving
-          </Text>
         </View>
 
         <View className="w-full mt-6">
@@ -172,15 +184,6 @@ export default function EditSavings(props: any) {
               {loading ? "Loading..." : "Update"}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            disabled={loading}
-            onPress={() => onDelete()}
-            className="flex justify-center bg-red-700 items-center rounded-lg mt-2"
-          >
-            <Text className="text-white py-3">
-              {loading ? "Loading..." : "Delete"}
-            </Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
       <Snackbar
@@ -189,6 +192,17 @@ export default function EditSavings(props: any) {
         onDismiss={() => setOpenSnackbar({ ...openSnackbar, open: false })}
       >
         {openSnackbar.msg}
+      </Snackbar>
+      <Snackbar
+        style={{ marginBottom: "1%" }}
+        visible={toggleDelete}
+        onDismiss={() => setToggleDelete(false)}
+        action={{
+          label: "Yes",
+          onPress: async () => onDelete(),
+        }}
+      >
+        Are you sure?
       </Snackbar>
     </SafeAreaView>
   );
