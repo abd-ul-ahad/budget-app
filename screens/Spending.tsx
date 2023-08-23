@@ -18,12 +18,11 @@ import { useFirestore } from "../firebase/useFirestore";
 import formattedDate from "../utils/FormatDate";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../store/slices/reloadSlice";
-import { incomeByMonth, spendingByYear } from "../utils/GenChart";
+import { spendingByMonth, spendingByYear } from "../utils/GenChart";
 
 export default function Spending(props: any) {
   // Using hooks to manage state and get color scheme
   const colorScheme = useColorScheme();
-  const reloadState = useSelector((state: RootState) => state.reload);
   const [labelI, setLabelI] = useState<number>(0);
 
   const user = useSelector((state: RootState) => state.user);
@@ -37,6 +36,8 @@ export default function Spending(props: any) {
   const [chartDataByMonth, setChartDataByMonth] = useState<Array<number>>([0]);
   const [chartDataByYear, setChartDataByYear] = useState<any>([0]);
 
+  console.log(chartDataByMonth);
+
   const load = async () => {
     setRefreshing(true);
     try {
@@ -45,7 +46,7 @@ export default function Spending(props: any) {
       d?.forEach((e: any) => {
         if (e._data.category !== "#income") r.push(e);
       });
-      setChartDataByMonth(incomeByMonth(r));
+      setChartDataByMonth(spendingByMonth(r));
       let result = spendingByYear(r);
 
       if (result.years.length === 0) {
@@ -65,7 +66,7 @@ export default function Spending(props: any) {
 
   useEffect(() => {
     load();
-  }, [reloadState]);
+  }, []);
 
   return (
     // Wrapping the content inside SafeAreaView and ScrollView for safe handling of views
