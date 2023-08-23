@@ -5,11 +5,11 @@ import YoutubePlayer from "react-native-youtube-iframe";
 import { Text, View } from "../../components/Themed";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
-import SelectCategory from "../../utils/FinancialEdu";
+import { SelectCategory, buttons } from "../../utils/FinancialEdu";
 
 export default function FinancialContent(props: any) {
   const colorScheme = useColorScheme();
-  const { title } = props.route.params;
+  const { slug, title } = props.route.params;
   const [playing, setPlaying] = useState(false);
 
   const onStateChange = useCallback((state: any) => {
@@ -39,7 +39,7 @@ export default function FinancialContent(props: any) {
             />
           </TouchableOpacity>
           <Text
-            className="text-xl"
+            className="text-xl w-4/5 py-4"
             style={{
               fontWeight: "bold",
               paddingLeft: 3,
@@ -47,12 +47,12 @@ export default function FinancialContent(props: any) {
               paddingVertical: 4,
             }}
           >
-            {title != undefined ? title : `Financial Education`}
+            {slug != undefined ? title : buttons[0].title}
           </Text>
         </View>
 
         <View style={{ paddingHorizontal: 4 }}>
-          {SelectCategory(title)?.map((e, i) => {
+          {SelectCategory(slug)?.map((e, i) => {
             return (
               <View key={i}>
                 <YoutubePlayer

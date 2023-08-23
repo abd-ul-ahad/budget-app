@@ -1,9 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
-import { ScrollView, TouchableOpacity, useColorScheme } from "react-native";
+import {
+  ScrollView,
+  TouchableOpacity,
+  useColorScheme,
+  Image,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
 import Colors from "../../constants/Colors";
-import { buttons } from "../../utils/FinancialEdu";
+import { buttonIcons, buttons } from "../../utils/FinancialEdu";
 
 export default function FinancialHome(props: any) {
   const colorScheme = useColorScheme();
@@ -26,24 +31,29 @@ export default function FinancialHome(props: any) {
           </Text>
         </View>
         <View className="flex-1 px-5 pt-10 h-screen">
-          <Text
-            style={{ color: "#767676" }}
-            className="text-lg font-extrabold tracking-wider"
-          >
-            Contents
-          </Text>
           {buttons?.map((e, i) => (
-            <View key={i} className="py-2">
+            <View
+              key={i}
+              className="py-2 flex flex-row justify-between items-center"
+            >
               <TouchableOpacity
                 onPress={() =>
                   props.navigation.navigate("FinancialContent", {
-                    title: e,
+                    slug: e.slug,
+                    title: e.title
                   })
                 }
-                className="w-full flex justify-center items-start py-3 px-5"
+                style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+                className="w-2/3 flex justify-center items-center py-6 px-8 rounded-xl"
               >
-                <Text className="text-xl font-bold tracking-widest">{e}</Text>
+                <Text className="text-xl text-center font-bold tracking-widest text-white">
+                  {e.title}
+                </Text>
               </TouchableOpacity>
+              <Image
+                style={{ width: 80, height: 80, resizeMode: "cover" }}
+                source={buttonIcons[i]}
+              />
             </View>
           ))}
         </View>

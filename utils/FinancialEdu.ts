@@ -1,5 +1,5 @@
 const Videos = {
-  Budgeting: [
+  financial_foundation: [
     "Q0uXGQu55GM",
     "HQzoZfc3GwQ",
     "3pslPbfpnzk",
@@ -14,7 +14,7 @@ const Videos = {
     "ibGT401qDWw",
     "AIOR1x7fPcQ",
   ],
-  Savings: [
+  Investing_and_building_wealth: [
     "vmZpnpze0",
     "4j2emMn7UaI",
     "sK1BJ_259AM",
@@ -31,8 +31,13 @@ const Videos = {
     "cPcF8Jx6ptE",
     "AIOR1x7fPcQ",
   ],
-  Investing: ["YsLjDxvebAk", "5dVmzw1Xbao", "ch_SawrXmpY", "MN7yfV4UuCI"],
-  Management: [
+  Investing_planing_and_future_goals: [
+    "YsLjDxvebAk",
+    "5dVmzw1Xbao",
+    "ch_SawrXmpY",
+    "MN7yfV4UuCI",
+  ],
+  Debt_management: [
     "WNm_ez1h7Tc",
     "B4XVb36nls0",
     "MpADdBwXMm0",
@@ -49,13 +54,30 @@ const Videos = {
   ],
 };
 
-export const buttons = ["Budgeting", "Savings", "Investing", "Management"];
+export const buttons = [
+  { slug: "financial_foundation", title: "Financial foundation" },
+  {
+    slug: "Investing_and_building_wealth",
+    title: "Investing and building wealth",
+  },
+  {
+    slug: "Investing_planing_and_future_goals",
+    title: "Investing planing and future goals",
+  },
+  { slug: "Debt_management", title: "Debt management and student loans" },
+];
+export const buttonIcons = [
+  require("../assets/icons/foundation.png"),
+  require("../assets/icons/save.png"),
+  require("../assets/icons/plan.png"),
+  require("../assets/icons/debt.png"),
+];
 
-export default function SelectCategory(category: string | undefined) {
-  if (category === undefined) return Videos.Budgeting;
+export function SelectCategory(category: string | undefined) {
+  if (!category) return Videos.financial_foundation;
 
-  if (buttons.includes(category))
-    return Videos[category as keyof typeof Videos];
+  const selectedButton = buttons.find((button) => button.slug === category);
+  if (selectedButton) return Videos[selectedButton.slug as keyof typeof Videos];
 
-  return Videos.Budgeting;
+  return Videos.financial_foundation;
 }
