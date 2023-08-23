@@ -29,7 +29,6 @@ import Savings from "../screens/Savings/Savings";
 import EditProfile from "../screens/Modify/EditProfile";
 import AllTimeSavings from "../screens/Savings/AllTimeSavings";
 import EditSavings from "../screens/Modify/EditSavings";
-import FinancialEdu from "../screens/Savings/FinancialEdu";
 import Currency from "../screens/Currency";
 import Gamification from "../screens/gamification/Home";
 import SelectAvatar from "../screens/gamification/SelectAvatar";
@@ -37,6 +36,8 @@ import FullScreenAvatar from "../screens/gamification/FullScreenAvater";
 import DailySavings from "../screens/Savings/DailySavings";
 import ChatHome from "../screens/Chat/Home";
 import ForgetPassword from "../screens/Auth/ForgetPassword";
+import FinancialHome from "../screens/FinancialEdu/Home";
+import FinancialContent from "../screens/FinancialEdu/Contents";
 
 const Stack = createNativeStackNavigator();
 
@@ -141,9 +142,14 @@ export default function CheckAuth() {
                   component={EditSavings}
                 />
                 <Stack.Screen
-                  name="FinancialEdu"
+                  name="FinancialHome"
                   options={{ headerShown: false }}
-                  component={FinancialEdu}
+                  component={FinancialHome}
+                />
+                <Stack.Screen
+                  name="FinancialContent"
+                  options={{ headerShown: false }}
+                  component={FinancialContent}
                 />
                 <Stack.Screen
                   name="Currency"

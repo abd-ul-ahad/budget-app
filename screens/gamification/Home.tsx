@@ -204,7 +204,7 @@ export default function Gamification(props: any) {
           {/* Total Earned */}
           <View className="flex flex-row justify-between items-center">
             <Text className="font-semibold tracking-wider text-lg">
-              Total earned:{" "}
+              Total Income:{" "}
             </Text>
             <Text className="font-semibold tracking-wider text-lg">
               <RenderAmount amount={balances.incomeBalance} />

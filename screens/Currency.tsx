@@ -25,7 +25,7 @@ export default function Currency(props: any) {
   const user = useSelector((state: RootState) => state.user);
 
   //
-  const [currenciesCodes, setCurrenciesCodes] = useState<Array<string>>([]);
+  const [currenciesCodes, setCurrenciesCodes] = useState<Array<string> | null>(null);
   const [selectedCode, setSelectedCode] = useState<string>("");
   const [refresh, setRefresh] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
@@ -60,7 +60,7 @@ export default function Currency(props: any) {
   }, []);
 
   // Filtered currency codes based on search text
-  const filteredCurrencyCodes = currenciesCodes.filter((code) =>
+  const filteredCurrencyCodes = currenciesCodes?.filter((code) =>
     code.startsWith(searchText.toUpperCase())
   );
 
@@ -121,13 +121,13 @@ export default function Currency(props: any) {
           />
         </View>
         <View>
-          {filteredCurrencyCodes.length === 0 && (
+          {filteredCurrencyCodes?.length === 0 && (
             <Text className="text-lg font-semibold tracking-wider w-full text-center pl-2">
               Unavailable
             </Text>
           )}
           <View className="px-3">
-            {filteredCurrencyCodes.map((code: string) => (
+            {filteredCurrencyCodes?.map((code: string) => (
               <Pressable
                 onPress={() => setSelectedCode(code)}
                 key={code}

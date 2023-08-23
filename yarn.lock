@@ -7962,11 +7962,6 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
-to-words@^3.6.1:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/to-words/-/to-words-3.6.1.tgz#3f895c41b27bf7146595614c3f4af08cd1ae2f16"
-  integrity sha512-X2KDRjBXM0bQ4eTblqNnVfIBGEwhSClR3eWubD6B7gY29vh1k+ntQGSaShwgrsQT3Akt/tbIjKkn8mMOYHihnw==
-
 toidentifier@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"

@@ -13,7 +13,6 @@ import { Calendar } from "react-native-calendars";
 import { TextInput } from "react-native";
 import { isValidOrFutureDate } from "../../utils/FormatDate";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { OnlyNumbers } from "../../constants/Validations";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import getCurrencySymbol from "../../utils/CurrencySymbols";

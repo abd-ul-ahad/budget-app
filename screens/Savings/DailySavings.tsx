@@ -178,6 +178,12 @@ export default function DailySavings(props: any) {
           </View>
           <View className="px-5 pt-4">
             <View className="pb-3">
+              <Text
+                style={{ color: "#767676" }}
+                className="dark:text-white text-start text-base font-semibold pb-1"
+              >
+                Daily percentage savings
+              </Text>
               <TextInput
                 className="py-2 px-3 dark:text-white rounded-lg"
                 style={{ borderColor: "grey", borderWidth: 2 }}
@@ -201,6 +207,19 @@ export default function DailySavings(props: any) {
               </Text>
             </TouchableOpacity>
           </View>
+        </View>
+        <View className="px-5 pt-5 pb-3">
+          <Text
+            style={{ color: "#767676" }}
+            className="dark:text-white w-full text-center text-lg font-semibold pb-1 px-3"
+          >
+            By consistently saving {saveAmount}% each day, you can accumulate
+            savings of{" "}
+            <RenderAmount amount={+(dailySaving || 0).toFixed(2) || 0} /> daily
+            and {"\n"}{" "}
+            <RenderAmount amount={+(weeklySaving || 0).toFixed(2) || 0} />{" "}
+            weekly.
+          </Text>
         </View>
       </ScrollView>
       <Snackbar

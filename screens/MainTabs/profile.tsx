@@ -226,7 +226,7 @@ export default function Profile(props: any) {
               </TouchableOpacity>
               <TouchableOpacity
                 className="pl-6 py-3 flex w-full justify-start items-start"
-                onPress={() => props.navigation.navigate("FinancialEdu")}
+                onPress={() => props.navigation.navigate("FinancialHome")}
               >
                 <Text className="font-semibold tracking-wider text-base">
                   Financial education
