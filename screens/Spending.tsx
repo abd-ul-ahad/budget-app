@@ -23,6 +23,7 @@ import { incomeByMonth, spendingByYear } from "../utils/GenChart";
 export default function Spending(props: any) {
   // Using hooks to manage state and get color scheme
   const colorScheme = useColorScheme();
+  const reloadState = useSelector((state: RootState) => state.reload);
   const [labelI, setLabelI] = useState<number>(0);
 
   const user = useSelector((state: RootState) => state.user);
@@ -64,7 +65,7 @@ export default function Spending(props: any) {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [reloadState]);
 
   return (
     // Wrapping the content inside SafeAreaView and ScrollView for safe handling of views

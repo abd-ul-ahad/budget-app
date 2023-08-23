@@ -19,6 +19,7 @@ export default function Notifications(props: any) {
   const [toggleSnack, setToggleSnack] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(-1);
   const [deleteToggle, setDeleteToggle] = useState<boolean>(false);
+  const [noNotifi, setNoNotifi] = useState<boolean>(false);
 
   const load = async () => {
     let resp = await getNotifications();
@@ -50,9 +51,14 @@ export default function Notifications(props: any) {
               Notifications
             </Text>
             <TouchableOpacity
-              disabled={notifi?.length === 0}
               className="py-4 px-5"
-              onPress={() => setDeleteToggle(true)}
+              onPress={() => {
+                if (notifi.length === 0) {
+                  setNoNotifi(true);
+                  return;
+                }
+                setDeleteToggle(true);
+              }}
             >
               <MaterialIcons
                 name="delete-outline"
@@ -94,7 +100,7 @@ export default function Notifications(props: any) {
                   )}
                 </View>
                 <Text
-                  className="tracking-wider text-base text-start font-semibold"
+                  className="tracking-wider text-sm text-start font-semibold"
                   style={{ color: "#767676", width: width / 4 }}
                 >
                   {e?.body?.dateTime !== undefined &&
@@ -136,6 +142,13 @@ export default function Notifications(props: any) {
         }}
       >
         Clear all?
+      </Snackbar>
+      <Snackbar
+        style={{ marginBottom: "1%" }}
+        visible={noNotifi}
+        onDismiss={() => setNoNotifi(false)}
+      >
+        No notification to delete
       </Snackbar>
     </SafeAreaView>
   );

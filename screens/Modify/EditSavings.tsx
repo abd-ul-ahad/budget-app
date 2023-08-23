@@ -26,8 +26,8 @@ export default function EditSavings(props: any) {
   const params = props.route.params;
 
   // state
-  const [saveAmount, setSaveAmount] = useState<number>(params.currentAmount);
-  const [targetAmount, setTargetAmount] = useState<number>(params.amount);
+  const [saveAmount, setSaveAmount] = useState<string>(params.currentAmount);
+  const [targetAmount, setTargetAmount] = useState<string>(params.amount);
   const [loading, setLoading] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<{
     open: boolean;
@@ -42,11 +42,9 @@ export default function EditSavings(props: any) {
     try {
       setLoading(true);
       if (
-        saveAmount >= 0 &&
-        OnlyNumbers(`${saveAmount}`) &&
-        OnlyNumbers(`${targetAmount}`)
+        +saveAmount >= 0
       ) {
-        if (saveAmount <= currentBalance) {
+        if (+saveAmount <= +currentBalance && saveAmount <= targetAmount ) {
           await updateDocument(
             {
               currentAmount: saveAmount,
@@ -145,9 +143,9 @@ export default function EditSavings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
-            value={targetAmount >= 0 ? `${targetAmount}` : ""}
+            value={`${targetAmount}`}
             onChangeText={(text) => {
-              setTargetAmount(+text);
+              setTargetAmount(text);
             }}
           />
           <Text className="dark:text-white text-lg font-semibold">
@@ -159,9 +157,9 @@ export default function EditSavings(props: any) {
             placeholder="0"
             placeholderTextColor="grey"
             keyboardType="numeric"
-            value={saveAmount >= 0 ? `${saveAmount}` : ""}
+            value={`${saveAmount}`}
             onChangeText={(text) => {
-              setSaveAmount(+text);
+              setSaveAmount(text);
             }}
           />
           <TouchableOpacity

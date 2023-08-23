@@ -11,7 +11,7 @@ import {
   BackHandler,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Octicons, Ionicons } from "@expo/vector-icons";
+import { Octicons, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { useEffect, useRef, useState } from "react";
 import { Snackbar } from "react-native-paper";
@@ -20,9 +20,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
-import { CalculateBalance } from "../../utils/CalculateBalance";
 import { OnlyNumbers } from "../../constants/Validations";
 import RenderAmount from "../../components/RenderAmount";
+import { set } from "../../store/slices/snackSlice";
 
 const image = require("../../assets/images/banner.png");
 
@@ -69,6 +69,7 @@ export default function EditTransactions(props: any) {
   const [loading, setLoading] = useState<boolean>(false);
   const [isPlanIdError, setIsPlanIdError] = useState<boolean>(false);
   const [whichOne, setWhichOne] = useState<number>(0); // 1 for category and 2 for plan
+  const [toggleDelete, setToggleDelete] = useState<boolean>(false);
 
   BackHandler.addEventListener("hardwareBackPress", () => {
     isEditMode ? setToggleSnackbar(true) : props.navigation.goBack();
@@ -76,7 +77,10 @@ export default function EditTransactions(props: any) {
   });
 
   // loading hooks to add - get document
-  const { updateDocument } = useFirestore("transactions", user.uid!);
+  const { updateDocument, deleteDocument } = useFirestore(
+    "transactions",
+    user.uid!
+  );
   const { getDocument: getCategories } = useFirestore("categories", user.uid!);
   const { getDocument: getPlans, updateDocument: updatePlan } = useFirestore(
     "plans",
@@ -108,9 +112,11 @@ export default function EditTransactions(props: any) {
                     : +payload?.planCurrentAmount! - 1,
               },
               payload?.planId!
-            ).then(() => {
-              // setIncomeOrSpend(null);
-            });
+            )
+              .then(() => {
+                // setIncomeOrSpend(null);
+              })
+              .catch((err) => {});
           }
           props.navigation.goBack();
           triggerNotifications("Transaction updated", null);
@@ -121,6 +127,19 @@ export default function EditTransactions(props: any) {
       setIsPlanIdError(true);
     }
   }
+
+  const onDelete = async () => {
+    deleteDocument(params.id).then(() => {
+      props.navigation.goBack();
+      dispatch(set({ toggle: true, msg: `Transaction is removed` }));
+      setLoading(false);
+      triggerNotifications(
+        "Transaction",
+        `Transaction ${payload.amount} is removed`
+      );
+      dispatch(reload());
+    });
+  };
 
   // loading categories and plans
   const load = async () => {
@@ -163,16 +182,29 @@ export default function EditTransactions(props: any) {
               >
                 <Ionicons name="chevron-back-sharp" size={26} color="white" />
               </TouchableOpacity>
-              {/* Edit button */}
-              <TouchableOpacity
-                style={{
-                  backgroundColor: isEditMode ? "#3c7250" : "transparent",
-                }}
-                className="py-3 px-4 rounded-full"
-                onPress={() => setIsEditMode(!isEditMode)}
-              >
-                <Octicons name="pencil" size={24} color="white" />
-              </TouchableOpacity>
+              <View className="flex justify-start items-center flex-row">
+                {/* Delete button */}
+                <TouchableOpacity
+                  onPress={() => setToggleDelete(!toggleDelete)}
+                  className="px-3 py-2"
+                >
+                  <MaterialCommunityIcons
+                    name="delete-empty"
+                    size={27}
+                    color={"white"}
+                  />
+                </TouchableOpacity>
+                {/* Edit button */}
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: isEditMode ? "#3c7250" : "transparent",
+                  }}
+                  className="py-3 px-4 rounded-full"
+                  onPress={() => setIsEditMode(!isEditMode)}
+                >
+                  <Octicons name="pencil" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
             </View>
             {/* Transaction details */}
             <View className="flex justify-center items-start w-full space-y-2 pl-6 mt-4">
@@ -223,7 +255,7 @@ export default function EditTransactions(props: any) {
               className="py-2 px-3 rounded-lg dark:text-white"
               value={payload.amount}
               onChangeText={(amount) => {
-                if (OnlyNumbers(amount)) setPayload({ ...payload, amount });
+                setPayload({ ...payload, amount });
               }}
               style={{ borderColor: "grey", borderWidth: 2 }}
               placeholder="0"
@@ -411,6 +443,17 @@ export default function EditTransactions(props: any) {
         onDismiss={() => setIsPlanIdError(false)}
       >
         Reselect plan
+      </Snackbar>
+      <Snackbar
+        style={{ marginBottom: "10%" }}
+        visible={toggleDelete}
+        onDismiss={() => setToggleDelete(false)}
+        action={{
+          label: "Yes",
+          onPress: async () => onDelete(),
+        }}
+      >
+        Are you sure to remove?
       </Snackbar>
     </SafeAreaView>
   );

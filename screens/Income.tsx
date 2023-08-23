@@ -24,6 +24,7 @@ export default function Income(props: any) {
   // Initialize the router and colorScheme using the provided hooks
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
+  const reloadState = useSelector((state: RootState) => state.reload);
   const dispatch = useDispatch();
 
   const { getDocument } = useFirestore("transactions", user.uid!);
@@ -54,7 +55,7 @@ export default function Income(props: any) {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [reloadState]);
 
   return (
     // Render the SafeAreaView to ensure content is properly displayed within device safe areas
