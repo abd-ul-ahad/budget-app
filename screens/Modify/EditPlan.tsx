@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
-import { Ionicons, Octicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { Text, View } from "../../components/Themed";
 import { FadeInView } from "../../components/animations";
@@ -39,6 +39,7 @@ export default function EditPlan(props: any) {
     addDocument,
     updateDocument,
     getDocument: getPlans,
+    deleteDocument,
   } = useFirestore("plans", user.uid!);
 
   // Extract the title, amount, and category from local search parameters
@@ -56,6 +57,7 @@ export default function EditPlan(props: any) {
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [categories, setCategories] = useState<Array<any>>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [toggleDelete, setToggleDelete] = useState<boolean>(false);
 
   // function to check title duplication
   const checkTitle = async (title: string): Promise<boolean> => {
@@ -153,6 +155,16 @@ export default function EditPlan(props: any) {
     setOpenSnackbar(true);
   }
 
+  const onDelete = async () => {
+    deleteDocument(id).then(() => {
+      props.navigation.goBack();
+      dispatch(set({ toggle: true, msg: `#${payload.title} is removed` }));
+      setLoading(false);
+      triggerNotifications("Plan", `#${payload?.title} is removed`);
+      dispatch(reload());
+    });
+  };
+
   return (
     <SafeAreaView>
       {/* Use the custom FadeInView component to apply fade-in animation */}
@@ -179,11 +191,23 @@ export default function EditPlan(props: any) {
                 {/* Display the title as "New Plan" or show an edit icon */}
                 <Text className="dark:text-white text-lg font-semibold">
                   {+title !== 0 ? ( // +(string) = number
-                    <Octicons
-                      name="pencil"
-                      size={24}
-                      color={Colors[colorScheme ?? "light"].text}
-                    />
+                    <View className="flex justify-start items-center flex-row">
+                      <Octicons
+                        name="pencil"
+                        size={24}
+                        color={Colors[colorScheme ?? "light"].text}
+                      />
+                      <TouchableOpacity
+                        onPress={() => setToggleDelete(!toggleDelete)}
+                        className="px-3 py-2"
+                      >
+                        <MaterialCommunityIcons
+                          name="delete-empty"
+                          size={27}
+                          color={Colors[colorScheme ?? "light"].text}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   ) : (
                     "New Plan"
                   )}
@@ -326,6 +350,17 @@ export default function EditPlan(props: any) {
         }}
       >
         Fields are empty
+      </Snackbar>
+      <Snackbar
+        style={{ marginBottom: "1%" }}
+        visible={toggleDelete}
+        onDismiss={() => setToggleDelete(false)}
+        action={{
+          label: "Yes",
+          onPress: async () => onDelete(),
+        }}
+      >
+        Are you sure?
       </Snackbar>
     </SafeAreaView>
   );
