@@ -1,7 +1,12 @@
 import { TextInput, TouchableOpacity, useColorScheme } from "react-native";
 import { FadeInView } from "../animations";
 import { Text, View } from "../Themed";
-import { Ionicons, Octicons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Octicons,
+} from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import { useFirestore } from "../../firebase/useFirestore";
 import { SetStateAction, useEffect, useState } from "react";
@@ -10,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { set } from "../../store/slices/snackSlice";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
+import { Snackbar } from "react-native-paper";
 
 export default function AddEdit({
   setToggle,
@@ -28,11 +34,10 @@ export default function AddEdit({
 
   //
   const [loading, setLoading] = useState<boolean>(false);
+  const [toggleDelete, setToggleDelete] = useState<boolean>(false);
 
-  const { addDocument, updateDocument, getDocument } = useFirestore(
-    "categories",
-    user.uid!
-  );
+  const { addDocument, updateDocument, getDocument, deleteDocument } =
+    useFirestore("categories", user.uid!);
 
   // check of there is a duplicate
   const checkName = async (code: string): Promise<boolean> => {
@@ -115,6 +120,16 @@ export default function AddEdit({
     }
   };
 
+  const onDelete = async () => {
+    deleteDocument(payload.id).then(() => {
+      dispatch(set({ toggle: true, msg: `#${payload.category} is removed` }));
+      setToggle(false);
+      setLoading(false);
+      triggerNotifications("Category", `#${payload?.category} is removed`);
+      dispatch(reload());
+    });
+  };
+
   return (
     <FadeInView _duration={150}>
       <View
@@ -133,11 +148,23 @@ export default function AddEdit({
           >
             <Text className="dark:text-white text-lg font-semibold">
               {!isNew ? (
-                <Octicons
-                  name="pencil"
-                  size={24}
-                  color={Colors[colorScheme ?? "light"].text}
-                />
+                <View className="flex justify-start items-center flex-row">
+                  <Octicons
+                    name="pencil"
+                    size={24}
+                    color={Colors[colorScheme ?? "light"].text}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setToggleDelete(!toggleDelete)}
+                    className="px-3 py-2"
+                  >
+                    <MaterialCommunityIcons
+                      name="delete-empty"
+                      size={27}
+                      color={Colors[colorScheme ?? "light"].text}
+                    />
+                  </TouchableOpacity>
+                </View>
               ) : (
                 "New Category"
               )}
@@ -190,6 +217,17 @@ export default function AddEdit({
           )}
         </View>
       </View>
+      <Snackbar
+        style={{ marginBottom: "20%" }}
+        visible={toggleDelete}
+        onDismiss={() => setToggleDelete(false)}
+        action={{
+          label: "Yes",
+          onPress: async () => onDelete(),
+        }}
+      >
+        Are you sure?
+      </Snackbar>
     </FadeInView>
   );
 }
