@@ -38,17 +38,19 @@ export default function FinancialContent(props: any) {
               color={Colors[colorScheme ?? "light"].text}
             />
           </TouchableOpacity>
-          <Text
-            className="text-xl w-4/5 py-4"
-            style={{
-              fontWeight: "bold",
-              paddingLeft: 3,
-              textAlign: "left",
-              paddingVertical: 4,
-            }}
-          >
-            {slug != undefined ? title : buttons[0].title}
-          </Text>
+          <View className="w-4/5">
+            <Text
+              className="text-xl py-4"
+              style={{
+                fontWeight: "bold",
+                paddingLeft: 3,
+                textAlign: "left",
+                paddingVertical: 4,
+              }}
+            >
+              {slug != undefined ? title : buttons[0].title}
+            </Text>
+          </View>
         </View>
 
         <View style={{ paddingHorizontal: 4 }}>
