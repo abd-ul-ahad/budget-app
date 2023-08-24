@@ -4,7 +4,9 @@ import {
   Pressable,
   TextInput,
   TouchableOpacity,
+  ScrollView,
   useColorScheme,
+  Dimensions,
 } from "react-native";
 import { Text, View } from "../components/Themed";
 import Colors from "../constants/Colors";
@@ -12,12 +14,12 @@ import { Entypo, FontAwesome5 } from "@expo/vector-icons";
 import { useState } from "react";
 
 import { ValEmail, ValPassword } from "../constants/Validations";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useLogin } from "../firebase/useLogin";
 import { Snackbar } from "react-native-paper";
 import { triggerNotifications } from "../utils/Notifications";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const { height } = Dimensions.get("window");
 
 interface Payload {
   email?: string;
@@ -81,19 +83,30 @@ export default function Login({
   };
 
   return (
-    <SafeAreaView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
 
-      <View className="space-y-4 mb-9">
-        <View className="flex justify-center items-center">
+      <View>
+        <View
+          className="flex justify-center items-center"
+          style={{ paddingTop: height > 690 ? 100 : 70 }}
+        >
           {colorScheme === "light" ? (
             <Image
-              style={{ resizeMode: "contain", width: 300, height: 300 }}
+              style={{
+                resizeMode: "contain",
+                width: height > 690 ? 280 : 250,
+                height: height > 690 ? 280 : 250,
+              }}
               source={require("../assets/images/logo.png")}
             />
           ) : (
             <Image
-              style={{ resizeMode: "contain", width: 300, height: 300 }}
+              style={{
+                resizeMode: "contain",
+                width: height > 690 ? 280 : 250,
+                height: height > 690 ? 280 : 250,
+              }}
               source={require("../assets/images/logo-dark.png")}
             />
           )}
@@ -196,7 +209,7 @@ export default function Login({
           <Entypo name="chevron-right" size={20} color={"white"} />
         </TouchableOpacity>
 
-        <View>
+        <View className="pt-2">
           <View className="flex flex-row justify-center items-center">
             <Text>New here?</Text>
             <TouchableOpacity
@@ -213,7 +226,7 @@ export default function Login({
               </Text>
             </TouchableOpacity>
           </View>
-          <View className="flex flex-row justify-center items-center pt-1">
+          <View className="flex flex-row justify-center items-center">
             <TouchableOpacity
               className="px-3 py-1"
               onPress={() => navigation.navigate("ForgetPassword")}
@@ -239,6 +252,6 @@ export default function Login({
       >
         {toggleSnackbar?.msg}
       </Snackbar>
-    </SafeAreaView>
+    </ScrollView>
   );
 }

@@ -22,7 +22,7 @@ const { width, height } = Dimensions.get("window");
 // MainScreen component
 export default function WelcomeScreen(props: any) {
   // Getting the color scheme of the device (light/dark)
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();  
 
   // Creating a reference to the FlatList component
   const flatListRef = useRef<FlatList>(null);
@@ -38,11 +38,12 @@ export default function WelcomeScreen(props: any) {
           height: "100%",
         }}
       >
-        <View className="flex justify-start items-start h-screen">
+        <View className="flex justify-start items-start">
           {/* FlatList to display slides */}
           <FlatList
             ref={flatListRef}
             horizontal
+            style={{height: height > 700 ? height/ 1.1: "auto"}}
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             onScroll={(e) => {
@@ -79,7 +80,6 @@ export default function WelcomeScreen(props: any) {
                   <TouchableOpacity
                     key={e}
                     onPress={() =>
-                      // Scroll to the corresponding slide when a dot is pressed
                       flatListRef.current?.scrollToIndex({
                         animated: true,
                         index: e,
@@ -105,7 +105,6 @@ export default function WelcomeScreen(props: any) {
               className="py-3 px-3"
               onPress={() => {
                 try {
-                  // Scroll to the last slide when the "SKIP" button is pressed
                   flatListRef.current?.scrollToIndex({
                     animated: true,
                     index: 2,

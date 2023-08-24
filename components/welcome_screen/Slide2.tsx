@@ -18,11 +18,15 @@ export default function Slide2() {
             className="text-xl text-center font-semibold"
             style={{ color: Colors[colorScheme ?? "light"].text }}
           >
-           Your Financial Companion.
+            Your Financial Companion.
           </Text>
           <Text
-            className="tracking-wider text-base text-center font-semibold"
-            style={{ color: "#767676" }}
+            className="tracking-wider text-center font-semibold pb-4"
+            style={{
+              color: "#767676",
+              fontSize: height > 690 ? 16 : 15,
+              lineHeight: 24,
+            }}
           >
             Take control of your finances, empowers you to save wisely, budget
             effectively.

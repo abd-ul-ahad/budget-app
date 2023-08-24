@@ -28,17 +28,24 @@ export default function Slide3({ navigation }: any) {
             Sign in to get started.
           </Text>
           <Text
-            className="tracking-wider text-base text-center font-semibold pb-4"
-            style={{ color: "#767676" }}
+            className="tracking-wider text-center font-semibold"
+            style={{
+              color: "#767676",
+              fontSize: height > 690 ? 16 : 15,
+              lineHeight: 24,
+              paddingBottom: height > 690 ? 20 : 8,
+            }}
           >
-            Discover the Budget app, your passport to financial
-            freedom. Make saving a lifestyle, and turn your dreams into
-            reality.
+            Discover the Budget app, your passport to financial freedom. Make
+            saving a lifestyle, and turn your dreams into reality.
           </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate("Login")}
-            className="flex justify-between items-center mt-3 flex-row py-4 rounded-full"
-            style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+            className="flex justify-between items-center flex-row py-4 rounded-full"
+            style={{
+              backgroundColor: Colors[colorScheme ?? "light"].tint,
+              marginBottom: height > 690 ? 10 : 7,
+            }}
           >
             <Entypo
               name="chevron-right"

@@ -2,7 +2,9 @@ import {
   Image,
   Platform,
   Pressable,
+  ScrollView,
   TextInput,
+  Dimensions,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
@@ -16,7 +18,6 @@ import {
   ValPassword,
   ConPassword,
 } from "../constants/Validations";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useSignUp } from "../firebase/useSignUp";
 import { Snackbar } from "react-native-paper";
@@ -25,6 +26,8 @@ import { useFirestore } from "../firebase/useFirestore";
 import { Auth } from "../firebase/init";
 import { useDispatch } from "react-redux";
 import { login } from "../store/slices/userSlice";
+
+const { height } = Dimensions.get("window");
 
 export interface Payload {
   name?: string;
@@ -108,18 +111,26 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
   };
 
   return (
-    <SafeAreaView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
       <View className="space-y-2">
         <View className="flex justify-center items-center pt-10">
           {colorScheme === "light" ? (
             <Image
-              style={{ resizeMode: "contain", width: 280, height: 280 }}
+              style={{
+                resizeMode: "contain",
+                width: height > 690 ? 280 : 250,
+                height: height > 690 ? 280 : 250,
+              }}
               source={require("../assets/images/logo.png")}
             />
           ) : (
             <Image
-              style={{ resizeMode: "contain", width: 280, height: 280 }}
+              style={{
+                resizeMode: "contain",
+                width: height > 690 ? 280 : 250,
+                height: height > 690 ? 280 : 250,
+              }}
               source={require("../assets/images/logo-dark.png")}
             />
           )}
@@ -229,7 +240,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
             Minimum 6 characters
           </Text>
           <View className="space-y-1">
-            <Text className="dark:text-white text-base foInvalid credentialsnt-semibold">
+            <Text className="dark:text-white text-base font-semibold">
               Confirm Password
             </Text>
             <TextInput
@@ -275,7 +286,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
           </Text>
           <Entypo name="chevron-right" size={20} color={"white"} />
         </TouchableOpacity>
-        <View className="flex flex-row justify-center items-center pb-7">
+        <View className="flex flex-row justify-center items-center pb-5">
           <Text>Already registered?</Text>
           <TouchableOpacity
             className="py-2 px-3"
@@ -303,6 +314,6 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
       >
         {toggleSnackbar?.msg}
       </Snackbar>
-    </SafeAreaView>
+    </ScrollView>
   );
 }

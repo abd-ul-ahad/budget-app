@@ -15,6 +15,7 @@ import {
   InputToolbar,
   Bubble,
   MessageContainer,
+  Message,
 } from "react-native-gifted-chat";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -96,7 +97,7 @@ export default function ChatHome(props: any) {
           />
         </TouchableOpacity>
         <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
-          Assistant
+          Chat
         </Text>
       </View>
       <View style={{ flex: 1 }}>
@@ -130,6 +131,17 @@ export default function ChatHome(props: any) {
           }}
           messages={messages}
           onSend={(message) => onSend(message)}
+          renderMessage={(prop) => {
+            return (
+              <Message
+                containerStyle={{
+                  left: { marginBottom: 50 },
+                  right: { marginBottom: 50 },
+                }}
+                {...prop}
+              />
+            );
+          }}
           user={user}
           placeholder={"Whats on your mind?"}
           showUserAvatar={true}

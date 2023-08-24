@@ -4,6 +4,7 @@ import {
   useColorScheme,
   TextInput,
   Image,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
@@ -16,10 +17,11 @@ import { Snackbar } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
+const { height } = Dimensions.get("window");
+
 export default function ForgetPassword(props: any) {
   const colorScheme = useColorScheme();
   const avatar = useSelector((state: RootState) => state.avatar.path);
-  const user = useSelector((state: RootState) => state.user);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [payload, setPayload] = useState<{
@@ -75,12 +77,20 @@ export default function ForgetPassword(props: any) {
             <>
               {colorScheme === "light" ? (
                 <Image
-                  style={{ resizeMode: "contain", width: 280, height: 280 }}
+                  style={{
+                    resizeMode: "contain",
+                    width: height > 690 ? 280 : 250,
+                    height: height > 690 ? 280 : 250,
+                  }}
                   source={require("../../assets/images/logo.png")}
                 />
               ) : (
                 <Image
-                  style={{ resizeMode: "contain", width: 280, height: 280 }}
+                  style={{
+                    resizeMode: "contain",
+                    width: height > 690 ? 280 : 250,
+                    height: height > 690 ? 280 : 250,
+                  }}
                   source={require("../../assets/images/logo-dark.png")}
                 />
               )}
@@ -102,7 +112,7 @@ export default function ForgetPassword(props: any) {
             </TouchableOpacity>
           )}
         </View>
-        <View className="pt-7 px-3">
+        <View className="px-3">
           <View className="space-y-1 scroll-pb-60">
             <Text className="dark:text-white text-lg font-semibold">Email</Text>
             <TextInput
@@ -122,11 +132,11 @@ export default function ForgetPassword(props: any) {
                 opacity: payload.isEmail === false ? 1 : 0,
               }}
             >
-              Invalid Email
+              Invalid email
             </Text>
           </View>
           <TouchableOpacity
-            className="flex justify-between items-center flex-row py-4 rounded-full mt-3"
+            className="flex justify-between items-center flex-row py-4 rounded-full mt-2"
             style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
             onPress={() => handleSubmit()}
           >

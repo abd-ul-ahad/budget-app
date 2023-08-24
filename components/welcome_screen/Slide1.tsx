@@ -21,11 +21,15 @@ export default function Slide1() {
             Welcome to Budget app.
           </Text>
           <Text
-            className="tracking-wider text-base text-center font-semibold"
-            style={{ color: "#767676" }}
+            className="tracking-wider text-center font-semibold pb-4"
+            style={{
+              color: "#767676",
+              fontSize: height > 690 ? 16 : 15,
+              lineHeight: 24,
+            }}
           >
-            Welcome to Budget app. Track your expenses, create budgets, and watch your
-            savings grow, all in one intuitive app.
+            Welcome to Budget app. Track your expenses, create budgets, and
+            watch your savings grow, all in one intuitive app.
           </Text>
         </View>
       </View>

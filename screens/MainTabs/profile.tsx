@@ -1,6 +1,7 @@
 import {
   Image,
   ScrollView,
+  Dimensions,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
@@ -22,9 +23,9 @@ import { hideUsername } from "../Modify/EditProfile";
 import { useFirestore } from "../../firebase/useFirestore";
 import getLevelInfo, { calculateTotalAmount } from "../../gamification/utils";
 import { setLevel } from "../../store/slices/levelSlice";
-import { setAvatar } from "../../store/slices/avatarSlice";
-import { Avatars } from "../../gamification/Avatars/_Paths";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
+
+const { height } = Dimensions.get("screen");
 
 export default function Profile(props: any) {
   const user = useSelector((state: RootState) => state.user);
@@ -40,10 +41,6 @@ export default function Profile(props: any) {
 
   //
   const { getDocument } = useFirestore("savings", user.uid!);
-  const { getDocument: getGamification, addDocument } = useFirestore(
-    "gamification",
-    user.uid!
-  );
 
   //
   const [levelInfo, setLevelInfo] = useState<{
@@ -98,8 +95,8 @@ export default function Profile(props: any) {
         }}
       >
         <View className="flex justify-center items-center pt-2">
-          <View className="flex mb-3 justify-between flex-row items-center w-full">
-            <Text className="text-2xl font-semibold py-4 tracking-wider pl-4">
+          <View className="flex mb-1 justify-between flex-row items-center w-full">
+            <Text className="text-2xl font-semibold py-2 tracking-wider pl-4">
               Profile
             </Text>
             <TouchableOpacity
@@ -120,7 +117,7 @@ export default function Profile(props: any) {
             </View>
             <TouchableOpacity
               onPress={() => props.navigation.navigate("Gamification")}
-              className="flex pl-6 space-x-6 mb-5 flex-row justify-start items-center"
+              className="flex pl-10 space-x-6 mb-5 flex-row justify-start items-center"
             >
               <View className="relative">
                 <Image
@@ -163,7 +160,7 @@ export default function Profile(props: any) {
             </TouchableOpacity>
             <View className="w-full">
               <TouchableOpacity
-                className="pl-6 py-3 flex flex-row w-full justify-start items-center"
+                className="pl-10 py-3 flex flex-row w-full justify-start items-center"
                 onPress={() => props.navigation.navigate("Currency")}
               >
                 <Text className="font-semibold pr-3 tracking-wider text-base">
@@ -174,7 +171,7 @@ export default function Profile(props: any) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="pl-6 py-3 flex flex-row w-full justify-start items-center"
+                className="pl-10 py-3 flex flex-row w-full justify-start items-center"
                 onPress={() => setToggleSnackbar(true)}
               >
                 <MaterialCommunityIcons name="logout" size={17} color="black" />
@@ -201,7 +198,7 @@ export default function Profile(props: any) {
                 </Text>
               </View>
               <TouchableOpacity
-                className="pl-6 py-3 flex w-full justify-start items-start"
+                className="pl-10 py-3 flex w-full justify-start items-start"
                 onPress={() => props.navigation.navigate("Savings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
@@ -209,7 +206,7 @@ export default function Profile(props: any) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="pl-6 py-3 flex w-full justify-start items-start"
+                className="pl-10 py-3 flex w-full justify-start items-start"
                 onPress={() => props.navigation.navigate("GoalBasedSavings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
@@ -217,7 +214,7 @@ export default function Profile(props: any) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="pl-6 py-3 flex w-full justify-start items-start"
+                className="pl-10 py-3 flex w-full justify-start items-start"
                 onPress={() => props.navigation.navigate("DailySavings")}
               >
                 <Text className="font-semibold tracking-wider text-base">
@@ -225,7 +222,7 @@ export default function Profile(props: any) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className="pl-6 py-3 flex w-full justify-start items-start"
+                className="pl-10 py-3 flex w-full justify-start items-start"
                 onPress={() => props.navigation.navigate("FinancialHome")}
               >
                 <Text className="font-semibold tracking-wider text-base">
@@ -252,7 +249,7 @@ export default function Profile(props: any) {
               </Text>
             </View>
             <TouchableOpacity
-              className="pl-6 py-3 flex flex-row justify-start items-center"
+              className="pl-10 py-3 flex flex-row justify-start items-center"
               onPress={() => props.navigation.navigate("ChatHome")}
             >
               <MaterialIcons name="chat" size={17} color="black" />
@@ -262,7 +259,7 @@ export default function Profile(props: any) {
             </TouchableOpacity>
           </View>
         </View>
-        <View className="pt-8 flex flex-row justify-center items-center">
+        <View className="py-8 flex flex-row justify-center items-center">
           <Text
             className="font-semibold tracking-wider pr-1"
             style={{ color: "#767676" }}
