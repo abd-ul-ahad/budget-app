@@ -4,6 +4,7 @@ import { Entypo } from "@expo/vector-icons";
 import {
   Dimensions,
   Image,
+  ScrollView,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
@@ -13,7 +14,7 @@ const { width, height } = Dimensions.get("window");
 export default function Slide3({ navigation }: any) {
   const colorScheme = useColorScheme();
   return (
-    <>
+    <ScrollView>
       <View className="flex justify-start items-center">
         <Image
           style={{ width, height: height / 1.7, resizeMode: "stretch" }}
@@ -52,6 +53,6 @@ export default function Slide3({ navigation }: any) {
           </TouchableOpacity>
         </View>
       </View>
-    </>
+    </ScrollView>
   );
 }

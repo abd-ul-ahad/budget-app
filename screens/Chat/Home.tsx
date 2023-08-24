@@ -135,9 +135,24 @@ export default function ChatHome(props: any) {
           showUserAvatar={true}
           showAvatarForEveryMessage={true}
           renderInputToolbar={renderInputToolbar}
-          renderSend={() => {
+          renderSend={(prop) => {
+            const { text, onSend } = prop;
+
             return (
-              <TouchableOpacity className="px-3 py-2">
+              <TouchableOpacity
+                onPress={() => {
+                  if (text && onSend) {
+                    onSend(
+                      {
+                        text: text.trim(),
+                        user: user,
+                      },
+                      true
+                    );
+                  }
+                }}
+                className="px-3 py-2"
+              >
                 <FontAwesome
                   name="send"
                   size={24}
