@@ -47,8 +47,10 @@ const Hero = ({ currentBalance, navigation }: any) => {
             >
               <Feather name="bell" size={24} color="white" />
             </TouchableOpacity>
-            <View className="flex justify-start items-start w-full space-y-2">
-              <Text className="text-white text-xl">My Balance</Text>
+            <View className="flex justify-center items-center w-full space-y-2">
+              <Text className="text-white text-xl">
+                My Balance
+              </Text>
               <FlatList
                 data={[currentBalance || 0]}
                 horizontal
