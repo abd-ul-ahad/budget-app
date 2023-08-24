@@ -19,7 +19,7 @@ import { useLogin } from "../firebase/useLogin";
 import { Snackbar } from "react-native-paper";
 import { triggerNotifications } from "../utils/Notifications";
 
-const { height } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 
 interface Payload {
   email?: string;
@@ -86,17 +86,17 @@ export default function Login({
     <ScrollView showsVerticalScrollIndicator={false}>
       <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
 
-      <View>
+      <View className="px-2">
         <View
           className="flex justify-center items-center"
-          style={{ paddingTop: height > 690 ? 100 : 70 }}
+          style={{ paddingTop: height > 690 ? 100 : height < 630 ? 50 : 70 }}
         >
           {colorScheme === "light" ? (
             <Image
               style={{
                 resizeMode: "contain",
-                width: height > 690 ? 280 : 250,
-                height: height > 690 ? 280 : 250,
+                width: height > 690 ? 280 : height < 630 ? 220 : 250,
+                height: height > 690 ? 280 : height < 630 ? 220 : 250,
               }}
               source={require("../assets/images/logo.png")}
             />
@@ -104,8 +104,8 @@ export default function Login({
             <Image
               style={{
                 resizeMode: "contain",
-                width: height > 690 ? 280 : 250,
-                height: height > 690 ? 280 : 250,
+                width: height > 690 ? 280 : height < 630 ? 220 : 250,
+                height: height > 690 ? 280 : height < 630 ? 220 : 250,
               }}
               source={require("../assets/images/logo-dark.png")}
             />

@@ -79,11 +79,11 @@ export default function Spending(props: any) {
         }
       >
         {/* Header */}
-        <View className="pt-2 flex justify-center items-start">
-          <View className="pt-2 flex justify-between flex-row items-center w-full">
+        <View className="pt-1 flex justify-center items-start">
+          <View className="flex justify-between flex-row items-center w-full">
             {/* Back button */}
             <TouchableOpacity
-              className="py-4 px-2"
+              className="py-2 px-2"
               onPress={() => props.navigation.goBack()}
             >
               <Ionicons
@@ -94,7 +94,7 @@ export default function Spending(props: any) {
             </TouchableOpacity>
             {/* Notification icon */}
             <TouchableOpacity
-              className="py-4 px-4"
+              className="py-2 px-4"
               onPress={() => props.navigation.navigate("Notifications")}
             >
               <Feather
@@ -105,7 +105,7 @@ export default function Spending(props: any) {
             </TouchableOpacity>
           </View>
           {/* Title */}
-          <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">
+          <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-1">
             Spending
           </Text>
           {/* Line Graph */}

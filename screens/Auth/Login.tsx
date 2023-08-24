@@ -58,7 +58,7 @@ export default function LoginScreen(props: any) {
             // Render each item in the FlatList
             renderItem={({ item }) => (
               <View
-                className="flex-1 justify-end items-center px-6"
+                className="flex-1 justify-end items-center px-2"
                 style={styles.itemWrapper}
               >
                 {item.e}
@@ -75,7 +75,7 @@ export default function LoginScreen(props: any) {
 // Styles for the component
 const styles = StyleSheet.create({
   itemWrapper: {
-    width,
+    width: width,
     height,
   },
 });

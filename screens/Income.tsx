@@ -74,10 +74,10 @@ export default function Income(props: any) {
           {/* A container View with some flex styles */}
           <View className="pt-2 flex justify-center items-start">
             {/* Container with flex styles to position elements */}
-            <View className="pt-2 flex justify-between flex-row items-center w-full">
+            <View className="flex justify-between flex-row items-center w-full">
               {/* TouchableOpacity with a back button, triggering the "router.back()" function */}
               <TouchableOpacity
-                className="py-4 px-2"
+                className="py-2 px-2"
                 onPress={() => props.navigation.goBack()}
               >
                 <Ionicons
@@ -88,7 +88,7 @@ export default function Income(props: any) {
               </TouchableOpacity>
               {/* TouchableOpacity with a bell icon */}
               <TouchableOpacity
-                className="py-4 px-4"
+                className="py-2 px-4"
                 onPress={() => props.navigation.navigate("Notifications")}
               >
                 <Feather
@@ -99,7 +99,7 @@ export default function Income(props: any) {
               </TouchableOpacity>
             </View>
             {/* Text displaying the title "Income" */}
-            <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-4">
+            <Text className="text-xl font-semibold tracking-wider text-start w-full pl-2 py-2">
               Income
             </Text>
             {/* Render the LineGraph component */}

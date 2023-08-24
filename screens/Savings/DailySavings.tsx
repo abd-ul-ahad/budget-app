@@ -101,7 +101,7 @@ export default function DailySavings(props: any) {
       >
         <View className="flex-row flex mt-2 justify-start items-center">
           <TouchableOpacity
-            className="py-4 px-3"
+            className="py-2 px-3"
             onPress={() => props.navigation.goBack()}
           >
             <Ionicons
@@ -110,7 +110,7 @@ export default function DailySavings(props: any) {
               color={Colors[colorScheme ?? "light"].text}
             />
           </TouchableOpacity>
-          <Text className="text-2xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
+          <Text className="text-2xl flex-1 pl-3 font-bold tracking-wider text-start py-2">
             Daily savings
           </Text>
         </View>

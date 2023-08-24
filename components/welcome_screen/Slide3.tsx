@@ -17,7 +17,11 @@ export default function Slide3({ navigation }: any) {
     <ScrollView>
       <View className="flex justify-start items-center">
         <Image
-          style={{ width, height: height / 1.7, resizeMode: "stretch" }}
+          style={{
+            width,
+            height: height < 630 ? height / 1.9 : height / 1.7,
+            resizeMode: "stretch",
+          }}
           source={require("../../assets/images/slide3.jpg")}
         />
         <View className="mt-4 space-y-2 px-3">

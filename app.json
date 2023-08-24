@@ -14,10 +14,11 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.budgetapp.mob"
     },
     "android": {
+      "supportsTablet": false,
       "googleServicesFile": "google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",

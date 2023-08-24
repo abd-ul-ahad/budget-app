@@ -113,7 +113,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <StatusBar style={Platform.OS === "ios" ? "light" : "dark"} />
-      <View className="space-y-2">
+      <View className="space-y-2 px-2">
         <View className="flex justify-center items-center pt-10">
           {colorScheme === "light" ? (
             <Image

@@ -10,7 +10,11 @@ export default function Slide1() {
     <>
       <View className="flex justify-start items-center">
         <Image
-          style={{ width, height: height / 1.7, resizeMode: "cover" }}
+          style={{
+            width,
+            height: height < 630 ? height / 1.9 : height / 1.7,
+            resizeMode: "cover",
+          }}
           source={require("../../assets/images/slide1.jpg")}
         />
         <View className="space-y-2 mt-4 px-3">

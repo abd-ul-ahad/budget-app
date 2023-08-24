@@ -18,11 +18,10 @@ import { ScrollView } from "react-native";
 
 // Getting the device width
 const { width, height } = Dimensions.get("window");
-
 // MainScreen component
 export default function WelcomeScreen(props: any) {
   // Getting the color scheme of the device (light/dark)
-  const colorScheme = useColorScheme();  
+  const colorScheme = useColorScheme();
 
   // Creating a reference to the FlatList component
   const flatListRef = useRef<FlatList>(null);
@@ -43,7 +42,14 @@ export default function WelcomeScreen(props: any) {
           <FlatList
             ref={flatListRef}
             horizontal
-            style={{height: height > 700 ? height/ 1.1: "auto"}}
+            style={{
+              height:
+                height > 700
+                  ? height / 1.1
+                  : height < 620
+                  ? height / 1.14
+                  : "auto",
+            }}
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             onScroll={(e) => {

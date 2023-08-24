@@ -79,8 +79,8 @@ export default function ForgetPassword(props: any) {
                 <Image
                   style={{
                     resizeMode: "contain",
-                    width: height > 690 ? 280 : 250,
-                    height: height > 690 ? 280 : 250,
+                    width: height > 690 ? 280 : height < 630 ? 220 : 250,
+                    height: height > 690 ? 280 : height < 630 ? 220 : 250,
                   }}
                   source={require("../../assets/images/logo.png")}
                 />
@@ -88,8 +88,8 @@ export default function ForgetPassword(props: any) {
                 <Image
                   style={{
                     resizeMode: "contain",
-                    width: height > 690 ? 280 : 250,
-                    height: height > 690 ? 280 : 250,
+                    width: height > 690 ? 280 : height < 630 ? 220 : 250,
+                    height: height > 690 ? 280 : height < 630 ? 220 : 250,
                   }}
                   source={require("../../assets/images/logo-dark.png")}
                 />
@@ -136,8 +136,11 @@ export default function ForgetPassword(props: any) {
             </Text>
           </View>
           <TouchableOpacity
-            className="flex justify-between items-center flex-row py-4 rounded-full mt-2"
-            style={{ backgroundColor: Colors[colorScheme ?? "light"].tint }}
+            className="flex justify-between items-center flex-row rounded-full mt-2"
+            style={{
+              backgroundColor: Colors[colorScheme ?? "light"].tint,
+              paddingVertical: height > 690 ? 20 : height > 630 ? 18 : 14,
+            }}
             onPress={() => handleSubmit()}
           >
             <Entypo

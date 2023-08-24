@@ -222,7 +222,7 @@ export default function Gamification(props: any) {
           </View>
         </View>
         {/* name / passwrod */}
-        <View className="pt-10">
+        <View className="py-10">
           <TouchableOpacity
             className="pl-4 py-4 flex w-full justify-start items-start"
             onPress={() => props.navigation.navigate("EditProfile")}

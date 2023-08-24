@@ -73,9 +73,9 @@ export default function Notifications(props: any) {
     <SafeAreaView>
       <ScrollView>
         <View className="flex-1 justify-start items-center pb-7">
-          <View className="w-full flex flex-row justify-start items-center pt-4">
+          <View className="w-full flex flex-row justify-start items-center pt-2">
             <TouchableOpacity
-              className="py-4 px-3"
+              className="py-1 px-3"
               onPress={() => props.navigation.goBack()}
             >
               <Ionicons
@@ -84,7 +84,7 @@ export default function Notifications(props: any) {
                 color={Colors[colorScheme ?? "light"].text}
               />
             </TouchableOpacity>
-            <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
+            <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-1">
               Saving strategies
             </Text>
           </View>
