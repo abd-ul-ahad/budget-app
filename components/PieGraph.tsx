@@ -35,12 +35,28 @@ export const PieGraph = ({
 
     transactions?.forEach((transaction) => {
       if (transaction._data.category !== "#income") {
-        if (transaction._data.category in categoryExpenses) {
-          categoryExpenses[transaction._data.category] +=
-            transaction._data.amount;
-        } else {
-          categoryExpenses[transaction._data.category] =
-            transaction._data.amount;
+        // handling plans
+        if (
+          transaction._data.plan != "no-plan" &&
+          transaction._data.plan.trim().length > 0
+        ) {
+          if (transaction._data.plan in categoryExpenses) {
+            categoryExpenses[transaction._data.plan] +=
+              transaction._data.amount;
+          } else {
+            categoryExpenses[transaction._data.plan] = transaction._data.amount;
+          }
+        }
+
+        //
+        if (transaction._data.category.trim().length > 0) {
+          if (transaction._data.category in categoryExpenses) {
+            categoryExpenses[transaction._data.category] +=
+              transaction._data.amount;
+          } else {
+            categoryExpenses[transaction._data.category] =
+              transaction._data.amount;
+          }
         }
       }
     });
@@ -48,7 +64,7 @@ export const PieGraph = ({
     const expenseSummary = Object.keys(categoryExpenses).map((category) => ({
       name: category,
       expense: categoryExpenses[category],
-      color: getRandomColor(),
+      color: getNextColor(),
       legendFontColor: "#7F7F7F",
       legendFontSize: 13,
     }));
@@ -83,17 +99,31 @@ const data = [
   {
     name: "No Expense",
     expense: 100,
-    color: "rgba(131, 167, 234, 1)",
+    color: "#50c878",
     legendFontColor: "#7F7F7F",
     legendFontSize: 13,
   },
 ];
 
-function getRandomColor() {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
+let currentIndex = 0;
+
+function getNextColor() {
+  if (currentIndex >= colorCodes.length) {
+    currentIndex = 0; // Reset to the beginning when all colors have been shown
   }
+
+  const color = colorCodes[currentIndex];
+  currentIndex++;
   return color;
 }
+
+const colorCodes = [
+  "#50c878",
+  "#00a86b",
+  "#004225",
+  "#77dd77",
+  "#40826d",
+  "#addfad",
+  "#29ab87",
+  "#21421e",
+];
