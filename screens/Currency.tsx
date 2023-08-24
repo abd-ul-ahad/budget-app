@@ -7,6 +7,7 @@ import {
   RefreshControl,
   TextInput,
   Pressable,
+  Dimensions,
 } from "react-native";
 import { View, Text } from "../components/Themed";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -19,13 +20,17 @@ import { reload } from "../store/slices/reloadSlice";
 import { triggerNotifications } from "../utils/Notifications";
 import { setCurrency } from "../store/slices/currencySlice";
 
+const height = Dimensions.get("window").height;
+
 export default function Currency(props: any) {
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   const user = useSelector((state: RootState) => state.user);
 
   //
-  const [currenciesCodes, setCurrenciesCodes] = useState<Array<string> | null>(null);
+  const [currenciesCodes, setCurrenciesCodes] = useState<Array<string> | null>(
+    null
+  );
   const [selectedCode, setSelectedCode] = useState<string>("");
   const [refresh, setRefresh] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
@@ -101,11 +106,14 @@ export default function Currency(props: any) {
           >
             <Ionicons
               name="chevron-back-sharp"
-              size={26}
+              size={height > 630 ? 26 : 20}
               color={Colors[colorScheme ?? "light"].text}
             />
           </TouchableOpacity>
-          <Text className="text-2xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
+          <Text
+            style={{ fontSize: 20 }}
+            className="flex-1 pl-3 font-bold tracking-wider text-start py-4"
+          >
             Currency
           </Text>
         </View>

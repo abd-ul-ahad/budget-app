@@ -3,6 +3,7 @@ import {
   SafeAreaView,
   TextInput,
   useColorScheme,
+  Dimensions,
 } from "react-native";
 import WaveChart from "../../components/WaveChart";
 import Colors from "../../constants/Colors";
@@ -20,6 +21,8 @@ import calculateSavingsByMonth from "../../utils/Savings";
 import { reload } from "../../store/slices/reloadSlice";
 import RenderAmount from "../../components/RenderAmount";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
+
+const height = Dimensions.get("window").height;
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
@@ -128,11 +131,14 @@ export default function Savings(props: any) {
           >
             <Ionicons
               name="chevron-back-sharp"
-              size={26}
+              size={height > 630 ? 26 : 20}
               color={Colors[colorScheme ?? "light"].text}
             />
           </TouchableOpacity>
-          <Text className="text-2xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
+          <Text
+            style={{ fontSize: 20 }}
+            className="flex-1 pl-3 font-bold tracking-wider text-start py-4"
+          >
             Savings
           </Text>
         </View>

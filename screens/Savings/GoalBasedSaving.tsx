@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
 
+const height = Dimensions.get("window").height;
 export default function Notifications(props: any) {
   const colorScheme = useColorScheme();
   const code = useSelector((state: RootState) => state.currency.code);
@@ -80,11 +81,14 @@ export default function Notifications(props: any) {
             >
               <Ionicons
                 name="chevron-back-sharp"
-                size={26}
+                size={height > 630 ? 26 : 20}
                 color={Colors[colorScheme ?? "light"].text}
               />
             </TouchableOpacity>
-            <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-1">
+            <Text
+              style={{ fontSize: 20 }}
+              className="flex-1 pl-3 font-bold tracking-wider text-start py-1"
+            >
               Saving strategies
             </Text>
           </View>

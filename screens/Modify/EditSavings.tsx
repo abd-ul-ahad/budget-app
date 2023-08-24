@@ -1,4 +1,4 @@
-import { ScrollView, TextInput, useColorScheme } from "react-native";
+import { ScrollView, TextInput, useColorScheme, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native";
@@ -11,9 +11,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Snackbar } from "react-native-paper";
 import { reload } from "../../store/slices/reloadSlice";
 import { triggerNotifications } from "../../utils/Notifications";
-import { OnlyNumbers } from "../../constants/Validations";
 import RenderAmount from "../../components/RenderAmount";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
+
+const height = Dimensions.get("window").height;
 
 export default function EditSavings(props: any) {
   const colorScheme = useColorScheme();
@@ -106,11 +107,11 @@ export default function EditSavings(props: any) {
             >
               <Ionicons
                 name="chevron-back-sharp"
-                size={26}
+                size={height > 630 ? 26 : 20}
                 color={Colors[colorScheme ?? "light"].text}
               />
             </TouchableOpacity>
-            <Text className="text-xl pl-3 font-bold tracking-wider text-start py-4">
+            <Text style={{ fontSize: 20 }} className="pl-3 font-bold tracking-wider text-start py-4">
               Update saving
             </Text>
           </View>

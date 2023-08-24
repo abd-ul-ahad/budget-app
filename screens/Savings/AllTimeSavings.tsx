@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, useColorScheme } from "react-native";
+import { RefreshControl, ScrollView, useColorScheme, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native";
@@ -9,6 +9,8 @@ import { useFirestore } from "../../firebase/useFirestore";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { Single } from "../../components/Savings";
+
+const height = Dimensions.get("window").height;
 
 export default function AllTimeSavings(props: any) {
   const colorScheme = useColorScheme();
@@ -52,11 +54,11 @@ export default function AllTimeSavings(props: any) {
           >
             <Ionicons
               name="chevron-back-sharp"
-              size={26}
+              size={height > 630 ? 26 : 20}
               color={Colors[colorScheme ?? "light"].text}
             />
           </TouchableOpacity>
-          <Text className="text-2xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
+          <Text style={{ fontSize: 20 }} className="flex-1 pl-3 font-bold tracking-wider text-start py-4">
             Savings
           </Text>
         </View>

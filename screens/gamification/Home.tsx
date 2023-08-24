@@ -61,9 +61,9 @@ export default function Gamification(props: any) {
         }}
       >
         {/* header */}
-        <View className="w-full flex flex-row justify-start items-center pt-4">
+        <View className="w-full flex flex-row justify-start items-center">
           <TouchableOpacity
-            className="py-4 px-3"
+            className="py-2 px-3"
             onPress={() => props.navigation.goBack()}
           >
             <Ionicons
@@ -72,7 +72,7 @@ export default function Gamification(props: any) {
               color={Colors[colorScheme ?? "light"].text}
             />
           </TouchableOpacity>
-          <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
+          <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-2">
             Profile
           </Text>
         </View>

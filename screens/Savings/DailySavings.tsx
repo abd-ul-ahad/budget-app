@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -14,6 +15,8 @@ import { RootState } from "../../store";
 import { useState, useEffect } from "react";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const height = Dimensions.get("window").height;
 
 export default function DailySavings(props: any) {
   const colorScheme = useColorScheme();
@@ -106,16 +109,19 @@ export default function DailySavings(props: any) {
           >
             <Ionicons
               name="chevron-back-sharp"
-              size={26}
+              size={height > 630 ? 26 : 20}
               color={Colors[colorScheme ?? "light"].text}
             />
           </TouchableOpacity>
-          <Text className="text-2xl flex-1 pl-3 font-bold tracking-wider text-start py-2">
+          <Text
+            style={{ fontSize: 20 }}
+            className="flex-1 pl-3 font-bold tracking-wider text-start py-2"
+          >
             Daily savings
           </Text>
         </View>
         <View>
-          <View className="w-full pt-8 pb-16 space-y-1">
+          <View style={{ paddingVertical: 50 }} className="w-full space-y-1">
             <Text className="px-4 font-bold text-3xl w-full text-center tracking-widest">
               <RenderAmount amount={balances.currentBalance || 0} />
             </Text>
@@ -130,24 +136,30 @@ export default function DailySavings(props: any) {
             {/*  */}
             <View className="flex flex-row justify-between items-center">
               <Text
-                style={{ color: "#767676" }}
-                className="dark:text-white text-start text-xl font-semibold"
+                style={{ color: "#767676", fontSize: height > 630 ? 19 : 17 }}
+                className="dark:text-white text-start font-semibold"
               >
                 Daily
               </Text>
-              <Text className="px-4 font-bold text-xl text-center tracking-widest">
+              <Text
+                style={{ fontSize: height > 630 ? 19 : 17 }}
+                className="px-4 font-bold text-center tracking-widest"
+              >
                 <RenderAmount amount={+(daily || 0).toFixed(2) || 0} />
               </Text>
             </View>
             {/*  */}
             <View className="flex flex-row justify-between items-center">
               <Text
-                style={{ color: "#767676" }}
-                className="dark:text-white text-start text-xl font-semibold"
+                style={{ color: "#767676", fontSize: height > 630 ? 19 : 17 }}
+                className="dark:text-white text-start font-semibold"
               >
                 Weekly
               </Text>
-              <Text className="px-4 font-bold text-xl text-center tracking-widest">
+              <Text
+                style={{ fontSize: height > 630 ? 19 : 17 }}
+                className="px-4 font-bold text-center tracking-widest"
+              >
                 <RenderAmount amount={+(weekly || 0).toFixed(2) || 0} />
               </Text>
             </View>
@@ -155,23 +167,29 @@ export default function DailySavings(props: any) {
           <View className="pt-3 px-5 space-y-3">
             <View className="flex flex-row justify-between items-center">
               <Text
-                style={{ color: "#767676" }}
-                className="dark:text-white text-start text-xl font-semibold"
+                style={{ color: "#767676", fontSize: height > 630 ? 19 : 17 }}
+                className="dark:text-white text-start font-semibold"
               >
                 Daily saving
               </Text>
-              <Text className="px-4 font-bold text-xl text-center tracking-widest">
+              <Text
+                style={{ fontSize: height > 630 ? 19 : 17 }}
+                className="px-4 font-bold text-center tracking-widest"
+              >
                 <RenderAmount amount={+(dailySaving || 0).toFixed(2) || 0} />
               </Text>
             </View>
             <View className="flex flex-row justify-between items-center">
               <Text
-                style={{ color: "#767676" }}
-                className="dark:text-white text-start text-xl font-semibold"
+                style={{ color: "#767676", fontSize: height > 630 ? 19 : 17 }}
+                className="dark:text-white text-start font-semibold"
               >
                 Weekly saving
               </Text>
-              <Text className="px-4 font-bold text-xl text-center tracking-widest">
+              <Text
+                style={{ fontSize: height > 630 ? 19 : 17 }}
+                className="px-4 font-bold text-center tracking-widest"
+              >
                 <RenderAmount amount={+(weeklySaving || 0).toFixed(2) || 0} />
               </Text>
             </View>
@@ -208,10 +226,14 @@ export default function DailySavings(props: any) {
             </TouchableOpacity>
           </View>
         </View>
-        <View className="px-5 pt-5 pb-3">
+        <View className="px-5 pt-5 pb-10">
           <Text
-            style={{ color: "#767676" }}
-            className="dark:text-white w-full text-center text-lg font-semibold pb-1 px-3"
+            style={{
+              color: "#767676",
+              fontSize: height > 630 ? 19 : 16,
+              lineHeight: height > 630 ? 30 : 25,
+            }}
+            className="dark:text-white w-full text-center font-semibold pb-1 px-3"
           >
             By consistently saving {saveAmount}% each day, you can accumulate
             savings of{" "}
