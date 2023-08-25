@@ -37,6 +37,7 @@ export default function DailySavings(props: any) {
 
   const load = async () => {
     try {
+      setDaily(balances.currentBalance / 30);
       let value = await AsyncStorage.getItem(
         "savings-budget-app" + user.uid?.slice(0, 7)
       );
@@ -72,9 +73,10 @@ export default function DailySavings(props: any) {
     try {
       if (+saveAmount >= 0 && +saveAmount <= 100) {
         const per = ((balances.currentBalance / 30) * +saveAmount) / 100;
+
         setDailySaving(per);
         setWeekly((balances.currentBalance / 30 - per) * 7);
-        daily != undefined && setDaily(daily - per);
+        daily != undefined && setDaily(balances.currentBalance / 30 - per);
         setWeeklySaving(per * 7);
 
         if (daily != undefined) {

@@ -1,30 +1,34 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import {
-  ScrollView,
   useColorScheme,
   TouchableOpacity,
   StyleSheet,
+  Image,
+  Dimensions,
 } from "react-native";
 import { Text, View } from "../../components/Themed";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Colors from "../../constants/Colors";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import {
   GiftedChat,
   InputToolbar,
   Bubble,
-  MessageContainer,
   Message,
 } from "react-native-gifted-chat";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+
+const width = Dimensions.get("window").width;
+
 const CHAT_GPT_API_KEY = "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";
 
 export default function ChatHome(props: any) {
   const [messages, setMessages] = useState<any>([]);
   const avatar = useSelector((state: RootState) => state.avatar.path);
   const colorScheme = useColorScheme();
+
+  const [replyReady, setReplyReady] = useState<boolean | null>(null);
 
   const sendMessage = async (message: string) => {
     try {
@@ -54,6 +58,7 @@ export default function ChatHome(props: any) {
   };
 
   const onSend = async (newMessages: any = []) => {
+    setReplyReady(false);
     setMessages((prev: any) => GiftedChat.append(prev, newMessages));
 
     const response = await sendMessage(newMessages[0].text);
@@ -71,6 +76,7 @@ export default function ChatHome(props: any) {
     ];
 
     setMessages((prev: any) => GiftedChat.append(prev, chatMessage));
+    setReplyReady(true);
   };
 
   const user = {
@@ -96,17 +102,32 @@ export default function ChatHome(props: any) {
             color={Colors[colorScheme ?? "light"].text}
           />
         </TouchableOpacity>
-        <Text className="text-xl flex-1 pl-3 font-bold tracking-wider text-start py-4">
+        <Text className="text-xl pl-3 font-bold tracking-wider text-start py-4">
           Chat
         </Text>
+        <View className="pl-24 relative top-3">
+          <Image
+            className="rounded-full"
+            style={{
+              width: 35,
+              height: 35,
+              resizeMode: "stretch",
+              left: width / 2 - 215,
+              opacity: replyReady === false ? 1 : 0,
+            }}
+            source={require("../../assets/dots-loading.gif")}
+          />
+        </View>
       </View>
+
       <View style={{ flex: 1 }}>
         <GiftedChat
-          // listViewProps={{
-          //   style: {
-          //     backgroundColor: "purple",
-          //   },
-          // }}
+          listViewProps={{
+            style: {
+              backgroundColor:
+                Colors[colorScheme ?? "light"].secondaryBackground,
+            },
+          }}
           renderBubble={(props) => {
             return (
               <Bubble
@@ -131,17 +152,16 @@ export default function ChatHome(props: any) {
           }}
           messages={messages}
           onSend={(message) => onSend(message)}
-          renderMessage={(prop) => {
-            return (
-              <Message
-                containerStyle={{
-                  left: { marginBottom: 50 },
-                  right: { marginBottom: 50 },
-                }}
-                {...prop}
-              />
-            );
-          }}
+          onPressAvatar={() => props.navigation.navigate("Gamification")}
+          renderMessage={(prop) => (
+            <Message
+              containerStyle={{
+                left: { marginBottom: 50 },
+                right: { marginBottom: 50 },
+              }}
+              {...prop}
+            />
+          )}
           user={user}
           placeholder={"Whats on your mind?"}
           showUserAvatar={true}

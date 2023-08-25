@@ -15,7 +15,6 @@ import { isValidOrFutureDate } from "../../utils/FormatDate";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import getCurrencySymbol from "../../utils/CurrencySymbols";
 
 const height = Dimensions.get("window").height;
 export default function Notifications(props: any) {
@@ -59,7 +58,7 @@ export default function Notifications(props: any) {
 
       // calculating.
       let percentage = suggestSavingsPercentage(date, +amount, +income);
-      let daily = suggestDailySavings(date, +amount, +income, code);
+      let daily = suggestDailySavings(+amount, +income, date, code);
 
       setResult({ daily, percentage });
       triggerNotifications("Strategies", daily);
@@ -213,33 +212,28 @@ export default function Notifications(props: any) {
 }
 
 function suggestDailySavings(
+  targetAmount: number,
+  income: number,
   targetDate: string,
-  amount: number,
-  monthlyIncome: number,
   code: string
 ): string {
-  const target = new Date(targetDate);
   const currentDate = new Date();
+  const endDate = new Date(targetDate);
+
+  if (endDate <= currentDate) {
+    throw new Error("Target date should be in the future.");
+  }
 
   const daysRemaining = Math.ceil(
-    (Number(target) - Number(currentDate)) / (1000 * 60 * 60 * 24)
+    (endDate.getTime() - currentDate.getTime()) / (1000 * 3600 * 24)
   );
 
   if (daysRemaining <= 0) {
-    return "You've already saved enough for this goal!";
+    throw new Error("Target date should be in the future.");
   }
 
-  const monthsRemaining =
-    (target.getFullYear() - currentDate.getFullYear()) * 12 +
-    target.getMonth() -
-    currentDate.getMonth();
-
-  const totalSavingsRequired = amount - monthlyIncome * monthsRemaining;
-  const dailySavingsRequired = totalSavingsRequired / daysRemaining;
-
-  return `You should aim to save ${dailySavingsRequired.toFixed(
-    2
-  )} ${getCurrencySymbol(code)} every day.`;
+  const dailySavings = targetAmount / daysRemaining;
+  return `${(dailySavings || 0).toFixed(2)} ${code}`;
 }
 
 function suggestSavingsPercentage(
