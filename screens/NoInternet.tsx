@@ -14,7 +14,7 @@ export default function NoInternet() {
   return (
     <SafeAreaView>
       <StatusBar style="dark" />
-      <View className="flex-1">
+      <View>
         <View className="flex justify-center items-center">
           <Image
             style={{
