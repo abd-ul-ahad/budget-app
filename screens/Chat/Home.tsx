@@ -38,7 +38,7 @@ export default function ChatHome(props: any) {
           messages: [
             {
               role: "user",
-              content: message,
+              content: `Reply this according to finance, budget, savings and other similar topics (${message})`,
             },
           ],
           model: "gpt-3.5-turbo",
