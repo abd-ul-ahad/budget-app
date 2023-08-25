@@ -3,6 +3,7 @@ import {
   SafeAreaView,
   TextInput,
   useColorScheme,
+  Image,
   Dimensions,
 } from "react-native";
 import WaveChart from "../../components/WaveChart";
@@ -144,7 +145,16 @@ export default function Savings(props: any) {
         </View>
 
         {/*  */}
-        <View className="w-full py-8 space-y-1">
+        <View className="w-full pb-8 space-y-1 flex flex-col justify-center items-center">
+          <Image
+            className="rounded-full"
+            style={{
+              width: 120,
+              height: 120,
+              resizeMode: "stretch",
+            }}
+            source={require("../../assets/money_bag.gif")}
+          />
           <Text className="px-4 font-bold text-3xl w-full text-center tracking-widest">
             <RenderAmount amount={currentMonthSavings.totalSavings || 0} />
           </Text>

@@ -141,7 +141,7 @@ export default function DailySavings(props: any) {
                 style={{ color: "#767676", fontSize: height > 630 ? 19 : 17 }}
                 className="dark:text-white text-start font-semibold"
               >
-                Daily
+                Allow to spend a day
               </Text>
               <Text
                 style={{ fontSize: height > 630 ? 19 : 17 }}
@@ -156,7 +156,7 @@ export default function DailySavings(props: any) {
                 style={{ color: "#767676", fontSize: height > 630 ? 19 : 17 }}
                 className="dark:text-white text-start font-semibold"
               >
-                Weekly
+                Allow to spend a week
               </Text>
               <Text
                 style={{ fontSize: height > 630 ? 19 : 17 }}

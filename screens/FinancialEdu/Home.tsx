@@ -3,7 +3,6 @@ import {
   ScrollView,
   TouchableOpacity,
   useColorScheme,
-  Dimensions,
   Image,
   Text,
   View,
@@ -13,8 +12,6 @@ import Colors from "../../constants/Colors";
 import { buttonIcons, buttons } from "../../utils/FinancialEdu";
 import LinearGradient from "react-native-linear-gradient";
 
-const height = Dimensions.get("screen").height;
-
 export default function FinancialHome(props: any) {
   const colorScheme = useColorScheme();
   return (
@@ -23,11 +20,10 @@ export default function FinancialHome(props: any) {
         <LinearGradient
           colors={[
             Colors[colorScheme ?? "light"].tint,
-
             "#fff",
             Colors[colorScheme ?? "light"].tint,
           ]}
-          style={{ flex: 1, height }}
+          style={{ flex: 1 }}
         >
           <View className="flex-row flex mt-2 justify-start items-center">
             <TouchableOpacity
@@ -44,7 +40,7 @@ export default function FinancialHome(props: any) {
               Financial Education
             </Text>
           </View>
-          <View className="flex-1 px-5 pt-10">
+          <View className="flex-1 px-5 pt-10 pb-32">
             {buttons?.map((e, i) => (
               <View
                 key={i}

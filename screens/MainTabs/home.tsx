@@ -294,16 +294,16 @@ const Outcome = ({
     <TouchableOpacity
       onPress={() => navigation.navigate("Spending")}
       style={{
-        backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
+        backgroundColor: Colors[colorScheme ?? "light"].tint,
       }}
       className="flex-col space-y-2 flex justify-center py-7 px-3 rounded-2xl items-start"
     >
       <View className="flex flex-row justify-center space-x-4 items-center">
-        <SimpleLineIcons name="graph" size={28} color="rgb(185 28 28)" />
-        <Text className="text-xl font-bold tracking-widest">Spending</Text>
+        <SimpleLineIcons name="graph" size={28} color="rgb(239 68 68)" />
+        <Text className="text-xl text-white font-bold tracking-widest">Spending</Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text>{`${outcomeBalance} ${getCurrencySymbol(code)}`}</Text>
+        <Text className="text-white">{`${outcomeBalance} ${getCurrencySymbol(code)}`}</Text>
         {/* <Text className="text-red-700 font-bold tracking-widest">- 12%</Text> */}
       </View>
     </TouchableOpacity>

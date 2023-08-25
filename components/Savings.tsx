@@ -6,11 +6,22 @@ import {
   Dimensions,
 } from "react-native";
 import Colors from "../constants/Colors";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import RenderAmount from "./RenderAmount";
 import ProgressBar from "./ProgressBar";
+import {
+  Easing,
+  runTiming,
+  useFont,
+  useValue,
+} from "@shopify/react-native-skia";
+import { PixelRatio, StyleSheet } from "react-native";
+import { DonutChart } from "./DonutChart";
+import { useEffect } from "react";
 
 const width = Dimensions.get("window").width;
+const radius = PixelRatio.roundToNearestPixel(100);
+const STROKE_WIDTH = 12;
 
 export default function Savings(props: any) {
   const colorScheme = useColorScheme();
@@ -79,6 +90,26 @@ export const Single = ({
   navigation: any;
 }) => {
   const colorScheme = useColorScheme();
+
+  //skia animations
+  const targetPercentage = progress;
+  const animationState = useValue(0);
+
+  useEffect(() => {
+    animationState.current = 0;
+    runTiming(animationState, targetPercentage, {
+      duration: 1250,
+      easing: Easing.inOut(Easing.cubic),
+    });
+  }, []);
+
+  const font = useFont(require("../assets/fonts/Roboto-Medium.ttf"), 40);
+  const smallerFont = useFont(require("../assets/fonts/Roboto-Medium.ttf"), 20);
+
+  if (!font || !smallerFont) {
+    return <View />;
+  }
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -91,7 +122,7 @@ export const Single = ({
           currentAmount,
         })
       }
-      className="px-3 rounded-xl mr-10 py-4"
+      className="px-3 flex justify-center items-center mr-10 py-4"
       style={{
         width: width - 30,
         backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
@@ -101,42 +132,37 @@ export const Single = ({
         style={{
           backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
         }}
-        className="flex flex-row justify-between items-center pb-2"
+        className="w-full flex flex-row justify-between items-center"
       >
         <Text className="text-start text-lg font-bold tracking-widest">
           {month}
         </Text>
-        <Text
-          style={{ color: "#767676" }}
-          className="text-start text-base font-semibold tracking-widest"
-        >
-          {((Number(currentAmount) / amount) * 100).toFixed(1) || 0} %
-        </Text>
-      </View>
-      <View className="w-full">
         <View
           style={{
             backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
           }}
-          className="w-full pb-1 flex flex-row justify-between items-center"
+          className="text-start flex flex-row justify-center items-center text-lg font-bold tracking-widest"
         >
-          <Text className="text-base font-semibold tracking-widest">
-            {currentAmount !== undefined ? (
-              <RenderAmount amount={+currentAmount} />
-            ) : (
-              0
-            )}
+          <Text className="pr-1">
+            <RenderAmount amount={amount} />
           </Text>
-          <Text className="text-base font-semibold tracking-widest">
-            {currentAmount !== undefined ? (
-              <RenderAmount amount={+amount} />
-            ) : (
-              0
-            )}
-          </Text>
+          <MaterialCommunityIcons
+            name="target"
+            size={24}
+            color={Colors[colorScheme ?? "light"].tint}
+          />
         </View>
-
-        <ProgressBar progress={progress} />
+      </View>
+      <View style={{ width: radius * 2, height: radius * 2 }}>
+        <DonutChart
+          backgroundColor={Colors[colorScheme ?? "light"].secondaryBackground}
+          radius={radius}
+          strokeWidth={STROKE_WIDTH}
+          percentageComplete={animationState}
+          targetPercentage={progress}
+          font={font}
+          smallerFont={smallerFont}
+        />
       </View>
     </TouchableOpacity>
   );
