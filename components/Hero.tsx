@@ -48,9 +48,7 @@ const Hero = ({ currentBalance, navigation }: any) => {
               <Feather name="bell" size={24} color="white" />
             </TouchableOpacity>
             <View className="flex justify-center items-center w-full space-y-2">
-              <Text className="text-white text-xl">
-                My Balance
-              </Text>
+              <Text className="text-white text-xl">My Balance</Text>
               <FlatList
                 data={[currentBalance || 0]}
                 horizontal
@@ -229,6 +227,7 @@ const AddSpending = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [isEmpty, setIsEmpty] = useState<boolean>(false);
   const [whichOne, setWhichOne] = useState<number>(0); // 1 for category and 2 for plan
+  const [maxAmountPlan, setMaxAmountPlan] = useState<number>(0);
 
   const [payload, setPayload] = useState<{
     description: string;
@@ -273,9 +272,14 @@ const AddSpending = ({
   }, []);
 
   // on submit
-
   const Submit = async () => {
     try {
+      if (payload?.category !== undefined) {
+        if (+payload?.amount > maxAmountPlan) {
+          dispatch(set({ toggle: true, msg: "Limit exceed." }));
+          return;
+        }
+      }
       if (OnlyNumbers(payload?.amount)) {
         if (
           +payload?.amount >= 1 &&
@@ -307,7 +311,11 @@ const AddSpending = ({
               setLoading(false);
               triggerNotifications(
                 "Credit",
-                `${payload?.amount} ${getCurrencySymbol(code)} is Credit`
+                `Credited ${payload?.amount} ${getCurrencySymbol(code)} for #${
+                  payload?.category !== undefined
+                    ? payload.category
+                    : payload?.plan
+                }`
               );
               dispatch(reload());
             });
@@ -361,7 +369,10 @@ const AddSpending = ({
         <View className="space-y-1">
           <Text className="dark:text-white text-lg font-semibold">
             Spend Amount{" "}
-            <Text className="text-sm">(Limit: {currentBalance})</Text>
+            <Text className="text-sm">
+              (Limit:{" "}
+              {payload.plan === undefined ? currentBalance : maxAmountPlan})
+            </Text>
           </Text>
           <TextInput
             onChangeText={(amount) => {
@@ -415,6 +426,7 @@ const AddSpending = ({
                   setWhichOne(0);
                   setPayload({
                     ...payload,
+                    plan: undefined,
                     category: e._data.description,
                     code: e._data.code,
                   });
@@ -469,6 +481,10 @@ const AddSpending = ({
                   refP.current?.blur();
                   refC.current?.clear();
                   setWhichOne(0);
+                  setMaxAmountPlan(
+                    e._data.budgetAmount - e._data.currentAmount
+                  );
+
                   setPayload({
                     ...payload,
                     plan: e._data.title,
