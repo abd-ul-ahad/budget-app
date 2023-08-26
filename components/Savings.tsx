@@ -8,14 +8,13 @@ import {
 import Colors from "../constants/Colors";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import RenderAmount from "./RenderAmount";
-import ProgressBar from "./ProgressBar";
 import {
   Easing,
   runTiming,
   useFont,
   useValue,
 } from "@shopify/react-native-skia";
-import { PixelRatio, StyleSheet } from "react-native";
+import { PixelRatio } from "react-native";
 import { DonutChart } from "./DonutChart";
 import { useEffect } from "react";
 
@@ -92,16 +91,15 @@ export const Single = ({
   const colorScheme = useColorScheme();
 
   //skia animations
-  const targetPercentage = progress;
   const animationState = useValue(0);
 
   useEffect(() => {
     animationState.current = 0;
-    runTiming(animationState, targetPercentage, {
+    runTiming(animationState, progress, {
       duration: 1250,
       easing: Easing.inOut(Easing.cubic),
     });
-  }, []);
+  }, [progress]);
 
   const font = useFont(require("../assets/fonts/Roboto-Medium.ttf"), 40);
   const smallerFont = useFont(require("../assets/fonts/Roboto-Medium.ttf"), 20);

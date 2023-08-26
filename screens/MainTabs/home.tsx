@@ -29,7 +29,6 @@ import { setCurrency } from "../../store/slices/currencySlice";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
 import { Avatars } from "../../gamification/Avatars/_Paths";
 import { setAvatar } from "../../store/slices/avatarSlice";
-import { Auth } from "../../firebase/init";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
