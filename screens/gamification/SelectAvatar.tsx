@@ -11,7 +11,7 @@ import Colors from "../../constants/Colors";
 import { Avatars } from "../../gamification/Avatars/_Paths";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { setAvatar } from "../../store/slices/avatarSlice";
 import { FadeInView } from "../../components/animations";
 import { useFirestore } from "../../firebase/useFirestore";
@@ -24,18 +24,35 @@ export default function SelectAvatar(props: any) {
 
   //
   const [loading, setLoading] = useState<boolean>(false);
+  const [leadersBoardSaving, setLeadersBoardSaving] = useState<{
+    saving: number;
+    id: string;
+  }>();
 
   //
   const { updateDocument } = useFirestore("gamification", user.uid!);
+  const { updateDocument: updateLeadersBoard, getDocument: getLeaderBoard } =
+    useFirestore("leadersboard", user.uid!);
 
   const handleSubmit = async (e: { title: string; uri: string }) => {
     setLoading(true);
-
     await updateDocument({ avatar: e.title }, id!);
+    leadersBoardSaving?.id != undefined &&
+      (await updateLeadersBoard({ avatar: e.uri }, leadersBoardSaving?.id));
     dispatch(setAvatar({ path: e.uri, id }));
 
     setLoading(false);
   };
+
+  useEffect(() => {
+    getLeaderBoard().then((doc: any) => {
+      doc?.docs[0].id != undefined &&
+        setLeadersBoardSaving({
+          id: doc?.docs[0].id,
+          saving: doc.docs[0]._data.totalSavings,
+        });
+    });
+  }, []);
 
   return (
     <SafeAreaView>

@@ -138,7 +138,7 @@ export default function Home(props: any) {
         getLeadersBoard().then((doc) => {
           if (doc?.docs.length === 0) {
             addLeadersBoard({
-              avatar: "1",
+              avatar: Avatars[0].uri,
               displayName: Auth.currentUser?.displayName,
               totalSavings: 0,
             });

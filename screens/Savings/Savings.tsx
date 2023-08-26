@@ -146,7 +146,7 @@ export default function Savings(props: any) {
           <RefreshControl refreshing={loading!} onRefresh={load} />
         }
       >
-        <View className="flex-row flex mt-5 justify-start items-center">
+        <View className="flex-row flex mt-1 justify-start items-center">
           <TouchableOpacity
             className="py-4 px-3"
             onPress={() => props.navigation.goBack()}

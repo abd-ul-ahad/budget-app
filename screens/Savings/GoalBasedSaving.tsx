@@ -258,8 +258,6 @@ function GiveDailySaving(
     throw new Error("Target date should be in the future.");
   }
 
-  console.log({ daysRemaining });
-
   const dailySavings = targetAmount * daysRemaining;
   return `${(dailySavings || 0).toFixed(2)} ${code}`;
 }

@@ -30,7 +30,7 @@ export default function Profile(props: any) {
   const reloadState = useSelector((state: RootState) => state.reload);
   const code = useSelector((state: RootState) => state.currency.code);
   const avatar = useSelector((state: RootState) => state.avatar.path);
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch();
 
   //
   const { logout } = useLogout();
@@ -175,6 +175,36 @@ export default function Profile(props: any) {
                 <MaterialCommunityIcons name="logout" size={17} color="black" />
                 <Text className="pl-5 font-semibold tracking-wider text-base">
                   Logout
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Divider */}
+            <View
+              style={{
+                borderTopWidth: 6,
+                borderTopColor: colorScheme === "light" ? "#f5f5f5" : "#767676",
+              }}
+            />
+            <View className="w-full">
+              <View className="pl-6 py-3 flex w-full justify-start items-start">
+                <Text
+                  className="font-semibold tracking-wider"
+                  style={{ color: "#767676" }}
+                >
+                  Ranking
+                </Text>
+              </View>
+              <TouchableOpacity
+                className="pl-8 py-3 flex w-full flex-row justify-start items-center"
+                onPress={() => props.navigation.navigate("LeadersBoard")}
+              >
+                <Image
+                  style={{ width: 30, height: 30, resizeMode: "stretch" }}
+                  source={require("../../assets/leaders.png")}
+                />
+                <Text className="font-semibold tracking-wider pl-2 text-base">
+                Leaderboard
                 </Text>
               </TouchableOpacity>
             </View>

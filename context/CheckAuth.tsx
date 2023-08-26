@@ -38,6 +38,7 @@ import ChatHome from "../screens/Chat/Home";
 import ForgetPassword from "../screens/Auth/ForgetPassword";
 import FinancialHome from "../screens/FinancialEdu/Home";
 import FinancialContent from "../screens/FinancialEdu/Contents";
+import LeadersBoard from "../screens/gamification/LeadersBoard";
 
 const Stack = createNativeStackNavigator();
 
@@ -115,7 +116,11 @@ export default function CheckAuth() {
                   options={{ headerShown: false }}
                   component={GoalBasedSavings}
                 />
-
+                <Stack.Screen
+                  name="LeadersBoard"
+                  options={{ headerShown: false }}
+                  component={LeadersBoard}
+                />
                 <Stack.Screen
                   name="EditProfile"
                   options={{ headerShown: false }}

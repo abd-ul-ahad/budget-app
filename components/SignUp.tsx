@@ -26,6 +26,7 @@ import { useFirestore } from "../firebase/useFirestore";
 import { Auth } from "../firebase/init";
 import { useDispatch } from "react-redux";
 import { login } from "../store/slices/userSlice";
+import { Avatars } from "../gamification/Avatars/_Paths";
 
 const { height } = Dimensions.get("window");
 
@@ -83,7 +84,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
         await addLeadersBoard({
           displayName: Auth.currentUser?.displayName,
           totalSavings: 0,
-          avatar: "1",
+          avatar: Avatars[0].uri,
         });
 
         dispatch(
