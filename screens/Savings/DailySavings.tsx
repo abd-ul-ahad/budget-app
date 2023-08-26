@@ -15,8 +15,18 @@ import { RootState } from "../../store";
 import { useState, useEffect } from "react";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  Easing,
+  runTiming,
+  useFont,
+  useValue,
+} from "@shopify/react-native-skia";
+import { PixelRatio } from "react-native";
+import { DonutChart } from "../../components/DonutChart";
 
-const height = Dimensions.get("window").height;
+const { height, width } = Dimensions.get("window");
+const radius = PixelRatio.roundToNearestPixel(100);
+const STROKE_WIDTH = 12;
 
 export default function DailySavings(props: any) {
   const colorScheme = useColorScheme();
@@ -68,6 +78,26 @@ export default function DailySavings(props: any) {
     load();
   }, []);
 
+  const animationState = useValue(0);
+
+  useEffect(() => {
+    animationState.current = 0;
+    runTiming(animationState, +saveAmount / 100, {
+      duration: 1250,
+      easing: Easing.inOut(Easing.cubic),
+    });
+  }, [saveAmount]);
+
+  const font = useFont(require("../../assets/fonts/Roboto-Medium.ttf"), 40);
+  const smallerFont = useFont(
+    require("../../assets/fonts/Roboto-Medium.ttf"),
+    20
+  );
+
+  if (!font || !smallerFont) {
+    return <View />;
+  }
+
   const onSubmit = async () => {
     setLoading(true);
     try {
@@ -96,6 +126,8 @@ export default function DailySavings(props: any) {
     setLoading(false);
   };
 
+  console.log({ saveAmount: +saveAmount });
+
   return (
     <SafeAreaView>
       <ScrollView
@@ -123,7 +155,7 @@ export default function DailySavings(props: any) {
           </Text>
         </View>
         <View>
-          <View style={{ paddingVertical: 50 }} className="w-full space-y-1">
+          <View style={{ paddingTop: 50, paddingBottom: 30 }} className="w-full space-y-1">
             <Text className="px-4 font-bold text-3xl w-full text-center tracking-widest">
               <RenderAmount amount={balances.currentBalance || 0} />
             </Text>
@@ -133,6 +165,28 @@ export default function DailySavings(props: any) {
             >
               Income
             </Text>
+          </View>
+          <View
+            className="flex justify-center items-center rounded-lg pb-3"
+            style={{
+              marginLeft: 10,
+              marginRight: 13,
+            }}
+          >
+            <View className="flex justify-center items-center rounded-lg">
+              <View style={{ width: radius * 2, height: radius * 2 }}>
+                <DonutChart
+                  backgroundColor={Colors[colorScheme ?? "light"].background}
+                  radius={radius}
+                  strokeWidth={STROKE_WIDTH}
+                  percentageComplete={animationState}
+                  targetPercentage={+saveAmount}
+                  font={font}
+                  smallerFont={smallerFont}
+                  is100Mode={true}
+                />
+              </View>
+            </View>
           </View>
           <View className="px-5 space-y-3 pt-4">
             {/*  */}
@@ -237,8 +291,8 @@ export default function DailySavings(props: any) {
             }}
             className="dark:text-white w-full text-center font-semibold pb-1 px-3"
           >
-            By consistently saving {saveAmount}% each day, you can accumulate
-            savings of{" "}
+            By consistently saving {saveAmount || 0}% each day, you can
+            accumulate savings of{" "}
             <RenderAmount amount={+(dailySaving || 0).toFixed(2) || 0} /> daily
             and {"\n"}{" "}
             <RenderAmount amount={+(weeklySaving || 0).toFixed(2) || 0} />{" "}

@@ -20,6 +20,7 @@ interface CircularProgressProps {
   font: SkFont;
   smallerFont: SkFont;
   targetPercentage: number;
+  is100Mode?: boolean;
 }
 
 export const DonutChart: FC<CircularProgressProps> = ({
@@ -29,10 +30,13 @@ export const DonutChart: FC<CircularProgressProps> = ({
   font,
   targetPercentage,
   smallerFont,
+  is100Mode = false,
+  backgroundColor
 }) => {
   const colorScheme = useColorScheme();
   const innerRadius = radius - strokeWidth / 2;
-  const targetText = `${targetPercentage * 100}`;
+  const targetText =
+    is100Mode === true ? `${targetPercentage}` : `${targetPercentage * 100}`;
 
   const path = Skia.Path.Make();
   path.addCircle(radius, radius, innerRadius);
@@ -44,13 +48,13 @@ export const DonutChart: FC<CircularProgressProps> = ({
     <View
       style={{
         flex: 1,
-        backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
+        backgroundColor,
       }}
     >
       <Canvas
         style={{
           flex: 1,
-          backgroundColor: Colors[colorScheme ?? "light"].secondaryBackground,
+          backgroundColor,
         }}
       >
         <Path

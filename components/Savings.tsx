@@ -88,7 +88,7 @@ export const Single = ({
   id: string;
   navigation: any;
 }) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();  
 
   //skia animations
   const animationState = useValue(0);
