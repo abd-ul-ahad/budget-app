@@ -25,8 +25,9 @@ export default function Spending(props: any) {
   const colorScheme = useColorScheme();
   const [labelI, setLabelI] = useState<number>(0);
 
-  const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
+  const reloadState = useSelector((state: RootState) => state.reload);
 
   const { getDocument } = useFirestore("transactions", user.uid!);
 
@@ -64,7 +65,7 @@ export default function Spending(props: any) {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [reloadState]);
 
   return (
     // Wrapping the content inside SafeAreaView and ScrollView for safe handling of views
