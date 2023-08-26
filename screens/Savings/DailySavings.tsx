@@ -276,14 +276,14 @@ export default function DailySavings(props: any) {
             </View>
           </View>
           <View className="px-5 pt-4">
-            <View className="pb-3">
+            <View className="p1-3">
               <Text
                 style={{ color: "#767676" }}
                 className="dark:text-white text-start text-base font-semibold pb-1"
               >
                 Daily percentage savings
               </Text>
-              <TextInput
+              {/* <TextInput
                 className="py-2 px-3 dark:text-white rounded-lg"
                 style={{ borderColor: "grey", borderWidth: 2 }}
                 placeholder="0"
@@ -293,7 +293,7 @@ export default function DailySavings(props: any) {
                 onChangeText={(text) => {
                   setSaveAmount(text);
                 }}
-              />
+              /> */}
             </View>
             <View>
               <Slider

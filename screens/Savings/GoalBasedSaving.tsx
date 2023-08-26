@@ -24,13 +24,12 @@ export default function Notifications(props: any) {
   //
   const [date, setDate] = useState<string>("");
   const [amount, setAmount] = useState<string>("0");
-  const [income, setIncome] = useState<string>("0");
+  const [dailySaving, setDailySaving] = useState<string>("");
   const [isValidAmount, setIsValidAmount] = useState<boolean | null>(null);
   const [isValidDate, setIsValidDate] = useState<boolean | null>(null);
-  const [isValidIncome, setIsValidIncome] = useState<boolean | null>(null);
+  const [isValidSaving, setIsValidSaving] = useState<boolean | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<{ percentage: string; daily: string }>({
-    percentage: "",
+  const [result, setResult] = useState<{ daily: string }>({
     daily: "",
   });
 
@@ -38,30 +37,48 @@ export default function Notifications(props: any) {
     setLoading(true);
 
     try {
-      if (+amount < 1) {
-        setIsValidAmount(false);
-        return;
+      // if (+dailySaving <= 1) {
+      //   setIsValidSaving(false);
+      //   return;
+      // }
+      // setIsValidSaving(true);
+
+      if (!dailySaving || +dailySaving <= 0) {
+        if (+amount < 1) {
+          setIsValidAmount(false);
+          return;
+        }
+        setIsValidAmount(true);
+
+        if (!isValidOrFutureDate(date)) {
+          setIsValidDate(false);
+          return;
+        }
+        setIsValidDate(true);
+        let daily = suggestDailySavings(+amount, date, code);
+        setResult({
+          daily: `By constantly saving ${daily} daily you can achieve goal`,
+        });
+        triggerNotifications("Strategies", daily);
+      } else {
+        if (+dailySaving <= 1) {
+          setIsValidSaving(false);
+          return;
+        }
+        setIsValidSaving(true);
+
+        if (!isValidOrFutureDate(date)) {
+          setIsValidDate(false);
+          return;
+        }
+
+        setIsValidDate(true);
+        let daily = GiveDailySaving(+dailySaving, date, code);
+        setResult({
+          daily: `By constantly saving ${dailySaving} daily you can save ${daily} till ${date}.`,
+        });
+        triggerNotifications("Strategies", daily);
       }
-      setIsValidAmount(true);
-
-      if (+income <= 1) {
-        setIsValidIncome(false);
-        return;
-      }
-      setIsValidIncome(true);
-
-      if (!isValidOrFutureDate(date)) {
-        setIsValidDate(false);
-        return;
-      }
-      setIsValidDate(true);
-
-      // calculating.
-      let percentage = suggestSavingsPercentage(date, +amount, +income);
-      let daily = suggestDailySavings(+amount, +income, date, code);
-
-      setResult({ daily, percentage });
-      triggerNotifications("Strategies", daily);
     } catch (error) {
       console.error("An error occurred:", error);
     } finally {
@@ -97,7 +114,7 @@ export default function Notifications(props: any) {
               className="tracking-wider mb-2 text-base text-center font-semibold"
               style={{ color: "#767676" }}
             >
-              Amount
+              Amount to save
             </Text>
             <TextInput
               className="py-2 px-3 w-full mb-2 dark:text-white rounded-lg"
@@ -110,18 +127,18 @@ export default function Notifications(props: any) {
                 setAmount(text);
               }}
             />
-            <Text
-              className="text-base text-red-500 font-bold"
-              style={{ opacity: isValidAmount === false ? 1 : 0 }}
-            >
-              Invalid amount
+            <Text className="text-base text-red-500 font-bold">
+              {dailySaving.trim().length > 0 &&
+                amount.trim().length > 0 &&
+                "Please choose only one field."}
+              {isValidAmount === false && "Invalid amount"}
             </Text>
             {/* salary */}
             <Text
               className="tracking-wider mb-2 mt-2 text-base text-center font-semibold"
               style={{ color: "#767676" }}
             >
-              Income
+              Daily saving
             </Text>
             <TextInput
               className="py-2 px-3 w-full mb-2 dark:text-white rounded-lg"
@@ -129,14 +146,14 @@ export default function Notifications(props: any) {
               placeholder="Amount"
               placeholderTextColor="grey"
               keyboardType="numeric"
-              value={+income < 0 ? "" : income}
+              value={dailySaving}
               onChangeText={(text) => {
-                setIncome(text);
+                setDailySaving(text);
               }}
             />
             <Text
               className="text-base text-red-500 font-bold"
-              style={{ opacity: isValidIncome === false ? 1 : 0 }}
+              style={{ opacity: isValidSaving === false ? 1 : 0 }}
             >
               Invalid amount
             </Text>
@@ -173,21 +190,7 @@ export default function Notifications(props: any) {
           <View className="w-full p-3">
             <Text
               className="tracking-wider mb-1 mt-1 text-base text-center font-semibold"
-              style={{ color: "#767676" }}
-            >
-              {result.percentage}
-            </Text>
-            {result.daily !== "" && (
-              <Text
-                className="tracking-wider mb-1 mt-1 text-base text-center font-semibold"
-                style={{ color: "#767676" }}
-              >
-                (OR)
-              </Text>
-            )}
-            <Text
-              className="tracking-wider mb-1 mt-1 text-base text-center font-semibold"
-              style={{ color: "#767676" }}
+              style={{ color: "#767676", opacity: result.daily ? 1 : 0 }}
             >
               {result.daily}
             </Text>
@@ -213,7 +216,6 @@ export default function Notifications(props: any) {
 
 function suggestDailySavings(
   targetAmount: number,
-  income: number,
   targetDate: string,
   code: string
 ): string {
@@ -236,40 +238,66 @@ function suggestDailySavings(
   return `${(dailySavings || 0).toFixed(2)} ${code}`;
 }
 
-function suggestSavingsPercentage(
-  date: string,
-  amount: number,
-  monthlyIncome: number
-): string {
-  const targetDate = new Date(date);
+function GiveDailySaving(
+  targetAmount: number,
+  targetDate: string,
+  code: string
+) {
   const currentDate = new Date();
+  const endDate = new Date(targetDate);
 
-  const monthsRemaining =
-    (targetDate.getFullYear() - currentDate.getFullYear()) * 12 +
-    targetDate.getMonth() -
-    currentDate.getMonth();
-  const savingsRequired = amount - monthlyIncome * monthsRemaining;
-
-  if (savingsRequired <= 0) {
-    return "You've already saved enough for this goal!";
+  if (endDate <= currentDate) {
+    throw new Error("Target date should be in the future.");
   }
 
-  let savingsPercentage =
-    (savingsRequired / (monthlyIncome * monthsRemaining)) * 100;
+  const daysRemaining = Math.ceil(
+    (endDate.getTime() - currentDate.getTime()) / (1000 * 3600 * 24)
+  );
 
-  if (savingsPercentage <= 5) {
-    return "You should aim to save at least 5% of your income.";
-  } else if (savingsPercentage <= 10) {
-    return "You should aim to save at least 10% of your income.";
-  } else if (savingsPercentage <= 15) {
-    return "You should aim to save at least 15% of your income.";
-  } else if (savingsPercentage <= 20) {
-    return "You should aim to save at least 20% of your income.";
-  } else if (savingsPercentage <= 25) {
-    return "You should aim to save at least 25% of your income.";
-  } else if (savingsPercentage <= 30) {
-    return "You should aim to save at least 30% of your income.";
-  } else {
-    return "You should aim to save at least 40% of your income or more.";
+  if (daysRemaining <= 0) {
+    throw new Error("Target date should be in the future.");
   }
+
+  console.log({ daysRemaining });
+
+  const dailySavings = targetAmount * daysRemaining;
+  return `${(dailySavings || 0).toFixed(2)} ${code}`;
 }
+
+// function suggestSavingsPercentage(
+//   date: string,
+//   amount: number,
+//   monthlyIncome: number
+// ): string {
+//   const targetDate = new Date(date);
+//   const currentDate = new Date();
+
+//   const monthsRemaining =
+//     (targetDate.getFullYear() - currentDate.getFullYear()) * 12 +
+//     targetDate.getMonth() -
+//     currentDate.getMonth();
+//   const savingsRequired = amount - monthlyIncome * monthsRemaining;
+
+//   if (savingsRequired <= 0) {
+//     return "You've already saved enough for this goal!";
+//   }
+
+//   let savingsPercentage =
+//     (savingsRequired / (monthlyIncome * monthsRemaining)) * 100;
+
+//   if (savingsPercentage <= 5) {
+//     return "You should aim to save at least 5% of your income.";
+//   } else if (savingsPercentage <= 10) {
+//     return "You should aim to save at least 10% of your income.";
+//   } else if (savingsPercentage <= 15) {
+//     return "You should aim to save at least 15% of your income.";
+//   } else if (savingsPercentage <= 20) {
+//     return "You should aim to save at least 20% of your income.";
+//   } else if (savingsPercentage <= 25) {
+//     return "You should aim to save at least 25% of your income.";
+//   } else if (savingsPercentage <= 30) {
+//     return "You should aim to save at least 30% of your income.";
+//   } else {
+//     return "You should aim to save at least 40% of your income or more.";
+//   }
+// }

@@ -23,7 +23,7 @@ export default function FinancialHome(props: any) {
             "#fff",
             Colors[colorScheme ?? "light"].tint,
           ]}
-          style={{ flex: 1 }}
+          style={{ flex: 1, paddingBottom: 200 }}
         >
           <View className="flex-row flex mt-2 justify-start items-center">
             <TouchableOpacity
