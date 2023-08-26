@@ -57,7 +57,7 @@ export default function EditSavings(props: any) {
     try {
       setLoading(true);
       if (+saveAmount >= 0 && +targetAmount > 0) {
-        if (+saveAmount <= +currentBalance ) {
+        if (+saveAmount <= +targetAmount ) {
           await updateDocument(
             {
               currentAmount: saveAmount || 0,
