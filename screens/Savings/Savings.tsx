@@ -58,6 +58,14 @@ export default function Savings(props: any) {
   //
   const { addDocument, getDocument } = useFirestore("savings", user.uid!);
 
+  const { updateDocument: updateLeadersBoard, getDocument: getLeaderBoard } =
+    useFirestore("leadersboard", user.uid!);
+
+  const [leadersBoardSaving, setLeadersBoardSaving] = useState<{
+    saving: number;
+    id: string;
+  }>();
+
   const onSubmit = async () => {
     try {
       setLoading(true);
@@ -74,6 +82,11 @@ export default function Savings(props: any) {
               currentAmount: saveAmount,
               targetAmount: targetAmount,
             }).then(() => {
+              leadersBoardSaving?.id != undefined &&
+                updateLeadersBoard(
+                  { totalSavings: Number(leadersBoardSaving?.saving) + Number(saveAmount) },
+                  leadersBoardSaving?.id
+                );
               triggerNotifications(
                 `Savings`,
                 `${saveAmount} ${getCurrencySymbol(
@@ -98,6 +111,13 @@ export default function Savings(props: any) {
 
   const load = () => {
     setLoading(true);
+    getLeaderBoard().then((doc: any) => {
+      doc?.docs[0].id != undefined &&
+        setLeadersBoardSaving({
+          id: doc?.docs[0].id,
+          saving: doc.docs[0]._data.totalSavings,
+        });
+    });
     getDocument()
       .then((doc) => {
         doc?.docs !== undefined && setAllSavings(doc?.docs);

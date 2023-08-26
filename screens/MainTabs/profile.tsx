@@ -25,14 +25,12 @@ import getLevelInfo, { calculateTotalAmount } from "../../gamification/utils";
 import { setLevel } from "../../store/slices/levelSlice";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
 
-const { height } = Dimensions.get("screen");
-
 export default function Profile(props: any) {
   const user = useSelector((state: RootState) => state.user);
   const reloadState = useSelector((state: RootState) => state.reload);
   const code = useSelector((state: RootState) => state.currency.code);
   const avatar = useSelector((state: RootState) => state.avatar.path);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch();  
 
   //
   const { logout } = useLogout();

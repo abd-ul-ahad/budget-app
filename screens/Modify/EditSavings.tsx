@@ -1,10 +1,15 @@
-import { ScrollView, TextInput, useColorScheme, Dimensions } from "react-native";
+import {
+  ScrollView,
+  TextInput,
+  useColorScheme,
+  Dimensions,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFirestore } from "../../firebase/useFirestore";
 import { RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +28,11 @@ export default function EditSavings(props: any) {
   const { currentBalance } = useSelector((state: RootState) => state.balances);
   const code = useSelector((state: RootState) => state.currency.code);
 
+  const [leadersBoardSaving, setLeadersBoardSaving] = useState<{
+    saving: number;
+    id: string;
+  }>();
+
   //
   const params = props.route.params;
 
@@ -39,12 +49,15 @@ export default function EditSavings(props: any) {
   // importing hooks
   const { updateDocument, deleteDocument } = useFirestore("savings", user.uid!);
 
+  const { updateDocument: updateLeadersBoard, getDocument: getLeaderBoard } =
+    useFirestore("leadersboard", user.uid!);
+
   // update
   const onUpdate = async () => {
     try {
       setLoading(true);
       if (+saveAmount >= 0 && +targetAmount > 0) {
-        if (+saveAmount <= +currentBalance && saveAmount <= targetAmount) {
+        if (+saveAmount <= +currentBalance ) {
           await updateDocument(
             {
               currentAmount: saveAmount || 0,
@@ -52,6 +65,20 @@ export default function EditSavings(props: any) {
             },
             params.id
           ).then(() => {
+            leadersBoardSaving?.id != undefined &&
+              updateLeadersBoard(
+                {
+                  totalSavings:
+                    Number(leadersBoardSaving?.saving) < Number(saveAmount)
+                      ? Number(leadersBoardSaving?.saving) +
+                        (Number(saveAmount) -
+                          Number(leadersBoardSaving?.saving))
+                      : Number(leadersBoardSaving?.saving) -
+                        (Number(leadersBoardSaving?.saving) -
+                          Number(saveAmount)),
+                },
+                leadersBoardSaving?.id
+              );
             props.navigation.goBack();
             triggerNotifications(
               `Savings`,
@@ -72,6 +99,16 @@ export default function EditSavings(props: any) {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    getLeaderBoard().then((doc: any) => {
+      doc?.docs[0].id != undefined &&
+        setLeadersBoardSaving({
+          id: doc?.docs[0].id,
+          saving: doc.docs[0]._data.totalSavings,
+        });
+    });
+  }, []);
 
   // delete
   const onDelete = async () => {
@@ -111,7 +148,10 @@ export default function EditSavings(props: any) {
                 color={Colors[colorScheme ?? "light"].text}
               />
             </TouchableOpacity>
-            <Text style={{ fontSize: 20 }} className="pl-3 font-bold tracking-wider text-start py-4">
+            <Text
+              style={{ fontSize: 20 }}
+              className="pl-3 font-bold tracking-wider text-start py-4"
+            >
               Update saving
             </Text>
           </View>

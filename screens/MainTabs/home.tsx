@@ -29,6 +29,7 @@ import { setCurrency } from "../../store/slices/currencySlice";
 import getCurrencySymbol from "../../utils/CurrencySymbols";
 import { Avatars } from "../../gamification/Avatars/_Paths";
 import { setAvatar } from "../../store/slices/avatarSlice";
+import { Auth } from "../../firebase/init";
 
 // Getting the width of the window
 const width = Dimensions.get("window").width;
@@ -125,6 +126,25 @@ export default function Home(props: any) {
       } catch {
         addDocument({ avatar: "1" });
       }
+    })();
+  }, []); 
+
+  const { getDocument: getLeadersBoard, addDocument: addLeadersBoard } =
+    useFirestore("leadersboard", user.uid!);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        getLeadersBoard().then((doc) => {
+          if (doc?.docs.length === 0) {
+            addLeadersBoard({
+              avatar: "1",
+              displayName: Auth.currentUser?.displayName,
+              totalSavings: 0,
+            });
+          }
+        });
+      } catch (e: any) {}
     })();
   }, []);
 
@@ -299,10 +319,14 @@ const Outcome = ({
     >
       <View className="flex flex-row justify-center space-x-4 items-center">
         <SimpleLineIcons name="graph" size={28} color="rgb(239 68 68)" />
-        <Text className="text-xl text-white font-bold tracking-widest">Spending</Text>
+        <Text className="text-xl text-white font-bold tracking-widest">
+          Spending
+        </Text>
       </View>
       <View className="flex justify-center items-start">
-        <Text className="text-white">{`${outcomeBalance} ${getCurrencySymbol(code)}`}</Text>
+        <Text className="text-white">{`${outcomeBalance} ${getCurrencySymbol(
+          code
+        )}`}</Text>
         {/* <Text className="text-red-700 font-bold tracking-widest">- 12%</Text> */}
       </View>
     </TouchableOpacity>

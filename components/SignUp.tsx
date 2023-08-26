@@ -68,6 +68,7 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
   const { signup } = useSignUp();
   const { addDocument } = useFirestore("currency", "");
   const { addDocument: addGamification } = useFirestore("gamification", "");
+  const { addDocument: addLeadersBoard } = useFirestore("leadersboard", "");
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -79,6 +80,11 @@ export default function SignUp({ flatListRef }: { flatListRef: any }) {
 
         await addDocument({ code: "GBP" });
         await addGamification({ avatar: "1" });
+        await addLeadersBoard({
+          displayName: Auth.currentUser?.displayName,
+          totalSavings: 0,
+          avatar: "1",
+        });
 
         dispatch(
           login({
