@@ -5,11 +5,12 @@ import {
   useColorScheme,
   Image,
   Dimensions,
+  Text,
+  View,
 } from "react-native";
 import WaveChart from "../../components/WaveChart";
 import Colors from "../../constants/Colors";
 import { ScrollView } from "react-native";
-import { Text, View } from "../../components/Themed";
 import { TouchableOpacity } from "react-native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -116,7 +117,7 @@ export default function Savings(props: any) {
   return (
     <SafeAreaView
       style={{
-        backgroundColor: Colors[colorScheme ?? "light"].background,
+        backgroundColor: "#fcfcfe",
       }}
     >
       <ScrollView
