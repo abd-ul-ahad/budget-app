@@ -10,7 +10,6 @@ import {
 } from "@shopify/react-native-skia";
 import { View } from "react-native";
 import { useColorScheme } from "react-native";
-import Colors from "../constants/Colors";
 
 interface CircularProgressProps {
   strokeWidth: number;
@@ -21,6 +20,8 @@ interface CircularProgressProps {
   smallerFont: SkFont;
   targetPercentage: number;
   is100Mode?: boolean;
+  smallerText?: string;
+  smallerTextX?: number
 }
 
 export const DonutChart: FC<CircularProgressProps> = ({
@@ -31,7 +32,9 @@ export const DonutChart: FC<CircularProgressProps> = ({
   targetPercentage,
   smallerFont,
   is100Mode = false,
-  backgroundColor
+  backgroundColor,
+  smallerText = "Saved",
+  smallerTextX = 2
 }) => {
   const colorScheme = useColorScheme();
   const innerRadius = radius - strokeWidth / 2;
@@ -86,9 +89,9 @@ export const DonutChart: FC<CircularProgressProps> = ({
           color="black"
         />
         <Text
-          x={innerRadius - titleWidth / 2}
+          x={innerRadius - titleWidth / smallerTextX}
           y={radius + 45}
-          text={"Saved"}
+          text={smallerText}
           font={smallerFont}
           opacity={1}
           color="black"

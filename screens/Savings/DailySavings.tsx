@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import RenderAmount from "../../components/RenderAmount";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -23,8 +23,15 @@ import {
 } from "@shopify/react-native-skia";
 import { PixelRatio } from "react-native";
 import { DonutChart } from "../../components/DonutChart";
+import Slider from "rn-range-slider";
+import { StyleSheet } from "react-native";
+import Thumb from "../../components/Slider/Thumb";
+import RailSelected from "../../components/Slider/RailSelected";
+import Rail from "../../components/Slider/Rail";
+import Notch from "../../components/Slider/Notch";
+import Label from "../../components/Slider/Label";
 
-const { height, width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 const radius = PixelRatio.roundToNearestPixel(100);
 const STROKE_WIDTH = 12;
 
@@ -44,6 +51,21 @@ export default function DailySavings(props: any) {
     open: boolean;
     msg: string;
   }>({ open: false, msg: "" });
+
+  //  Slider
+  const renderThumb = useCallback(
+    (name: "high" | "low") => <Thumb name={name} />,
+    []
+  );
+  const renderRail = useCallback(() => <Rail />, []);
+  const renderRailSelected = useCallback(() => <RailSelected />, []);
+  const renderLabel = useCallback((value: any) => <Label text={value} />, []);
+  const renderNotch = useCallback(() => <Notch />, []);
+  const handleValueChange = useCallback(
+    (lowValue: any, highValue: any) =>
+      setSaveAmount((lowValue || 0).toFixed(2)),
+    []
+  );
 
   const load = async () => {
     try {
@@ -88,10 +110,10 @@ export default function DailySavings(props: any) {
     });
   }, [saveAmount]);
 
-  const font = useFont(require("../../assets/fonts/Roboto-Medium.ttf"), 40);
+  const font = useFont(require("../../assets/fonts/Roboto-Medium.ttf"), 45);
   const smallerFont = useFont(
     require("../../assets/fonts/Roboto-Medium.ttf"),
-    20
+    15
   );
 
   if (!font || !smallerFont) {
@@ -126,8 +148,6 @@ export default function DailySavings(props: any) {
     setLoading(false);
   };
 
-  console.log({ saveAmount: +saveAmount });
-
   return (
     <SafeAreaView>
       <ScrollView
@@ -154,8 +174,11 @@ export default function DailySavings(props: any) {
             Daily savings
           </Text>
         </View>
-        <View>
-          <View style={{ paddingTop: 50, paddingBottom: 30 }} className="w-full space-y-1">
+        <View className="pt-7">
+          {/* <View
+            style={{ paddingTop: 40, paddingBottom: 30 }}
+            className="w-full space-y-1"
+          >
             <Text className="px-4 font-bold text-3xl w-full text-center tracking-widest">
               <RenderAmount amount={balances.currentBalance || 0} />
             </Text>
@@ -165,7 +188,7 @@ export default function DailySavings(props: any) {
             >
               Income
             </Text>
-          </View>
+          </View> */}
           <View
             className="flex justify-center items-center rounded-lg pb-3"
             style={{
@@ -176,8 +199,10 @@ export default function DailySavings(props: any) {
             <View className="flex justify-center items-center rounded-lg">
               <View style={{ width: radius * 2, height: radius * 2 }}>
                 <DonutChart
+                smallerTextX={1.5}
                   backgroundColor={Colors[colorScheme ?? "light"].background}
                   radius={radius}
+                  smallerText="Daily saving"
                   strokeWidth={STROKE_WIDTH}
                   percentageComplete={animationState}
                   targetPercentage={+saveAmount}
@@ -270,6 +295,23 @@ export default function DailySavings(props: any) {
                 }}
               />
             </View>
+            <View>
+              <Slider
+              style={{height: 60, paddingTop: 10}}
+                min={0}
+                max={100}
+                step={0.1}
+                low={+saveAmount}
+                floatingLabel
+                renderThumb={renderThumb}
+                renderRail={renderRail}
+                renderRailSelected={renderRailSelected}
+                renderLabel={renderLabel}
+                renderNotch={renderNotch}
+                disableRange
+                onValueChanged={handleValueChange}
+              />
+            </View>
             <TouchableOpacity
               disabled={loading}
               onPress={() => onSubmit()}
@@ -310,3 +352,33 @@ export default function DailySavings(props: any) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    alignItems: "stretch",
+    padding: 12,
+    flex: 1,
+    backgroundColor: "#555",
+  },
+  slider: {},
+  button: {},
+  header: {
+    alignItems: "center",
+    backgroundColor: "black",
+    padding: 12,
+  },
+  horizontalContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+  },
+  text: {
+    color: "white",
+    fontSize: 20,
+  },
+  valueText: {
+    width: 50,
+    color: "white",
+    fontSize: 20,
+  },
+});

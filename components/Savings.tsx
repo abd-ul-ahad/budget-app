@@ -88,7 +88,7 @@ export const Single = ({
   id: string;
   navigation: any;
 }) => {
-  const colorScheme = useColorScheme();  
+  const colorScheme = useColorScheme();
 
   //skia animations
   const animationState = useValue(0);
@@ -153,6 +153,7 @@ export const Single = ({
       </View>
       <View style={{ width: radius * 2, height: radius * 2 }}>
         <DonutChart
+          smallerTextX={3}
           backgroundColor={Colors[colorScheme ?? "light"].secondaryBackground}
           radius={radius}
           strokeWidth={STROKE_WIDTH}
